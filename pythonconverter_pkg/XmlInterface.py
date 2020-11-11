@@ -20,8 +20,9 @@ class XmlInterface(zdb.DatabaseInterface):
         self.path = uri
         if path.exists(uri):
             uri=uri+"_"
-            #self.db = ET.parse(uri)
-            #self.root = self.db.getroot()
+        if not path.exists(path.dirname(self.path)):
+            os.makedirs(path.dirname(self.path))
+
 
     def closeDatabase(self):
         print("Not implemented yet")
