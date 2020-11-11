@@ -48,11 +48,14 @@ def convert():
     print(outputFile)
     print(engine)
     if(checkInputFile() ==False):
-        return False   
-    converter = con.ConversionUnit()
-    converter.setInputFile(inputFile)
-    converter.setOutputFile(outputFile)
-    if converter.setUserScript(engine) == False:
         return False
-    converter.convert(session)
+    try:       
+        converter = con.ConversionUnit()
+        converter.setInputFile(inputFile)
+        converter.setOutputFile(outputFile)
+        if converter.setUserScript(engine) == False:
+            return False
+        converter.convert(session)
+    except:
+        return False
     return True
