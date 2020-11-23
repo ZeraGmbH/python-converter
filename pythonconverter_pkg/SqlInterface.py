@@ -44,6 +44,16 @@ class SqlInterface(zdb.DatabaseInterface):
 			print("is not a compatible database")	
 		return [dict(row) for row in ret]
 
+	def readStaticData(self,p_record):
+		ret=""
+		try:
+			self.db.execute("SELECT entities.entity_name, components.component_name, valuemap.component_value FROM sessions INNER JOIN sessions_valuemap ON sessions.id = sessions_valuemap.sessionsid INNER JOIN valuemap ON sessions_valuemap.valueid = valuemap.id INNER JOIN components ON valuemap.componentid = components.id INNER JOIN entities ON valuemap.entityiesid = entities.id WHERE session_name =?;", [p_record])
+			ret=self.db.fetchall()
+		except:
+			print("is not a compatible database")	
+		return [dict(row) for row in ret]
+
+
 	def dataSelect(self,selectString,selectVariables):
 		self.db.execute(selectString,selectVariables)
 		ret=self.db.fetchall()

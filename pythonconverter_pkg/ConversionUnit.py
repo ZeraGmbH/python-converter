@@ -75,18 +75,24 @@ class ConversionUnit:
 	def __readTransactionList(self):
 		return self.__iInt.readDatasetList(self.__record)
 
+	def __readStaticData(self):
+		return self.__iInt.readStaticData(self.__record)
+
 	#read from input database
 	def __read(self):
 		print("not implemented yet")
 		transList = self.__readTransactionList()
 		self.__iMap[self.__record]=dict()
+		self.__iMap[self.__record]["dynamic"]=dict()
+		self.__iMap[self.__record]["static"]=dict()
 		for con in transList :
 			tmpDict=dict()
 			tmpDict["contentset_names"]=con["contentset_names"]
 			tmpDict["timestemp"]=con["start_time"]
 			tmpDict["guiContext"]=con["guicontext_name"]
 			tmpDict["values"]=self.__iInt.readDataset(con["transaction_name"])
-			self.__iMap[self.__record][con["transaction_name"]]=tmpDict
+			self.__iMap[self.__record]["dynamic"][con["transaction_name"]]=tmpDict
+		self.__iMap[self.__record]["static"]=self.__readStaticData()
 		
 			
 
