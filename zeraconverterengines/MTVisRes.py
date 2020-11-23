@@ -72,25 +72,24 @@ class UserScript:
         return self.__outputDict
 
     def manipulate(self):
-        print("manipultate")
+        print("Manipulate")
         self.__outputDict["result-Data"]={"#childs" : []}
         self.iterateTransactions()
-        #dicto["result-Data"]={"@id" : "1", "#childs" : [{"item1" : {"@id" : "3", "#text" : "test3"}}, {"item1" : "test2"}]}
 
     def iterateTransactions(self):
         for session in self.__inputDict.keys(): 
-            for key in self.__inputDict[session].keys(): 
-                contentSets=self.__inputDict[session][key]["contentset_names"].split(",")     
-                guiContext=self.__inputDict[session][key]["guiContext"]
+            for key in self.__inputDict[session]["dynamic"].keys(): 
+                contentSets=self.__inputDict[session]["dynamic"][key]["contentset_names"].split(",")     
+                guiContext=self.__inputDict[session]["dynamic"][key]["guiContext"]
           
                 for content in self.__convertDict.keys():
                     if content in contentSets:
                         for guiCon in self.__convertDict[content].keys():
                             if guiCon == guiContext or content == "ZeraAll":
                                 if content == "ZeraAll": 
-                                    resList=self.__convertDict[content]["ZeraAll"](self.__inputDict[session][key],{"session" : session, "transaction" : key})
+                                    resList=self.__convertDict[content]["ZeraAll"](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key})
                                 else:
-                                    resList=self.__convertDict[content][guiCon](self.__inputDict[session][key],{"session" : session, "transaction" : key})
+                                    resList=self.__convertDict[content][guiCon](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key})
 
                                 if type(resList) is list:
                                     for ele in resList:
