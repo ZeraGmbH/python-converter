@@ -9,16 +9,21 @@ class UserScript:
         self.__inputDict=dict()
         self.__outputDict=dict()
 
-
-    def testFunc(self):
-        print("Mapped function called")
-
-
     def setInput(self, p_dict):
         self.__inputDict=p_dict
 
     def getOutput(self):
         return self.__outputDict
+
+    def entityComponentSort(self,input):
+        result=dict()
+        for ele in input:
+            compDict=dict()
+            if ele["entity_name"] in result:
+                compDict=result[ele["entity_name"]]
+            compDict[ele["component_name"]] = ele["component_value"]
+            result[ele["entity_name"]]=compDict
+        return result
 
     def manipulate(self):
         print("manipultate")
@@ -31,42 +36,43 @@ class UserScript:
         net=dict()
         meter=dict()
         id = [k  for  k in self.__inputDict.keys()]
+        vals = self.entityComponentSort(self.__inputDict[id[0]]["static"])
         eleList.append({"ID" : id[0]})
-        eleList.append({"State" : ""})
-        eleList.append({"Remark" : ""})
+        eleList.append({"State" : "exported"})
+        eleList.append({"Remark" : str(vals["CustomerData"]["PAR_DatasetComment"])})
         general["General"]={"#childs" : eleList}
         eleList=list()
-        eleList.append({"Firstname" : ""})
-        eleList.append({"Name" : ""})
-        eleList.append({"Street" : ""})
-        eleList.append({"Postcode" : ""})
-        eleList.append({"City" : ""})
-        eleList.append({"Country" : ""})
-        eleList.append({"No" : ""})
-        eleList.append({"Remark" : ""})
+        eleList.append({"Firstname" : vals["CustomerData"]["PAR_CustomerFirstName"]})
+        eleList.append({"Name" : vals["CustomerData"]["PAR_CustomerLastName"]})
+        eleList.append({"Street" : vals["CustomerData"]["PAR_CustomerStreet"]})
+        eleList.append({"Postcode" : str(vals["CustomerData"]["PAR_CustomerPostalCode"])})
+        eleList.append({"City" : vals["CustomerData"]["PAR_CustomerCity"]})
+        eleList.append({"Country" : vals["CustomerData"]["PAR_CustomerCountry"]})
+        eleList.append({"No" : str(vals["CustomerData"]["PAR_CustomerNumber"])})
+        eleList.append({"Remark" : str(vals["CustomerData"]["PAR_CustomerComment"])})
         customer["Customer"]={"#childs" : eleList}
         eleList=list()
-        eleList.append({"Firstname" : ""})
-        eleList.append({"Name" : ""})
-        eleList.append({"Street" : ""})
-        eleList.append({"Postcode" : ""})
-        eleList.append({"City" : ""})
-        eleList.append({"Country" : ""})
-        eleList.append({"No" : ""})
-        eleList.append({"Remark" : ""})
+        eleList.append({"Firstname" : vals["CustomerData"]["PAR_LocationFirstName"]})
+        eleList.append({"Name" : vals["CustomerData"]["PAR_LocationLastName"]})
+        eleList.append({"Street" : vals["CustomerData"]["PAR_LocationStreet"]})
+        eleList.append({"Postcode" : str(vals["CustomerData"]["PAR_LocationPostalCode"])})
+        eleList.append({"City" : vals["CustomerData"]["PAR_LocationCity"]})
+        eleList.append({"Country" : vals["CustomerData"]["PAR_LocationCountry"]})
+        eleList.append({"No" : str(vals["CustomerData"]["PAR_LocationNumber"])})
+        eleList.append({"Remark" : str(vals["CustomerData"]["PAR_LocationComment"])})
         location["Location"]={"#childs" : eleList}
         eleList=list()
 
-        eleList.append({"Operator" : ""})
-        eleList.append({"Supplier" : ""})
-        eleList.append({"Remark" : ""})
+        eleList.append({"Operator" : vals["CustomerData"]["PAR_PowerGridOperator"]})
+        eleList.append({"Supplier" : vals["CustomerData"]["PAR_PowerGridSupplier"]})
+        eleList.append({"Remark" : str(vals["CustomerData"]["PAR_PowerGridComment"])})
         net["Net"]={"#childs" : eleList}
         eleList=list()
 
-        eleList.append({"Manufacturer" : ""})
-        eleList.append({"Manuf-No" : ""})
-        eleList.append({"Custom-No" : ""})
-        eleList.append({"Remark" : ""})
+        eleList.append({"Manufacturer" : vals["CustomerData"]["PAR_MeterManufacturer"]})
+        eleList.append({"Manuf-No" : str(vals["CustomerData"]["PAR_MeterFactoryNumber"])})
+        eleList.append({"Custom-No" : str(vals["CustomerData"]["PAR_MeterOwner"])})
+        eleList.append({"Remark" : str(vals["CustomerData"]["PAR_MeterComment"])})
         meter["Meter"]={"#childs" : eleList}
 
         main=dict()
@@ -80,6 +86,3 @@ class UserScript:
         self.__outputDict["Main-Data"]["#childs"].append(main)
         
 
-        #dicto["result-Data"]={"@id" : "1", "#childs" : [{"item1" : {"@id" : "3", "#text" : "test3"}}, {"item1" : "test2"}]}
-
-    
