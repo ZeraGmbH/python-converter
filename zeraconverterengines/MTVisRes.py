@@ -104,15 +104,13 @@ class UserScript:
                 if dec < 0:
                     dec = 0
             strNum =  str("{:."+str(dec)+"f}").format(num)
-            if local == "DE":
+            if "de" in local:
                 strNum=strNum.replace(".",",")
         except:
             strNum=str(num)
         return strNum
 
-
     def manipulate(self):
-        print("Manipulate")
         self.__outputDict["result-Data"]={"#childs" : []}
         self.iterateTransactions()
 
@@ -141,111 +139,111 @@ class UserScript:
                                     res["Result"]=resList
                                     self.__outputDict["result-Data"]["#childs"].append(res)
     
+    def RangeCommon(self,input, metadata):
+        vals=zeracom.entityComponentSort(input["values"])
+        eleList=list()
+        URange=float(0)
+        IRange=float(0)
+        for c in range(1,4):    
+            if URange < float(vals["RangeModule1"]["PAR_Channel"+ str(c)+"Range"][:-1]):
+                URange=float(vals["RangeModule1"]["PAR_Channel"+ str(c)+"Range"][:-1])
+            if IRange < float(vals["RangeModule1"]["PAR_Channel"+ str(c+3)+"Range"][:-1]):
+                IRange=float(vals["RangeModule1"]["PAR_Channel"+ str(c+3)+"Range"][:-1])
+
+        eleList.append({"U-Range" :  self.formatNumber(URange)+";V"})
+        eleList.append({"I-Range" :  self.formatNumber(IRange)+";A"})
+        return eleList
+
     def ActualValuesCommon(self,input, metadata):
         vals=zeracom.entityComponentSort(input["values"])
         eleList=list()
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : "DEU"})
         eleList.append({"Device-Typ" : "MT310s2"})
-        eleList.append({"Device-No" : "MT310s2"})
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H/%M/%S")
-        date=datetimeObj.strftime("%d/%m/%Y")
-        eleList.append({"Time" : time})
-        eleList.append({"Date" : date})
-       
+        eleList.append({"Device-No" : "MT310s2"})    
 
-        eleList.append({"U-PrimSek" : "1"})
-        eleList.append({"I-PrimSek" : "1"})
-        eleList.append({"M-Mode" : ""})
-        eleList.append({"PrimSek-Val-Cz-Reg" : ""})
-
-        URange=float(0)
-        IRange=float(0)
-        for ch in range(1,4):    
-            if URange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                URange=float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1])
-            if URange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                IRange=float(vals["RangeModule1"]["PAR_Channel"+str(ch+4)+"Range"][:-1])
-
-        eleList.append({"U-Range" : str(URange)+";V"})
-        eleList.append({"I-Range" : str(IRange)+";A"})
+        eleList.append({"U-PrimSek" : "1/1;V;1.00"})
+        eleList.append({"I-PrimSek" : "1/1;A;1.00"})
+        eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         
+        eleList.append(self.RangeCommon(input,metadata))
+
         UPN=list()
 
         UPN.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN1"].split(";")]))
         UPN.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN2"].split(";")]))
         UPN.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN3"].split(";")]))
 
-        eleList.append({"UPN1" : str(round(np.linalg.norm(UPN[0]),4))+";V"})
-        eleList.append({"UPN2" : str(round(np.linalg.norm(UPN[1]),4))+";V"})
-        eleList.append({"UPN3" : str(round(np.linalg.norm(UPN[2]),4))+";V"})
+        eleList.append({"UPN1" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN1"])+";V"})
+        eleList.append({"UPN2" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN2"])+";V"})
+        eleList.append({"UPN3" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN3"])+";V"})
 
-        eleList.append({"UPP12" : str(round(np.linalg.norm(UPN[0]+UPN[1]),4))+";V"})
-        eleList.append({"UPP23" : str(round(np.linalg.norm(UPN[1]+UPN[2]),4))+";V"})
-        eleList.append({"UPP31" : str(round(np.linalg.norm(UPN[2]+UPN[0]),4))+";V"})
+        eleList.append({"UPP12" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPP1"])+";V"})
+        eleList.append({"UPP23" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPP2"])+";V"})
+        eleList.append({"UPP31" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPP3"])+";V"})
 
         IL=list()
 
+        #@TODO: is this 4,5,6 or 5,6,7 AUX channel
         IL.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN4"].split(";")]))
         IL.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN5"].split(";")]))
         IL.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN6"].split(";")]))
 
-        eleList.append({"IL1" : str(round(np.linalg.norm(IL[0]),4))+";A"})
-        eleList.append({"IL2" : str(round(np.linalg.norm(IL[1]),4))+";A"})
-        eleList.append({"IL3" : str(round(np.linalg.norm(IL[2]),4))+";A"})
+        eleList.append({"IL1" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN4"])+";A"})
+        eleList.append({"IL2" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN5"])+";A"})
+        eleList.append({"IL3" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN6"])+";A"})
 
         eleList.append({"IDC1" : ""})
         eleList.append({"IDC2" : ""})
         eleList.append({"IDC3" : ""})
 
-        eleList.append({"AU1" : str(round(np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True),4))+";deg"})
-        eleList.append({"AU2" : str(round(np.angle(np.complex(UPN[1][0],UPN[1][1]), deg=True),4))+";deg"})
-        eleList.append({"AU3" : str(round(np.angle(np.complex(UPN[2][0],UPN[2][1]), deg=True),4))+";deg"})
+        eleList.append({"AU1" :  self.formatNumber(np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True))+";deg"})
+        eleList.append({"AU2" :  self.formatNumber(np.angle(np.complex(UPN[1][0],UPN[1][1]), deg=True))+";deg"})
+        eleList.append({"AU3" :  self.formatNumber(np.angle(np.complex(UPN[2][0],UPN[2][1]), deg=True))+";deg"})
 
-        eleList.append({"AI1" : str(round(np.angle(np.complex(IL[0][0],IL[0][1]), deg=True),4))+";deg"})
-        eleList.append({"AI2" : str(round(np.angle(np.complex(IL[1][0],IL[1][1]), deg=True),4))+";deg"})
-        eleList.append({"AI3" : str(round(np.angle(np.complex(IL[2][0],IL[2][1]), deg=True),4))+";deg"})
-
-        eleList.append({"PHI1" : ""})
-        eleList.append({"PHI2" : ""})
-        eleList.append({"PHI3" : ""})
-        '''
-        eleList.append({"S1" :  str(vals["POWER1Module3"]["ACT_PQS1"])+";VA"})
-        eleList.append({"S2" :  str(vals["POWER1Module3"]["ACT_PQS3"])+";VA"})
-        eleList.append({"S3" :  str(vals["POWER1Module3"]["ACT_PQS3"])+";VA"})
+        eleList.append({"AI1" :  self.formatNumber(np.angle(np.complex(IL[0][0],IL[0][1]), deg=True))+";deg"})
+        eleList.append({"AI2" :  self.formatNumber(np.angle(np.complex(IL[1][0],IL[1][1]), deg=True))+";deg"})
+        eleList.append({"AI3" :  self.formatNumber(np.angle(np.complex(IL[2][0],IL[2][1]), deg=True))+";deg"})
         
-        eleList.append({"P1" : str(vals["POWER1Module1"]["ACT_PQS1"])+";W"})
-        eleList.append({"P2" : str(vals["POWER1Module1"]["ACT_PQS2"])+";W"})
-        eleList.append({"P3" : str(vals["POWER1Module1"]["ACT_PQS3"])+";W"})
+        # UI Angle per phase
 
-        eleList.append({"Q1" : str(vals["POWER1Module2"]["ACT_PQS1"])+";VAR"})
-        eleList.append({"Q2" : str(vals["POWER1Module2"]["ACT_PQS2"])+";VAR"})
-        eleList.append({"Q3" : str(vals["POWER1Module2"]["ACT_PQS3"])+";VAR"})
+        UI1=np.angle(np.complex(IL[0][0],IL[0][1]), deg=True)-np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True)
+        UI2=np.angle(np.complex(IL[1][0],IL[1][1]), deg=True)-np.angle(np.complex(UPN[1][0],UPN[1][1]), deg=True)
+        UI3=np.angle(np.complex(IL[2][0],IL[2][1]), deg=True)-np.angle(np.complex(UPN[2][0],UPN[2][1]), deg=True)
+
+        eleList.append({"PHI1" :  self.formatNumber(UI1)+";deg"})
+        eleList.append({"PHI2" :  self.formatNumber(UI2)+";deg"})
+        eleList.append({"PHI3" :  self.formatNumber(UI3)+";deg"})
+        
+        eleList.append({"S1" :   self.formatNumber(vals["POWER1Module3"]["ACT_PQS1"])+";VA"})
+        eleList.append({"S2" :   self.formatNumber(vals["POWER1Module3"]["ACT_PQS2"])+";VA"})
+        eleList.append({"S3" :   self.formatNumber(vals["POWER1Module3"]["ACT_PQS3"])+";VA"})
+        
+        eleList.append({"P1" :  self.formatNumber(vals["POWER1Module1"]["ACT_PQS1"])+";W"})
+        eleList.append({"P2" :  self.formatNumber(vals["POWER1Module1"]["ACT_PQS2"])+";W"})
+        eleList.append({"P3" :  self.formatNumber(vals["POWER1Module1"]["ACT_PQS3"])+";W"})
+
+        eleList.append({"Q1" :  self.formatNumber(vals["POWER1Module2"]["ACT_PQS1"])+";VAR"})
+        eleList.append({"Q2" :  self.formatNumber(vals["POWER1Module2"]["ACT_PQS2"])+";VAR"})
+        eleList.append({"Q3" :  self.formatNumber(vals["POWER1Module2"]["ACT_PQS3"])+";VAR"})
 
         
         SP=vals["POWER1Module1"]["ACT_PQS1"]+vals["POWER1Module1"]["ACT_PQS2"]+vals["POWER1Module1"]["ACT_PQS3"]
         SQ=vals["POWER1Module2"]["ACT_PQS1"]+vals["POWER1Module2"]["ACT_PQS2"]+vals["POWER1Module2"]["ACT_PQS3"]
         SS=vals["POWER1Module3"]["ACT_PQS1"]+vals["POWER1Module3"]["ACT_PQS2"]+vals["POWER1Module3"]["ACT_PQS3"]
 
-        eleList.append({"SS" : str(SS)+";VA"})
-        eleList.append({"SP" : str(SP)+";W"})
-        eleList.append({"SQ" : str(SQ)+";var"})
-        '''
+        eleList.append({"SS" :  self.formatNumber(SS)+";VA"})
+        eleList.append({"SP" :  self.formatNumber(SP)+";W"})
+        eleList.append({"SQ" :  self.formatNumber(SQ)+";var"})
+        
         eleList.append({"RF" : ""})
-        eleList.append({"FREQ" : str(round(vals["RangeModule1"]["ACT_Frequency"],4))})
+        eleList.append({"FREQ" :  self.formatNumber(vals["RangeModule1"]["ACT_Frequency"])})
         eleList.append({"UD1" : ""})
         eleList.append({"UD2" : ""})
         eleList.append({"UD3" : ""})
         eleList.append({"ID1" : ""})
         eleList.append({"ID2" : ""})
         eleList.append({"ID3" : ""})
-        
-        '''
-        eleList.append({"Lambda1" : vals["LambdaModule1"]["ACT_Lambda1"]})
-        eleList.append({"Lambda2" : vals["LambdaModule1"]["ACT_Lambda2"]})
-        eleList.append({"Lambda3" : vals["LambdaModule1"]["ACT_Lambda3"]})
-        ''' 
 
         eleList.append({"AUX1" : ""})
         eleList.append({"AUX2" : ""})
@@ -263,13 +261,30 @@ class UserScript:
         return eleList
 
 
+    def LambdaCommon(self,input, metadata):
+        vals=zeracom.entityComponentSort(input["values"])
+        eleList=list()
+
+        eleList.append({"Lambda1" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda1"])})
+        eleList.append({"Lambda2" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda2"])})
+        eleList.append({"Lambda3" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda3"])})
+        eleList.append({"SLambda" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda1"]+vals["LambdaModule1"]["ACT_Lambda3"]+vals["LambdaModule1"]["ACT_Lambda3"])}) 
+
+        return eleList
+
     def convertZeraGuiActualValues(self,input, metadata):
         endResult=list()
         result=dict()
         eleList=list()
         eleList.append({"Datatype" : "Actual-Values"})
         eleList.append({"Function" : "Value-Measurement"})
-        eleList.append(self.ActualValuesGeneric(input,metadata))
+        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
+        time=datetimeObj.strftime("%H:%M:%S")
+        date=datetimeObj.strftime("%d.%m.%Y")
+        eleList.append({"Time" : time})
+        eleList.append({"Date" : "AV "+date})
+        eleList.append(self.ActualValuesCommon(input,metadata))
+        eleList.append(self.LambdaCommon(input,metadata))
         
         result["#childs"]=eleList
         endResult.append(result)
@@ -281,9 +296,15 @@ class UserScript:
         endResult=list()
         result=dict()
         eleList=list()
+        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
+        time=datetimeObj.strftime("%H:%M:%S")
+        date=datetimeObj.strftime("%d.%m.%Y")
+        eleList.append({"Time" : time})
+        eleList.append({"Date" : "VV "+date})
         eleList.append({"Datatype" : "Actual-Values"})
         eleList.append({"Function" : "Vector-Measurement"})
-        eleList.append(self.ActualValuesGeneric(input,metadata))
+        eleList.append(self.ActualValuesCommon(input,metadata))
+        eleList.append(self.LambdaCommon(input,metadata))
         
         
         result["#childs"]=eleList
@@ -312,51 +333,46 @@ class UserScript:
             eleList.append({"Function" : "Harmonics-Measurement"})
             eleList.append({"Datatype" : "Harmonic-Data"})
             datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-            time=datetimeObj.strftime("%H/%M/%S")
-            date=datetimeObj.strftime("%d/%m/%Y")
+            time=datetimeObj.strftime("%H:%M:%S")
+            date=datetimeObj.strftime("%d.%m.%Y")
             eleList.append({"Time" : time})
-            NameAdd=str()
+            NameAdd=""
 
             if ch < 5:
-                NameAdd=" U"+str(ch)
+                NameAdd=" U"+ str(ch)
             else:
-                NameAdd=" I"+str(ch-4)
+                NameAdd=" I"+ str(ch-4)
 
-            eleList.append({"Date" : NameAdd+" "+date})
+            eleList.append({"Date" : "HT "+NameAdd+" "+date})
 
-            URange=float(0)
-            IRange=float(0)
-            for c in range(1,4):    
-                if URange < float(vals["RangeModule1"]["PAR_Channel"+str(c)+"Range"][:-1]):
-                    URange=float(vals["RangeModule1"]["PAR_Channel"+str(c)+"Range"][:-1])
-                if IRange < float(vals["RangeModule1"]["PAR_Channel"+str(c)+"Range"][:-1]):
-                    IRange=float(vals["RangeModule1"]["PAR_Channel"+str(c+4)+"Range"][:-1])
+            eleList.append(self.RangeCommon(input,metadata))
 
-            eleList.append({"U-PrimSek" : "1"})
-            eleList.append({"I-PrimSek" : "1"})
+            eleList.append({"U-PrimSek" : "1/1;U;1.00"})
+            eleList.append({"I-PrimSek" : "1/1;A;1.00"})
             eleList.append({"M-Mode" : ""})
-            eleList.append({"PrimSek-Val-Cz-Reg" : ""})
+            eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
 
             if ch < 5:
-                eleList.append({"Channel" : "UL"+str(ch)})
+                eleList.append({"Channel" : "UL"+ str(ch)})
             else:
-                eleList.append({"Channel" : "IL"+str(ch-4)})
+                eleList.append({"Channel" : "IL"+ str(ch-4)})
             
-            eleList.append({"Total-Harm" : str(vals["THDNModule1"]["ACT_THDN"+str(ch)])+";%"})
+            if vals["THDNModule1"]["ACT_THDN"+ str(ch)] is not None:
+                eleList.append({"Total-Harm" :  self.formatNumber(vals["THDNModule1"]["ACT_THDN"+ str(ch)])+";%"})
 
             count = 0
             i=0
-            real = vals["FFTModule1"]["ACT_FFT"+str(ch)].split(";")[2]
-            imag = vals["FFTModule1"]["ACT_FFT"+str(ch)].split(";")[3]
+            real = vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[2]
+            imag = vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[3]
             baseAbs = np.linalg.norm(np.array([float(real),float(imag)]))
             baseAng = np.angle(np.array([float(real),float(imag)]))
-            for sample in vals["FFTModule1"]["ACT_FFT"+str(ch)].split(";"):
+            for sample in vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";"):
                 count = count + 1
                 if count >= 2:
                     count = 0
                     imag = sample
                     val = np.array([float(real),float(imag)])
-                    eleList.append({"Harm" : str(i)+";"+str(round(np.linalg.norm(val)/baseAbs*100,4))+";%;"+str(round(np.angle(np.complex(val[0],val[1]), deg=True),4))+";deg"})
+                    eleList.append({"Harm" :  self.formatNumber(i)+";"+ self.formatNumber(np.linalg.norm(val)/baseAbs*100)+";%;"+ self.formatNumber(np.angle(np.complex(val[0],val[1]), deg=True))+";deg"})
                     i=i+1
                 else:
                     real = sample
@@ -388,38 +404,32 @@ class UserScript:
             eleList.append({"Function" : "Curve-Measurement"})
             eleList.append({"Datatype" : "Sample-Data"})
             datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-            time=datetimeObj.strftime("%H/%M/%S")
-            date=datetimeObj.strftime("%d/%m/%Y")
+            time=datetimeObj.strftime("%H:%M:%S")
+            date=datetimeObj.strftime("%d.%m.%Y")
             eleList.append({"Time" : time})
-            eleList.append({"Date" : "UI"+str(ch) +" "+date})
+            eleList.append({"Date" : "CD "+"UI"+ str(ch) +" "+date})
 
             eleList.append({"U-PrimSek" : "1"})
             eleList.append({"I-PrimSek" : "1"})
             eleList.append({"M-Mode" : ""})
-            eleList.append({"PrimSek-Val-Cz-Reg" : ""})
-            if "-" in vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]:
-                eleList.append({"U-Range" : "10;V"})
-            else:
-                eleList.append({"U-Range" : vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]+";V"})
-                
-            if "-" in vals["RangeModule1"]["PAR_Channel"+str(ch+4)+"Range"][:-1]:
-                eleList.append({"I-Range" : "10;A"})
-            else:
-                eleList.append({"I-Range" : vals["RangeModule1"]["PAR_Channel"+str(ch+4)+"Range"][:-1]+";A"})
+            eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
 
-            eleList.append({"ChannelA" : "U"+str(ch)})
+            eleList.append(self.RangeCommon(input,metadata))
 
             i=0    
-            for sample in vals["OSCIModule1"]["ACT_OSCI"+str(ch)].split(";"):
+            for sample in vals["OSCIModule1"]["ACT_OSCI"+ str(ch)].split(";"):
                 i=i+1
-                eleList.append({"SampleA" : str(i)+";"+sample+";V"})
+                eleList.append({"SampleA" :  self.formatNumber(i)+";"+sample+";V"})
 
-            eleList.append({"ChannelB" : "I"+str(ch)})
+            eleList.append({"ChannelA" : "U"+ str(ch)})
 
             i=0    
-            for sample in vals["OSCIModule1"]["ACT_OSCI"+str(ch+4)].split(";"):
+            for sample in vals["OSCIModule1"]["ACT_OSCI"+ str(ch+4)].split(";"):
                 i=i+1
-                eleList.append({"SampleB" : str(i)+";"+sample+";A"})
+                eleList.append({"SampleB" :  self.formatNumber(i)+";"+sample+";A"})
+
+            eleList.append({"ChannelB" : "I"+ str(ch)})
+
             result["#childs"]=eleList
             endResult.append(result)
         
@@ -446,31 +456,30 @@ class UserScript:
             eleList.append({"Function" : "Selektiv-Measurement"})
             eleList.append({"Datatype" : "Selektiv-Data"})
             datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-            time=datetimeObj.strftime("%H/%M/%S")
-            date=datetimeObj.strftime("%d/%m/%Y")
+            time=datetimeObj.strftime("%H:%M:%S")
+            date=datetimeObj.strftime("%d.%m.%Y")
             eleList.append({"Time" : time})
-            eleList.append({"Date" : "UI"+str(ch)+" "+date})
+            eleList.append({"Date" : "HP "+"UI"+ str(ch)+" "+date})
 
-            eleList.append({"U-PrimSek" : "1"})
-            eleList.append({"I-PrimSek" : "1"})
+            eleList.append({"U-PrimSek" : "1/1;V;1.00"})
+            eleList.append({"I-PrimSek" : "1/1;A;1.00"})
             eleList.append({"M-Mode" : ""})
-            eleList.append({"PrimSek-Val-Cz-Reg" : ""})
-            eleList.append({"U-Range" : vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]+";V"})
-            eleList.append({"I-Range" : vals["RangeModule1"]["PAR_Channel"+str(ch+4)+"Range"][:-1]+";A"})
+            eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
 
-            eleList.append({"ChannelU" : "U"+str(ch)})
-            eleList.append({"ChannelI" : "I"+str(ch)})
+            eleList.append(self.RangeCommon(input,metadata))
+            
+
+            eleList.append({"ChannelU" : "U"+ str(ch)})
+            eleList.append({"ChannelI" : "I"+ str(ch)})
 
             for i in range(1,41):
                 pqs=list()
-                U=np.linalg.norm(np.array([float(vals["FFTModule1"]["ACT_FFT"+str(ch)].split(";")[2*i-1]),float(vals["FFTModule1"]["ACT_FFT"+str(ch)].split(";")[2*i])]))
-                I=np.linalg.norm(np.array([float(vals["FFTModule1"]["ACT_FFT"+str(ch+4)].split(";")[2*i-1]),float(vals["FFTModule1"]["ACT_FFT"+str(ch+4)].split(";")[2*i])]))
-                U=round(U,4)
-                I=round(I,4)
-                pqs.append(round(float(vals["Power3Module1"]["ACT_HPP"+str(ch)].split(";")[i]),4))
-                pqs.append(round(float(vals["Power3Module1"]["ACT_HPQ"+str(ch)].split(";")[i]),4))
-                pqs.append(round(float(vals["Power3Module1"]["ACT_HPS"+str(ch)].split(";")[i]),4))
-                eleList.append({"HarmValue" : "N;"+str(i)+";U;"+str(U)+";V;I;"+str(I)+";A;P;"+str(pqs[0])+";W;Q;"+str(pqs[1])+";var;S;"+str(pqs[2])+";VA"})
+                U=np.linalg.norm(np.array([float(vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[2*i-1]),float(vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[2*i])]))
+                I=np.linalg.norm(np.array([float(vals["FFTModule1"]["ACT_FFT"+ str(ch+4)].split(";")[2*i-1]),float(vals["FFTModule1"]["ACT_FFT"+ str(ch+4)].split(";")[2*i])]))
+                pqs.append(float(vals["Power3Module1"]["ACT_HPP"+ str(ch)].split(";")[i]))
+                pqs.append(float(vals["Power3Module1"]["ACT_HPQ"+ str(ch)].split(";")[i]))
+                pqs.append(float(vals["Power3Module1"]["ACT_HPS"+ str(ch)].split(";")[i]))
+                eleList.append({"HarmValue" : "N;"+ self.formatNumber(i)+";U;"+ self.formatNumber(U)+";V;I;"+ self.formatNumber(I)+";A;P;"+ self.formatNumber(pqs[0])+";W;Q;"+ self.formatNumber(pqs[1])+";var;S;"+ self.formatNumber(pqs[2])+";VA"})
 
             result["#childs"]=eleList
             endResult.append(result)
@@ -486,18 +495,33 @@ class UserScript:
         endResult=list()
         eleList=list()
 
-        eleList=self.ActualValuesGeneric(input, metadata)
+        eleList=self.ActualValuesCommon(input, metadata)
+        eleList.append(self.LambdaCommon(input,metadata))
+        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
+        time=datetimeObj.strftime("%H:%M:%S")
+        date=datetimeObj.strftime("%d.%m.%Y")
+        eleList.append({"Time" : time})
+        eleList.append({"Date" : "MT "+date})
         eleList.append({"Device-No" : "MT310s2"})
         eleList.append({"AdjustData" : ""})
         eleList.append({"Function" : "Error-Measurement"})
         eleList.append({"Datatype" : "Meter-Error"})
-        eleList.append({"Place-No" : ""})
-        eleList.append({"RF" : ""})
-        eleList.append({"SLambda" : ""})
-        eleList.append({"Cz" : str(vals["SEC1Module1"]["PAR_DutConstant"])+";"+str(vals["SEC1Module1"]["PAR_MRate"])+";"+str(vals["SEC1Module1"]["PAR_DUTConstUnit"])})
-        eleList.append({"M-Puls" : ""})
+        eleList.append({"Place-No" : "1"})
+
+        mode=""
+        if  self.formatNumber(vals["SEC1Module1"]["PAR_RefInput"]) == "P":
+            mode=vals["POWER1Module1"]["PAR_MeasuringMode"]
+        elif  self.formatNumber(vals["SEC1Module1"]["PAR_RefInput"]) == "Q":
+            mode=vals["POWER1Module2"]["PAR_MeasuringMode"]
+        elif  self.formatNumber(vals["SEC1Module1"]["PAR_RefInput"]) == "S":
+            mode=vals["POWER1Module3"]["PAR_MeasuringMode"]
+        eleList.append({"M-Mode" :  self.formatNumber(mode)})
+
+        # eleList.append({"RF" : ""})
+        eleList.append({"Cz" :  self.formatNumber(vals["SEC1Module1"]["PAR_DutConstant"])+";"+ self.formatNumber(vals["SEC1Module1"]["PAR_MRate"])+";"+ self.formatNumber(vals["SEC1Module1"]["PAR_DUTConstUnit"])})
+        eleList.append({"M-Puls" :  self.formatNumber(vals["SEC1Module1"]["PAR_DutInput"])})
         eleList.append({"M-Inp" : ""})
-        eleList.append({"Error" : str(vals["SEC1Module1"]["ACT_Result"])})
+        eleList.append({"Error" :  self.formatNumber(vals["SEC1Module1"]["ACT_Result"])})
         eleList.append({"N-Value" : ""})
         eleList.append({"Spread" : ""})
         eleList.append({"Average" : ""})
@@ -518,41 +542,44 @@ class UserScript:
         eleList.append({"Language" : ""})
         eleList.append({"Device-Typ" : "MT310s2"})
         eleList.append({"Device-No" : "MT310s2"})
-        eleList.append({"AdjustData" : ""})
+        eleList.append({"AdjustData" : "ok"})
         datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H/%M/%S")
-        date=datetimeObj.strftime("%d/%m/%Y")
+        time=datetimeObj.strftime("%H:%M:%S")
+        date=datetimeObj.strftime("%d.%m.%Y")
         eleList.append({"Time" : time})
-        eleList.append({"Date" : date})
-        URange=float(0)
-        IRange=float(0)
-        for ch in range(1,4):    
-            if URange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                URange=float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1])
-            if IRange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                IRange=float(vals["RangeModule1"]["PAR_Channel"+str(ch+4)+"Range"][:-1])
-
-        eleList.append({"U-Range" : str(URange)+";V"})
-        eleList.append({"I-Range" : str(IRange)+";A"})
-        eleList.append({"M-Mode" : ""})
-        eleList.append({"U-PrimSek" : "1"})
-        eleList.append({"I-PrimSek" : "1"})
-        eleList.append({"PrimSek-Val-Cz-Reg" : ""})
+        eleList.append({"Date" : "ER "+date})
+        
+        eleList.append(self.RangeCommon(input,metadata))
+        
+        mode=""
+        if  self.formatNumber(vals["SEM1Module1"]["PAR_RefInput"]) == "P":
+            mode=vals["POWER1Module1"]["PAR_MeasuringMode"]
+        elif  self.formatNumber(vals["SEM1Module1"]["PAR_RefInput"]) == "Q":
+            mode=vals["POWER1Module2"]["PAR_MeasuringMode"]
+        elif  self.formatNumber(vals["SEM1Module1"]["PAR_RefInput"]) == "S":
+            mode=vals["POWER1Module3"]["PAR_MeasuringMode"]
+        eleList.append({"M-Mode" :  self.formatNumber(mode)})
+        eleList.append({"U-PrimSek" : "1/1;V;1.00"})
+        eleList.append({"I-PrimSek" : "1/1;A;1.00"})
+        eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "Register-Test"})
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
-        eleList.append({"Type" : ""})             # wird benötigt  
-        eleList.append({"Measurement-Time" : ""}) # wird benötigt
-        eleList.append({"Energie" : ""})          # wird benötigt
-        eleList.append({"E-Begin" : ""})    # wird benötigt
-        eleList.append({"E-End" : ""})      # wird benötigt
-        eleList.append({"E-Cz" : ""})       # wird benötigt
-        eleList.append({"E-Error" : ""})    # wird benötigt
-        eleList.append({"Power" : ""})      # wird benötigt
-        eleList.append({"P-Begin" : ""})    # wird benötigt
-        eleList.append({"P-End" : ""})      # wird benötigt
-        eleList.append({"P-Cz" : ""})       # wird benötigt
-        eleList.append({"P-Error" : ""})    # wird benötigt
+        if vals["SPM1Module1"]["PAR_Targeted"] == 1:
+            eleList.append({"Type" : "Duration"})        
+        else:
+            eleList.append({"Type" : "Start/Stop"})  
+        eleList.append({"Measurement-Time" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+";s"}) # wird benötigt
+        eleList.append({"Energie" :  self.formatNumber(vals["SEM1Module1"]["ACT_Energy"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})          # wird benötigt
+        eleList.append({"E-Begin" :  self.formatNumber(vals["SEM1Module1"]["PAR_T0Input"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})    # wird benötigt
+        eleList.append({"E-End" :  self.formatNumber(vals["SEM1Module1"]["PAR_T1input"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})      # wird benötigt
+        eleList.append({"E-Cz" :  self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})       # wird benötigt
+        eleList.append({"E-Error" :  self.formatNumber(vals["SEM1Module1"]["ACT_Result"])+";%"})    # wird benötigt
+        # eleList.append({"Power" : ""})      
+        # eleList.append({"P-Begin" : ""})    
+        # eleList.append({"P-End" : ""})      
+        # eleList.append({"P-Cz" : ""})       
+        # eleList.append({"P-Error" : ""})    
 
         result["#childs"]=eleList
         return result
@@ -568,39 +595,42 @@ class UserScript:
         eleList.append({"Device-No" : "MT310s2"})
         eleList.append({"AdjustData" : ""})
         datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H/%M/%S")
-        date=datetimeObj.strftime("%d/%m/%Y")
+        time=datetimeObj.strftime("%H:%M:%S")
+        date=datetimeObj.strftime("%d.%m.%Y")
         eleList.append({"Time" : time})
-        eleList.append({"Date" : date})
-        URange=float(0)
-        IRange=float(0)
-        for ch in range(1,4):    
-            if URange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                URange=float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1])
-            if IRange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                IRange=float(vals["RangeModule1"]["PAR_Channel"+str(ch+4)+"Range"][:-1])
-
-        eleList.append({"U-Range" : str(URange)+";V"})
-        eleList.append({"I-Range" : str(IRange)+";A"})
-        eleList.append({"M-Mode" : ""})
-        eleList.append({"U-PrimSek" : "1"})
-        eleList.append({"I-PrimSek" : "1"})
-        eleList.append({"PrimSek-Val-Cz-Reg" : ""})
+        eleList.append({"Date" : "PR "+date})
+        
+        eleList.append(self.RangeCommon(input,metadata))
+        
+        mode = ""
+        if  self.formatNumber(vals["SPM1Module1"]["PAR_RefInput"]) == "P":
+            mode=vals["POWER1Module1"]["PAR_MeasuringMode"]
+        elif  self.formatNumber(vals["SPM1Module1"]["PAR_RefInput"]) == "Q":
+            mode=vals["POWER1Module2"]["PAR_MeasuringMode"]
+        elif  self.formatNumber(vals["SPM1Module1"]["PAR_RefInput"]) == "S":
+            mode=vals["POWER1Module3"]["PAR_MeasuringMode"]
+        eleList.append({"M-Mode" :  self.formatNumber(mode)})
+        eleList.append({"U-PrimSek" : "1/1;V;1.00"})
+        eleList.append({"I-PrimSek" : "1/1;A;1.00"})
+        eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "Register-Test"})
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
-        eleList.append({"Type" : ""})             # wird benötigt  
-        eleList.append({"Measurement-Time" : ""}) # wird benötigt
-        eleList.append({"Energie" : ""})    # wird benötigt
-        eleList.append({"E-Begin" : ""})    # wird benötigt
-        eleList.append({"E-End" : ""})      # wird benötigt
-        eleList.append({"E-Cz" : ""})       # wird benötigt
-        eleList.append({"E-Error" : ""})    # wird benötigt
-        eleList.append({"Power" : ""})      # wird benötigt
-        eleList.append({"P-Begin" : ""})    # wird benötigt
-        eleList.append({"P-End" : ""})      # wird benötigt
-        eleList.append({"P-Cz" : ""})       # wird benötigt
-        eleList.append({"P-Error" : ""})    # wird benötigt
+        if vals["SEM1Module1"]["PAR_Targeted"] == 1:
+            eleList.append({"Type" : "Duration"})        
+        else:
+            eleList.append({"Type" : "Start/Stop"})  
+        eleList.append({"Measurement-Time" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+";s"}) # wird benötigt
+        # eleList.append({"Energie" : ""})   
+        # eleList.append({"E-Begin" : ""})    
+        # eleList.append({"E-End" : ""})      
+        # eleList.append({"E-Cz" : ""})       
+        # eleList.append({"E-Error" : ""})    
+        eleList.append({"Power" :  self.formatNumber(vals["SPM1Module1"]["ACT_Energy"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})          # wird benötigt
+        eleList.append({"P-Begin" :  self.formatNumber(vals["SPM1Module1"]["PAR_T0Input"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})    # wird benötigt
+        eleList.append({"P-End" :  self.formatNumber(vals["SPM1Module1"]["PAR_T1input"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})      # wird benötigt
+        eleList.append({"P-Cz" :  self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})       # wird benötigt
+        eleList.append({"P-Error" :  self.formatNumber(vals["SPM1Module1"]["ACT_Result"])+";%"})    # wird benötigt 
 
         result["#childs"]=eleList
         return result
@@ -610,74 +640,32 @@ class UserScript:
         result=dict()
         endResult=list()
         eleList=list()
-        eleList.append({"ID" : metadata["session"]})
-        eleList.append({"Language" : ""})
-        eleList.append({"Device-Typ" : "MT310s2"})
-        eleList.append({"Device-No" : "MT310s2"})
-        eleList.append({"AdjustData" : ""})
+       
+        #eleList.append({"ID" : metadata["session"]})
+        #eleList.append({"Language" : ""})
+        #eleList.append({"Device-Typ" : "MT310s2"})
+        #eleList.append({"Device-No" : "MT310s2"})
+        #eleList.append({"AdjustData" : ""})
+        eleList=self.ActualValuesCommon(input, metadata)
         datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H/%M/%S")
-        date=datetimeObj.strftime("%d/%m/%Y")
+        time=datetimeObj.strftime("%H:%M:%S")
+        date=datetimeObj.strftime("%d.%m.%Y")
         eleList.append({"Time" : time})
-        eleList.append({"Date" : date})
-        URange=float(0)
-        IRange=float(0)
-        
-        for ch in range(1,4):    
-            if URange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                URange=float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1])
-            if IRange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                IRange=float(vals["RangeModule1"]["PAR_Channel"+str(ch+4)+"Range"][:-1])
-        
+        eleList.append({"Date" : "VB "+date})
 
-        eleList.append({"U-Range" : str(URange)+";V"})
-        eleList.append({"I-Range" : str(IRange)+";A"})
+        #eleList.append(self.RangeCommon(input,metadata))
+
         eleList.append({"M-Mode" : ""})
-        eleList.append({"U-PrimSek" : ""})
-        eleList.append({"I-PrimSek" : ""})
-        eleList.append({"PrimSek-Val-Cz-Reg" : ""})
+        #eleList.append({"U-PrimSek" : "1/1;V;1.00"})
+        #eleList.append({"I-PrimSek" : "1/1;A;1.00"})
+        #eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "U-Burden"})
         eleList.append({"Datatype" : "UBurden-Value"})
-        eleList.append({"U-Nominal" : ""})  # wird benötigt
-        eleList.append({"B-Nominal" : ""})  # wird benötigt
-        eleList.append({"W-Length" : ""})   # wird benötigt 
-        eleList.append({"W-Gauge" : ""})    # wird benötigt
-        eleList.append({"UPN1" : ""})
-        eleList.append({"UPN2" : ""})
-        eleList.append({"UPN3" : ""})
-        eleList.append({"IL1" : ""})
-        eleList.append({"IL2" : ""})
-        eleList.append({"IL3" : ""})
-        eleList.append({"PHI1" : ""})   # wird benötigt
-        eleList.append({"PHI2" : ""})   # wird benötigt
-        eleList.append({"PHI3" : ""})   # wird benötigt
-        eleList.append({"P1" : ""})
-        eleList.append({"P2" : ""})
-        eleList.append({"P3" : ""})
-        eleList.append({"Q1" : ""})
-        eleList.append({"Q2" : ""})
-        eleList.append({"Q3" : ""})
-        eleList.append({"S1" : ""})
-        eleList.append({"S2" : ""})
-        eleList.append({"S3" : ""})
-        eleList.append({"G1" : ""})
-        eleList.append({"G2" : ""})
-        eleList.append({"G3" : ""})
-        eleList.append({"B1" : ""})
-        eleList.append({"B2" : ""})
-        eleList.append({"B3" : ""})
-        eleList.append({"Y1" : ""})
-        eleList.append({"Y2" : ""})
-        eleList.append({"Y3" : ""})
-        eleList.append({"Sb1" : ""})
-        eleList.append({"Sb2" : ""})
-        eleList.append({"Sb3" : ""})
-        eleList.append({"CosBeta1" : ""})
-        eleList.append({"CosBeta2" : ""})
-        eleList.append({"CosBeta3" : ""})
-        eleList.append({"SN1" : ""})
-        eleList.append({"SN2" : ""})
-        eleList.append({"SN3" : ""})
+        eleList.append({"U-Nominal" :  self.formatNumber(vals["Burden1Module2"]["PAR_NominalRange"])+";V"}) 
+        eleList.append({"B-Nominal" :  self.formatNumber(vals["Burden1Module2"]["PAR_NominalBurden"])+";VA"}) 
+        eleList.append({"W-Length" :  self.formatNumber(vals["Burden1Module2"]["PAR_WireLength"])+";m"})   
+        eleList.append({"W-Gauge" :  self.formatNumber(vals["Burden1Module2"]["PAR_WCrosssection"])+";mm2"})  
+        
 
         result["#childs"]=eleList
         return result
@@ -687,73 +675,30 @@ class UserScript:
         result=dict()
         endResult=list()
         eleList=list()
-        eleList.append({"ID" : metadata["session"]})
-        eleList.append({"Language" : ""})
-        eleList.append({"Device-Typ" : "MT310s2"})
-        eleList.append({"Device-No" : "MT310s2"})
-        eleList.append({"AdjustData" : ""})
+
+        #eleList.append({"ID" : metadata["session"]})
+        #eleList.append({"Language" : ""})
+        #eleList.append({"Device-Typ" : "MT310s2"})
+        #eleList.append({"Device-No" : "MT310s2"})
+        #eleList.append({"AdjustData" : ""})
+        eleList=self.ActualValuesCommon(input, metadata)
         datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H/%M/%S")
-        date=datetimeObj.strftime("%d/%m/%Y")
+        time=datetimeObj.strftime("%H:%M:%S")
+        date=datetimeObj.strftime("%d.%m.%Y")
         eleList.append({"Time" : time})
-        eleList.append({"Date" : date})
-        URange=float(0)
-        IRange=float(0)
-        
-        for ch in range(1,4):    
-            if URange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                URange=float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1])
-            if IRange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                IRange=float(vals["RangeModule1"]["PAR_Channel"+str(ch+4)+"Range"][:-1])
-        
-        eleList.append({"U-Range" : str(URange)+";V"})
-        eleList.append({"I-Range" : str(IRange)+";A"})
+        eleList.append({"Date" : "CB "+date})
         eleList.append({"M-Mode" : ""})
-        eleList.append({"U-PrimSek" : "1"})
-        eleList.append({"I-PrimSek" : "1"})
-        eleList.append({"PrimSek-Val-Cz-Reg" : ""})
+        #eleList.append(self.RangeCommon(input,metadata))
+        #eleList.append({"U-PrimSek" : "1/1;V;1.00"})
+        #eleList.append({"I-PrimSek" : "1/1;A;1.00"})
+        #eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "I-Burden"})
         eleList.append({"Datatype" : "IBurden-Value"})
-        eleList.append({"I-Nominal" : ""})  # wird benötigt
-        eleList.append({"B-Nominal" : ""})  # wird benötigt
-        eleList.append({"W-Length" : ""})   # wird benötigt
-        eleList.append({"W-Gauge" : ""})    # wird benötigt
-        eleList.append({"UPN1" : ""})
-        eleList.append({"UPN2" : ""})
-        eleList.append({"UPN3" : ""})
-        eleList.append({"IL1" : ""})
-        eleList.append({"IL2" : ""})
-        eleList.append({"IL3" : ""})
-        eleList.append({"PHI1" : ""}) # wird benötigt
-        eleList.append({"PHI2" : ""}) # wird benötigt
-        eleList.append({"PHI3" : ""}) # wird benötigt
-        eleList.append({"P1" : ""})
-        eleList.append({"P2" : ""})
-        eleList.append({"P3" : ""})
-        eleList.append({"Q1" : ""})
-        eleList.append({"Q2" : ""})
-        eleList.append({"Q3" : ""})
-        eleList.append({"S1" : ""})
-        eleList.append({"S2" : ""})
-        eleList.append({"S3" : ""})
-        eleList.append({"R1" : ""})
-        eleList.append({"R2" : ""})
-        eleList.append({"R3" : ""})
-        eleList.append({"X1" : ""})
-        eleList.append({"X2" : ""})
-        eleList.append({"X3" : ""})
-        eleList.append({"Z1" : ""})
-        eleList.append({"Z2" : ""})
-        eleList.append({"Z3" : ""})
-        eleList.append({"Sb1" : ""})
-        eleList.append({"Sb2" : ""})
-        eleList.append({"Sb3" : ""})
-        eleList.append({"CosBeta1" : ""})
-        eleList.append({"CosBeta2" : ""})
-        eleList.append({"CosBeta3" : ""})
-        eleList.append({"SN1" : ""})
-        eleList.append({"SN2" : ""})
-        eleList.append({"SN3" : ""})
+        eleList.append({"I-Nominal" :  self.formatNumber(vals["Burden1Module1"]["PAR_NominalRange"])+";A"})  
+        eleList.append({"B-Nominal" :   self.formatNumber(vals["Burden1Module1"]["PAR_NominalBurden"])+";VA"})  
+        eleList.append({"W-Length" :   self.formatNumber(vals["Burden1Module1"]["PAR_WireLength"])+";m"})   
+        eleList.append({"W-Gauge" :   self.formatNumber(vals["Burden1Module1"]["PAR_WCrosssection"])+";mm2"})
+        
 
         result["#childs"]=eleList
         return result
@@ -769,50 +714,45 @@ class UserScript:
         eleList.append({"Device-No" : "MT310s2"})
         eleList.append({"AdjustData" : ""})
         datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H/%M/%S")
-        date=datetimeObj.strftime("%d/%m/%Y")
+        time=datetimeObj.strftime("%H:%M:%S")
+        date=datetimeObj.strftime("%d.%m.%Y")
         eleList.append({"Time" : time})
-        eleList.append({"Date" : date})
-        URange=float(0)
-        IRange=float(0)
+        eleList.append({"Date" : "IT "+date})
         
-        for ch in range(1,4):    
-            if URange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                URange=float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1])
-            if IRange < float(vals["RangeModule1"]["PAR_Channel"+str(ch)+"Range"][:-1]):
-                IRange=float(vals["RangeModule1"]["PAR_Channel"+str(ch+4)+"Range"][:-1])
+        eleList.append(self.RangeCommon(input,metadata))
         
-
-        eleList.append({"U-Range" : str(URange)+";V"})
-        eleList.append({"I-Range" : str(IRange)+";A"})
         eleList.append({"M-Mode" : ""})
-        eleList.append({"U-PrimSek" : "1"})
-        eleList.append({"I-PrimSek" : "1"})
-        eleList.append({"PrimSek-Val-Cz-Reg" : ""})
+        eleList.append({"U-PrimSek" : "1/1;V;1.00"})
+        eleList.append({"I-PrimSek" : "1/1;A;1.00"})
+        eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "UI-Transformer"})
         eleList.append({"Datatype" : "UI-Transformer-Value"})
-        eleList.append({"VT-N" : ""})       # wird benötigt
-        eleList.append({"VT-X" : ""})       # wird benötigt
-        eleList.append({"U-Prim" : ""})     
-        eleList.append({"U-Sek-N" : ""})    # wird benötigt
-        eleList.append({"U-Sek-X" : ""})    # wird benötigt
-        eleList.append({"VT-Value" : ""})
-        eleList.append({"VT-Angle-deg" : ""})
-        eleList.append({"VT-Angle-min" : ""})
-        eleList.append({"VT-Angle-crad" : ""})
-        eleList.append({"CT-N" : ""})
-        eleList.append({"CT-X" : ""})
-        eleList.append({"I-Prim" : ""})     # wird benötigt
-        eleList.append({"I-Sek-N" : ""})     # wird benötigt
-        eleList.append({"I-Sek-X" : ""})     # wird benötigt
-        eleList.append({"CT-Value" : ""})
-        eleList.append({"CT-Angle-deg" : ""})
-        eleList.append({"CT-Angle-min" : ""})
-        eleList.append({"CT-Angle-crad" : ""})
-        eleList.append({"VTCT-Value" : ""})
-        eleList.append({"VTCT-Angle-deg" : ""})
-        eleList.append({"VTCT-Angle-min" : ""})
-        eleList.append({"VTCT-Angle-crad" : ""})
+        # eleList.append({"VT-N" : ""})       
+        # eleList.append({"VT-X" : ""})       
+        # eleList.append({"U-Prim" : ""})     
+        # eleList.append({"U-Sek-N" : ""})    
+        # eleList.append({"U-Sek-X" : ""})    
+        # eleList.append({"VT-Value" : ""})
+        # eleList.append({"VT-Angle-deg" : ""})
+        # eleList.append({"VT-Angle-min" : ""})
+        # eleList.append({"VT-Angle-crad" : ""})
+        eleList.append({"CT-N" :  self.formatNumber(vals["Transformer1Module1"]["PAR_PrimClampPrim"])+"/"+ self.formatNumber(vals["Transformer1Module1"]["PAR_PrimClampSec"])+";A"})
+        eleList.append({"CT-X" :  self.formatNumber(vals["Transformer1Module1"]["PAR_DutPrimary"])+"/"+ self.formatNumber(vals["Transformer1Module1"]["PAR_DutSecondary"])+";A"})
+        eleList.append({"CT_Xc" :  self.formatNumber(vals["Transformer1Module1"]["PAR_SecClampPrim"])+"/"+ self.formatNumber(vals["Transformer1Module1"]["PAR_SecClampSec"])+"/"+ self.formatNumber(vals["Transformer1Module1"]["PAR_DutSecondary"])+";A"})
+        eleList.append({"I-Prim" :  self.formatNumber(vals["Transformer1Module1"]["ACT_IXPrimary1"])+";A"})     # wird benötigt
+        eleList.append({"I-Sek-N" :  self.formatNumber(vals["Transformer1Module1"]["ACT_INSecondary1"])+";A"})     # wird benötigt
+        eleList.append({"I-Sek-X" :  self.formatNumber(vals["Transformer1Module1"]["ACT_IXSecondary1"])+";A"})     # wird benötigt
+        #@TODO XC is missing
+        eleList.append({"CT-Value" :  self.formatNumber(vals["Transformer1Module1"]["ACT_Error1"])+";%"})
+        eleList.append({"CT-Angle-deg" :  self.formatNumber(vals["Transformer1Module1"]["ACT_Angle1"])+";deg"})
+        acrad=vals["Transformer1Module1"]["ACT_Angle1"]*math.pi/180*100
+        amin=vals["Transformer1Module1"]["ACT_Angle1"]*60
+        eleList.append({"CT-Angle-min" :  self.formatNumber(amin)+";min"})
+        eleList.append({"CT-Angle-crad" :  self.formatNumber(acrad)+";crad"})
+        # eleList.append({"VTCT-Value" : ""})
+        # eleList.append({"VTCT-Angle-deg" : ""})
+        # eleList.append({"VTCT-Angle-min" : ""})
+        # eleList.append({"VTCT-Angle-crad" : ""})
 
         result["#childs"]=eleList
         return result
@@ -840,11 +780,11 @@ class UserScript:
             if type(ret) is list:
                 for ele in ret:
                     res=dict()
-                    res["Result"]=ele
+                    res=ele
                     endResult.append(res)
             elif type(ret) is dict:
                 res=dict()
-                res["Result"]=ret
+                res=ret
                 endResult.append(res)
 
         return endResult
