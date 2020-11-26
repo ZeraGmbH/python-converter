@@ -4,10 +4,15 @@ import math
 import numpy as np
 
 class UserScript:
+    
     def __init__(self):
         print("init Manipulation")
         self.__inputDict=dict()
         self.__outputDict=dict()
+        # decimal places definition
+        self.__dec=4
+        self.__digits=8
+        self.__local="EN"
 
         self.__convertDict = dict()
         funcMap=dict()
@@ -70,6 +75,17 @@ class UserScript:
 
     def getOutput(self):
         return self.__outputDict
+
+    def setParams(self,params):
+        try:
+            if "digits" in params:
+                self.__digits=int(params["digits"])
+            if "decimalPlaces" in params:
+                self.__dec=int(params["decimalPlaces"])
+            if "local" in params:
+                self.__local=params["local"]
+        except:
+            return
 
     def manipulate(self):
         print("Manipulate")
