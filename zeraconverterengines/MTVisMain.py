@@ -24,6 +24,8 @@ class UserScript:
             compDict[ele["component_name"]] = ele["component_value"]
             result[ele["entity_name"]]=compDict
         return result
+    def setParams(self,params):
+        return
 
     def manipulate(self):
         print("manipultate")

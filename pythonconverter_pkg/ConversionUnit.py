@@ -33,6 +33,12 @@ class ConversionUnit:
 	def setConFile(self, conFile):
 		self.__conFile = conFile
 
+	def seteParam(self,eparams):
+		try:
+			json_acceptable_string = eparams.replace("'", "\"")
+			self.__eparameter = json.loads(json_acceptable_string)
+		except:
+			self.__eparameter=dict()
 	
 	def setUserScript(self,file):
 		retVal=True
@@ -98,6 +104,7 @@ class ConversionUnit:
 	def __manipulateSet(self):
 		if self.__userScriptPath != "" :
 			manUnit=self.__userScript.UserScript()
+			manUnit.setParams(self.__eparameter)
 			manUnit.setInput(self.__iMap)
 			manUnit.manipulate()
 			self.__oMap = manUnit.getOutput()

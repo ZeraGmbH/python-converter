@@ -2,7 +2,7 @@
 
 #Systemmodules
 import sys, getopt
-
+import math
 
 #custom imports
 from pythonconverter_pkg import ConversionUnit as con
@@ -21,6 +21,7 @@ outputFile = ""
 userscript= ""
 conversionType="sql2xml"
 session = ""
+parameters = ""
 usecase = useDef.Help
 gui = False
 converter = object
@@ -72,11 +73,15 @@ def main(argv):
 			outputFile = arg
 		elif opt in ("--session"):
 			session = arg
+		elif opt in ("--eparam"):
+			parameters = arg
 		elif opt == "-d":
-                        inputFile = "./test/test.db"
-                        outputFile = "./test/out.xml"
-                        record= "[customer ID is not set] 2020/10/27"
-                        userscript= "zeraconverterengines.MTVisRes"
+			# debug
+			inputFile = "./test/test.db"
+			outputFile = "./test/out.xml"
+			session= "[customer ID is not set] 2020/10/27"
+			userscript= "zeraconverterengines.MTVisRes"
+			parameters="{'digits' : '8', 'decimalPlaces' : '4', 'local' : 'DE'}"
 
 		converter = con.ConversionUnit()
 
@@ -95,6 +100,7 @@ def main(argv):
 			converter.setInputFile(inputFile)
 			converter.setOutputFile(outputFile)
 			converter.setType(conversionType)
+			converter.seteParam(parameters)
 			if converter.setUserScript(userscript) == False:
 				raise Exception()
 	#converter.setConfigFile(configFile)

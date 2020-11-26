@@ -11,6 +11,7 @@ inputFile =""
 outputFile=""
 engine=""
 session=""
+params=""
 
 def setInputPath(p_path):
     global inputFile
@@ -27,6 +28,10 @@ def setEngine(p_path):
 def setSession(p_session):
     global session
     session=p_session
+
+def setParams(p_params):
+    global params
+    params=p_params
 
 def checkInputFile():
     retVal=False
@@ -47,10 +52,12 @@ def convert():
     print(inputFile)
     print(outputFile)
     print(engine)
+    print(params)
     if(checkInputFile() ==False):
         return False
     try:       
         converter = con.ConversionUnit()
+        converter.seteParam(params)
         converter.setInputFile(inputFile)
         converter.setOutputFile(outputFile)
         if converter.setUserScript(engine) == False:
