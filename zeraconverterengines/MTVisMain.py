@@ -2,6 +2,7 @@
 from datetime import datetime
 import math
 import numpy as np
+import zeraconverterengines.Common as zeracom
 
 class UserScript:
     def __init__(self):
@@ -15,15 +16,6 @@ class UserScript:
     def getOutput(self):
         return self.__outputDict
 
-    def entityComponentSort(self,input):
-        result=dict()
-        for ele in input:
-            compDict=dict()
-            if ele["entity_name"] in result:
-                compDict=result[ele["entity_name"]]
-            compDict[ele["component_name"]] = ele["component_value"]
-            result[ele["entity_name"]]=compDict
-        return result
     def setParams(self,params):
         return
 
@@ -38,7 +30,7 @@ class UserScript:
         net=dict()
         meter=dict()
         id = [k  for  k in self.__inputDict.keys()]
-        vals = self.entityComponentSort(self.__inputDict[id[0]]["static"])
+        vals = zeracom.entityComponentSort(zeracom.getStatic(self.__inputDict))
         eleList.append({"ID" : id[0]})
         eleList.append({"State" : "exported"})
         eleList.append({"Remark" : str(vals["CustomerData"]["PAR_DatasetComment"])})

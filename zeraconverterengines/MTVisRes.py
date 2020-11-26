@@ -2,6 +2,7 @@
 from datetime import datetime
 import math
 import numpy as np
+import zeraconverterengines.Common as zeracom
 
 class UserScript:
     
@@ -116,22 +117,9 @@ class UserScript:
                                     res=dict()
                                     res["Result"]=resList
                                     self.__outputDict["result-Data"]["#childs"].append(res)
-                        
-        
-
-    def entityComponentSort(self,input):
-        result=dict()
-        for ele in input:
-            compDict=dict()
-            if ele["entity_name"] in result:
-                compDict=result[ele["entity_name"]]
-            compDict[ele["component_name"]] = ele["component_value"]
-            result[ele["entity_name"]]=compDict
-        return result
-
     
-    def ActualValuesGeneric(self,input, metadata):
-        vals=self.entityComponentSort(input["values"])
+    def ActualValuesCommon(self,input, metadata):
+        vals=zeracom.entityComponentSort(input["values"])
         eleList=list()
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : "DEU"})
@@ -286,7 +274,7 @@ class UserScript:
         return self.convertZeraGuiActualValues(input,metadata)
 
     def convertZeraGuiHarmonicTable(self,input, metadata):
-        vals=self.entityComponentSort(input["values"])
+        vals=zeracom.entityComponentSort(input["values"])
         endresult=list()
         result=dict()
         eleList=list()
@@ -361,7 +349,7 @@ class UserScript:
         
         
     def convertZeraGuiCurveDisplay(self,input,metadata):
-        vals=self.entityComponentSort(input["values"])
+        vals=zeracom.entityComponentSort(input["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -419,7 +407,7 @@ class UserScript:
 
 
     def convertZeraGuiHarmonicPowerTable(self,input,metadata):
-        vals=self.entityComponentSort(input["values"])
+        vals=zeracom.entityComponentSort(input["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -470,7 +458,7 @@ class UserScript:
         return self.convertZeraGuiHarmonicPowerTable(input,metadata)
 
     def convertZeraGuiMeterTest(self,input,metadata):
-        vals=self.entityComponentSort(input["values"])
+        vals=zeracom.entityComponentSort(input["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -499,7 +487,7 @@ class UserScript:
         print("MtVis can not display Energy Comparison Data")
 
     def convertZeraGuiEnergyRegister(self,input,metadata):
-        vals=self.entityComponentSort(input["values"])
+        vals=zeracom.entityComponentSort(input["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -547,7 +535,7 @@ class UserScript:
         return result
 
     def convertZeraGuiPowerRegister(self,input, metadata):
-        vals=self.entityComponentSort(input["values"])
+        vals=zeracom.entityComponentSort(input["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -595,7 +583,7 @@ class UserScript:
         return result
 
     def convertZeraGuiVoltageBurden(self,input, metadata):
-        vals=self.entityComponentSort(input["values"])
+        vals=zeracom.entityComponentSort(input["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -672,7 +660,7 @@ class UserScript:
         return result
 
     def convertZeraGuiCurrentBurden(self,input, metadata):
-        vals=self.entityComponentSort(input["values"])
+        vals=zeracom.entityComponentSort(input["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -748,7 +736,7 @@ class UserScript:
         return result
 
     def convertZeraGuiInstrumentTransformer(self,input, metadata):
-        vals=self.entityComponentSort(input["values"])
+        vals=zeracom.entityComponentSort(input["values"])
         result=dict()
         endResult=list()
         eleList=list()
