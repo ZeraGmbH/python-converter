@@ -26,7 +26,7 @@ class SqlInterface(zdb.DatabaseInterface):
 			print("is not a compatible database")
 		return [dict(row) for row in ret]
 
-	def readRecordList(self):
+	def readSessionList(self):
 		ret=""
 		try:
 			self.db.execute("SELECT session_name FROM sessions")
