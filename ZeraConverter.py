@@ -13,14 +13,14 @@ from pythonconverter_pkg import XmlInterface as zxml
 def enum(**enums):
     return type('Enum', (), enums)
 
-useDef = enum(Help=0, ShowRecords=2, ShowTransactions=3, Convert=4)
+useDef = enum(Help=0, ShowSessions=2, ShowTransactions=3, Convert=4)
 
 
 inputFile = ""
 outputFile = ""
 userscript= ""
 conversionType="sql2xml"
-record= ""
+session = ""
 usecase = useDef.Help
 gui = False
 converter = object
@@ -48,16 +48,17 @@ def main(argv):
 	global outputFile
 	global userscript
 	global conversionType
-	global record
+	global session
 	global usecase
 	global gui
 	global converter
+	global parameters
 
 	print("Database Converter")
-	
+
 
 	try:
-		opts, args = getopt.getopt(argv,"dghi:o:t:",["ifile=","ofile=","record="])
+		opts, args = getopt.getopt(argv,"dghi:o:t:",["ifile=","ofile=","eparam=","session="])
 	except getopt.GetoptError:
 		print('test.py -i <inputfile> -o <outputfile>')
 		sys.exit(2)
@@ -70,7 +71,7 @@ def main(argv):
 		elif opt in ("-o", "--ofile"):
 			outputFile = arg
 		elif opt in ("--session"):
-			record = arg
+			session = arg
 		elif opt == "-d":
                         inputFile = "./test/test.db"
                         outputFile = "./test/out.xml"
@@ -85,8 +86,8 @@ def main(argv):
 	#define usecase depending on input data
 	usecase=useDef.Help
 	if inputFile != "" :
-		usecase=useDef.ShowRecords
-		if record != "" and inputFile != "" and outputFile != "":
+		usecase=useDef.ShowSessions
+		if session != "" and inputFile != "" and outputFile != "":
 			usecase=useDef.Convert
 
 	try:
@@ -104,14 +105,14 @@ def main(argv):
 		
 	if usecase == useDef.Help:
 		Help()
-	elif usecase == useDef.ShowRecords:
-		ret = converter.ShowRecords()
+	elif usecase == useDef.ShowSessions:
+		ret = converter.ShowSessions()
 		i=0
 		for ele in ret :
 			print(i,": ",ele[0])
 			i=i+1
 	elif usecase == useDef.Convert: 
-		converter.convert(record)
+		converter.convert(session)
 
 
 if __name__ == "__main__":

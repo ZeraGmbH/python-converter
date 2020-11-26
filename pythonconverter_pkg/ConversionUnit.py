@@ -52,14 +52,14 @@ class ConversionUnit:
 
 
 
-	def ShowRecords(self):
+	def ShowSessions(self):
 		self.__iInt = self.__dbFact.InputInterface(self.__conType)
 		self.__iInt.openDatabase(self.__inputFile)
-		ret = self.__iInt.readRecordList()
+		ret = self.__iInt.readSessionList()
 		return ret
 
-	def convert(self,p_record):
-		self.__record = p_record
+	def convert(self,p_session):
+		self.__session = p_session
 		self.__iInt.openDatabase(self.__inputFile)
 		self.__oInt.openDatabase(self.__outputFile)
 		self.__read()
@@ -70,26 +70,26 @@ class ConversionUnit:
 		self.__iInt.closeDatabase()
 
 	def __readTransactionList(self):
-		return self.__iInt.readDatasetList(self.__record)
+		return self.__iInt.readDatasetList(self.__session)
 
 	def __readStaticData(self):
-		return self.__iInt.readStaticData(self.__record)
+		return self.__iInt.readStaticData(self.__session)
 
 	#read from input database
 	def __read(self):
 		print("not implemented yet")
 		transList = self.__readTransactionList()
-		self.__iMap[self.__record]=dict()
-		self.__iMap[self.__record]["dynamic"]=dict()
-		self.__iMap[self.__record]["static"]=dict()
+		self.__iMap[self.__session]=dict()
+		self.__iMap[self.__session]["dynamic"]=dict()
+		self.__iMap[self.__session]["static"]=dict()
 		for con in transList :
 			tmpDict=dict()
 			tmpDict["contentset_names"]=con["contentset_names"]
 			tmpDict["timestemp"]=con["start_time"]
 			tmpDict["guiContext"]=con["guicontext_name"]
 			tmpDict["values"]=self.__iInt.readDataset(con["transaction_name"])
-			self.__iMap[self.__record]["dynamic"][con["transaction_name"]]=tmpDict
-		self.__iMap[self.__record]["static"]=self.__readStaticData()
+			self.__iMap[self.__session]["dynamic"][con["transaction_name"]]=tmpDict
+		self.__iMap[self.__session]["static"]=self.__readStaticData()
 		
 			
 
