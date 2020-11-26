@@ -79,9 +79,9 @@ def main(argv):
 			# debug
 			inputFile = "./test/test.db"
 			outputFile = "./test/out.xml"
-			session= "[customer ID is not set] 2020/10/27"
+			session= "ses1all"
 			userscript= "zeraconverterengines.MTVisRes"
-			parameters="{'digits' : '8', 'decimalPlaces' : '4', 'local' : 'DE'}"
+			parameters="{'digits' : '8', 'decimalPlaces' : '2', 'local' : 'DE'}"
 
 		converter = con.ConversionUnit()
 
