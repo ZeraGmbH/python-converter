@@ -88,6 +88,29 @@ class UserScript:
         except:
             return
 
+    def formatNumber(self,num):
+        try:
+            if type(num) == str:
+                return num
+            dec = self.__dec
+            digitsTotal = self.__digits
+            local= self.__local
+            leadDigits=str(math.floor(abs(num)))
+            if leadDigits == "0":
+                leadDigits = ""
+            preDecimals = len(leadDigits)
+            if dec + preDecimals > digitsTotal:
+                dec = digitsTotal - preDecimals
+                if dec < 0:
+                    dec = 0
+            strNum =  str("{:."+str(dec)+"f}").format(num)
+            if local == "DE":
+                strNum=strNum.replace(".",",")
+        except:
+            strNum=str(num)
+        return strNum
+
+
     def manipulate(self):
         print("Manipulate")
         self.__outputDict["result-Data"]={"#childs" : []}
