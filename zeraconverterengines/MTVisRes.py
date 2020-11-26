@@ -138,7 +138,26 @@ class UserScript:
                                     res=dict()
                                     res["Result"]=resList
                                     self.__outputDict["result-Data"]["#childs"].append(res)
-    
+
+    def TimeCommon(self,preadd,input):
+        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
+        eleList=list()
+        time=""
+        date=""
+        if "en" in self.__local:
+            time=datetimeObj.strftime("%H:%M:%S")
+            date=datetimeObj.strftime("%m.%d.%Y")
+        elif "de" in self.__local:
+            time=datetimeObj.strftime("%H:%M:%S")
+            date=datetimeObj.strftime("%H:%M:%S")
+        else:
+            time=datetimeObj.strftime("%H:%M:%S")
+            date=datetimeObj.strftime("%m.%d.%Y")           
+        eleList.append({"Time" : time})
+        eleList.append({"Date" : preadd+date})
+        return eleList
+
+
     def RangeCommon(self,input, metadata):
         vals=zeracom.entityComponentSort(input["values"])
         eleList=list()
@@ -278,11 +297,8 @@ class UserScript:
         eleList=list()
         eleList.append({"Datatype" : "Actual-Values"})
         eleList.append({"Function" : "Value-Measurement"})
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H:%M:%S")
-        date=datetimeObj.strftime("%d.%m.%Y")
-        eleList.append({"Time" : time})
-        eleList.append({"Date" : "AV "+date})
+
+        eleList.append(self.TimeCommon("AV ",input))
         eleList.append(self.ActualValuesCommon(input,metadata))
         eleList.append(self.LambdaCommon(input,metadata))
         
@@ -296,11 +312,7 @@ class UserScript:
         endResult=list()
         result=dict()
         eleList=list()
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H:%M:%S")
-        date=datetimeObj.strftime("%d.%m.%Y")
-        eleList.append({"Time" : time})
-        eleList.append({"Date" : "VV "+date})
+        eleList.append(self.TimeCommon("VV ",input))
         eleList.append({"Datatype" : "Actual-Values"})
         eleList.append({"Function" : "Vector-Measurement"})
         eleList.append(self.ActualValuesCommon(input,metadata))
@@ -332,10 +344,6 @@ class UserScript:
             eleList.append({"Device-No" : "MT310s2"})
             eleList.append({"Function" : "Harmonics-Measurement"})
             eleList.append({"Datatype" : "Harmonic-Data"})
-            datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-            time=datetimeObj.strftime("%H:%M:%S")
-            date=datetimeObj.strftime("%d.%m.%Y")
-            eleList.append({"Time" : time})
             NameAdd=""
 
             if ch < 5:
@@ -343,7 +351,7 @@ class UserScript:
             else:
                 NameAdd=" I"+ str(ch-4)
 
-            eleList.append({"Date" : "HT "+NameAdd+" "+date})
+            eleList.append(self.TimeCommon("HT "+NameAdd+" ",input))
 
             eleList.append(self.RangeCommon(input,metadata))
 
@@ -403,11 +411,8 @@ class UserScript:
             eleList.append({"Device-No" : "MT310s2"})
             eleList.append({"Function" : "Curve-Measurement"})
             eleList.append({"Datatype" : "Sample-Data"})
-            datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-            time=datetimeObj.strftime("%H:%M:%S")
-            date=datetimeObj.strftime("%d.%m.%Y")
-            eleList.append({"Time" : time})
-            eleList.append({"Date" : "CD "+"UI"+ str(ch) +" "+date})
+
+            eleList.append(self.TimeCommon("CD "+"UI "+str(ch)+" ",input))
 
             eleList.append({"U-PrimSek" : "1"})
             eleList.append({"I-PrimSek" : "1"})
@@ -455,11 +460,8 @@ class UserScript:
             eleList.append({"Device-No" : "MT310s2"})
             eleList.append({"Function" : "Selektiv-Measurement"})
             eleList.append({"Datatype" : "Selektiv-Data"})
-            datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-            time=datetimeObj.strftime("%H:%M:%S")
-            date=datetimeObj.strftime("%d.%m.%Y")
-            eleList.append({"Time" : time})
-            eleList.append({"Date" : "HP "+"UI"+ str(ch)+" "+date})
+
+            eleList.append(self.TimeCommon("HP "+"UI"+ str(ch)+" ",input))
 
             eleList.append({"U-PrimSek" : "1/1;V;1.00"})
             eleList.append({"I-PrimSek" : "1/1;A;1.00"})
@@ -497,11 +499,8 @@ class UserScript:
 
         eleList=self.ActualValuesCommon(input, metadata)
         eleList.append(self.LambdaCommon(input,metadata))
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H:%M:%S")
-        date=datetimeObj.strftime("%d.%m.%Y")
-        eleList.append({"Time" : time})
-        eleList.append({"Date" : "MT "+date})
+        eleList.append(self.TimeCommon("MT ",input))
+
         eleList.append({"Device-No" : "MT310s2"})
         eleList.append({"AdjustData" : ""})
         eleList.append({"Function" : "Error-Measurement"})
@@ -544,10 +543,8 @@ class UserScript:
         eleList.append({"Device-No" : "MT310s2"})
         eleList.append({"AdjustData" : "ok"})
         datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H:%M:%S")
-        date=datetimeObj.strftime("%d.%m.%Y")
-        eleList.append({"Time" : time})
-        eleList.append({"Date" : "ER "+date})
+
+        eleList.append(self.TimeCommon("ER ",input))
         
         eleList.append(self.RangeCommon(input,metadata))
         
@@ -594,11 +591,8 @@ class UserScript:
         eleList.append({"Device-Typ" : "MT310s2"})
         eleList.append({"Device-No" : "MT310s2"})
         eleList.append({"AdjustData" : ""})
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H:%M:%S")
-        date=datetimeObj.strftime("%d.%m.%Y")
-        eleList.append({"Time" : time})
-        eleList.append({"Date" : "PR "+date})
+
+        eleList.append(self.TimeCommon("PR ",input))
         
         eleList.append(self.RangeCommon(input,metadata))
         
@@ -647,11 +641,8 @@ class UserScript:
         #eleList.append({"Device-No" : "MT310s2"})
         #eleList.append({"AdjustData" : ""})
         eleList=self.ActualValuesCommon(input, metadata)
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H:%M:%S")
-        date=datetimeObj.strftime("%d.%m.%Y")
-        eleList.append({"Time" : time})
-        eleList.append({"Date" : "VB "+date})
+
+        eleList.append(self.TimeCommon("VB ",input))
 
         #eleList.append(self.RangeCommon(input,metadata))
 
@@ -682,11 +673,8 @@ class UserScript:
         #eleList.append({"Device-No" : "MT310s2"})
         #eleList.append({"AdjustData" : ""})
         eleList=self.ActualValuesCommon(input, metadata)
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H:%M:%S")
-        date=datetimeObj.strftime("%d.%m.%Y")
-        eleList.append({"Time" : time})
-        eleList.append({"Date" : "CB "+date})
+
+        eleList.append(self.TimeCommon("CB ",input))
         eleList.append({"M-Mode" : ""})
         #eleList.append(self.RangeCommon(input,metadata))
         #eleList.append({"U-PrimSek" : "1/1;V;1.00"})
@@ -713,11 +701,8 @@ class UserScript:
         eleList.append({"Device-Typ" : "MT310s2"})
         eleList.append({"Device-No" : "MT310s2"})
         eleList.append({"AdjustData" : ""})
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
-        time=datetimeObj.strftime("%H:%M:%S")
-        date=datetimeObj.strftime("%d.%m.%Y")
-        eleList.append({"Time" : time})
-        eleList.append({"Date" : "IT "+date})
+
+        eleList.append(self.TimeCommon("IT ",input))
         
         eleList.append(self.RangeCommon(input,metadata))
         
