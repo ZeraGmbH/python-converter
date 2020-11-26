@@ -2,7 +2,6 @@
 #custom modules
 import importlib.util
 from pythonconverter_pkg import DatabaseInterfaceFactory as dbFactory
-from pythonconverter_pkg import ConfigurationInterface as configInt
 import json
 
 class ConversionUnit:
@@ -14,13 +13,13 @@ class ConversionUnit:
 		self.__conFile=""
 		self.__userScriptPath=""
 		self.__userScript=""
-		self.__record=""
+		self.__session=""
+		self.__eparameter=dict()
 		self.__iMap=dict()
 		self.__oMap=dict()
 		self.__dbFact = dbFactory.DatabaseInterfaceFactory()
 		self.__iInt = self.__dbFact.InputInterface(self.__conType)
 		self.__oInt = self.__dbFact.OutputInterface(self.__conType)
-		self.__configInt=configInt.configurationInterface()
 
 	def setInputFile(self, inputFile):
 		self.__inputFile=inputFile
@@ -34,8 +33,6 @@ class ConversionUnit:
 	def setConFile(self, conFile):
 		self.__conFile = conFile
 
-	def setConfigFile(self, configFile):
-		self.__configInt.readFile(configFile)
 	
 	def setUserScript(self,file):
 		retVal=True
