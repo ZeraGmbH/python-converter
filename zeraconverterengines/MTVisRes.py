@@ -361,7 +361,7 @@ class UserScript:
             eleList.append({"ID" : metadata["session"]})
             eleList.append({"Language" : "DEU"})
             eleList.append({"Device-Typ" : metadata["device"]["type"]})
-            eleList.append({"Device-No" : "MT310s2"})
+            eleList.append({"Device-No" : metadata["device"]["serial"]}) 
             eleList.append({"Function" : "Harmonics-Measurement"})
             eleList.append({"Datatype" : "Harmonic-Data"})
             NameAdd=""
@@ -428,7 +428,7 @@ class UserScript:
             eleList.append({"ID" : metadata["session"]})
             eleList.append({"Language" : "DEU"})
             eleList.append({"Device-Typ" : metadata["device"]["type"]})
-            eleList.append({"Device-No" : "MT310s2"})
+            eleList.append({"Device-No" : metadata["device"]["serial"]}) 
             eleList.append({"Function" : "Curve-Measurement"})
             eleList.append({"Datatype" : "Sample-Data"})
 
@@ -477,7 +477,7 @@ class UserScript:
             eleList.append({"ID" : metadata["session"]})
             eleList.append({"Language" : "DEU"})
             eleList.append({"Device-Typ" : metadata["device"]["type"]})
-            eleList.append({"Device-No" : "MT310s2"})
+            eleList.append({"Device-No" : metadata["device"]["serial"]}) 
             eleList.append({"Function" : "Selektiv-Measurement"})
             eleList.append({"Datatype" : "Selektiv-Data"})
 
@@ -521,7 +521,7 @@ class UserScript:
         eleList.append(self.LambdaCommon(input,metadata))
         eleList.append(self.TimeCommon("MT ",input))
 
-        eleList.append({"Device-No" : "MT310s2"})
+        eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         eleList.append({"AdjustData" : ""})
         eleList.append({"Function" : "Error-Measurement"})
         eleList.append({"Datatype" : "Meter-Error"})
@@ -560,7 +560,7 @@ class UserScript:
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : ""})
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : "MT310s2"})
+        eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         eleList.append({"AdjustData" : "ok"})
         datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
 
@@ -609,7 +609,7 @@ class UserScript:
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : ""})
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : "MT310s2"})
+        eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         eleList.append({"AdjustData" : ""})
 
         eleList.append(self.TimeCommon("PR ",input))
@@ -658,7 +658,7 @@ class UserScript:
         #eleList.append({"ID" : metadata["session"]})
         #eleList.append({"Language" : ""})
         #eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        #eleList.append({"Device-No" : "MT310s2"})
+        #eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         #eleList.append({"AdjustData" : ""})
         eleList=self.ActualValuesCommon(input, metadata)
 
@@ -690,7 +690,7 @@ class UserScript:
         #eleList.append({"ID" : metadata["session"]})
         #eleList.append({"Language" : ""})
         #eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        #eleList.append({"Device-No" : "MT310s2"})
+        #eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         #eleList.append({"AdjustData" : ""})
         eleList=self.ActualValuesCommon(input, metadata)
 
@@ -719,7 +719,7 @@ class UserScript:
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : "DEU"})
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : "MT310s2"})
+        eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         eleList.append({"AdjustData" : ""})
 
         eleList.append(self.TimeCommon("IT ",input))
