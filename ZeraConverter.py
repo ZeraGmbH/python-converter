@@ -118,7 +118,9 @@ def main(argv):
 			print(i,": ",ele[0])
 			i=i+1
 	elif usecase == useDef.Convert: 
-		converter.convert(session)
+		retVal=converter.convert(session)
+	print("Programm ended with "+str(retVal))
+	return retVal
 
 
 if __name__ == "__main__":
