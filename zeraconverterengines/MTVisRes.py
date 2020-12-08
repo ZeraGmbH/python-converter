@@ -163,14 +163,16 @@ class UserScript:
         eleList=list()
         URange=float(0)
         IRange=float(0)
-        for c in range(1,4):    
-            if URange < float(vals["RangeModule1"]["PAR_Channel"+ str(c)+"Range"][:-1]):
-                URange=float(vals["RangeModule1"]["PAR_Channel"+ str(c)+"Range"][:-1])
-            if IRange < float(vals["RangeModule1"]["PAR_Channel"+ str(c+3)+"Range"][:-1]):
-                IRange=float(vals["RangeModule1"]["PAR_Channel"+ str(c+3)+"Range"][:-1])
+        for c in range(1,4):
+            uDictVal=zeracom.UnitNumberSeperator(vals["RangeModule1"]["PAR_Channel"+ str(c)+"Range"])
+            iDictVal=zeracom.UnitNumberSeperator(vals["RangeModule1"]["PAR_Channel"+ str(c+3)+"Range"])
+            if URange < uDictVal["value"]:
+                URange=uDictVal["value"]
+            if IRange < iDictVal["value"]:
+                IRange=iDictVal["value"]
 
-        eleList.append({"U-Range" :  self.formatNumber(URange)+";V"})
-        eleList.append({"I-Range" :  self.formatNumber(IRange)+";A"})
+        eleList.append({"U-Range" :  self.formatNumber(URange)+";"+uDictVal["unit"]})
+        eleList.append({"I-Range" :  self.formatNumber(IRange)+";"+iDictVal["unit"]})
         return eleList
 
     def ActualValuesCommon(self,input, metadata):
