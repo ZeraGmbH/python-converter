@@ -3,6 +3,9 @@ from datetime import datetime
 import math
 import numpy as np
 import zeraconverterengines.Common as zeracom
+import warnings
+import logging
+
 
 class UserScript:
     
@@ -64,20 +67,17 @@ class UserScript:
         funcMap["ZeraAll"]=self.convertZeraAll
         self.__convertDict["ZeraAll"]=funcMap
 
-        print(self.__convertDict)
-
-
-    def testFunc(self):
-        print("Mapped function called")
-
+        #print(self.__convertDict)
 
     def setInput(self, p_dict):
         self.__inputDict=p_dict
+        return True
 
     def getOutput(self):
         return self.__outputDict
 
     def setParams(self,params):
+        retVal=True
         try:
             if "digits" in params:
                 self.__digits=int(params["digits"])
@@ -86,7 +86,8 @@ class UserScript:
             if "local" in params:
                 self.__local=params["local"]
         except:
-            return
+            retVal=False
+        return retVal
 
     def formatNumber(self,num):
         try:
@@ -111,10 +112,13 @@ class UserScript:
         return strNum
 
     def manipulate(self):
+        retVal=True
         self.__outputDict["result-Data"]={"#childs" : []}
-        self.iterateTransactions()
+        retVal=self.iterateTransactions()
+        return retVal
 
     def iterateTransactions(self):
+        retVal=True
         for session in self.__inputDict.keys(): 
             for key in self.__inputDict[session]["dynamic"].keys(): 
                 contentSets=self.__inputDict[session]["dynamic"][key]["contentset_names"].split(",")     
@@ -124,20 +128,25 @@ class UserScript:
                     if content in contentSets:
                         for guiCon in self.__convertDict[content].keys():
                             if guiCon == guiContext or content == "ZeraAll":
-                                if content == "ZeraAll": 
-                                    resList=self.__convertDict[content]["ZeraAll"](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key})
-                                else:
-                                    resList=self.__convertDict[content][guiCon](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key})
+                                try:
+                                    if content == "ZeraAll":
+                                        resList=self.__convertDict[content]["ZeraAll"](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key})
+                                    else:
+                                        resList=self.__convertDict[content][guiCon](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key})
 
-                                if type(resList) is list:
-                                    for ele in resList:
+                                    if type(resList) is list:
+                                        for ele in resList:
+                                            res=dict()
+                                            res["Result"]=ele
+                                            self.__outputDict["result-Data"]["#childs"].append(res)
+                                    elif type(resList) is dict:
                                         res=dict()
-                                        res["Result"]=ele
+                                        res["Result"]=resList
                                         self.__outputDict["result-Data"]["#childs"].append(res)
-                                elif type(resList) is dict:
-                                    res=dict()
-                                    res["Result"]=resList
-                                    self.__outputDict["result-Data"]["#childs"].append(res)
+                                except BaseException as err:
+                                    logging.warning("Converting transaction "+key+" of type "+content+" failed with: "+str(err))
+                                    retVal=False
+        return retVal
 
     def TimeCommon(self,preadd,input):
         datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')

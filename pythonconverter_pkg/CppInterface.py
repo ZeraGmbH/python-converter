@@ -49,6 +49,7 @@ def checkEngine():
     return retVal
 
 def convert():
+    retVal=True
     print(inputFile)
     print(outputFile)
     print(engine)
@@ -57,12 +58,16 @@ def convert():
         return False
     try:       
         converter = con.ConversionUnit()
-        converter.seteParam(params)
-        converter.setInputFile(inputFile)
-        converter.setOutputFile(outputFile)
+        if converter.seteParam(params) == False:
+            retVal=False
+        if converter.setInputFile(inputFile) == False:
+            retVal=False
+        if converter.setOutputFile(outputFile) == False:
+            retVal=False
         if converter.setUserScript(engine) == False:
-            return False
-        converter.convert(session)
+            retVal=False
+        if converter.convert(session) == False:
+            retVal=False
     except:
         return False
-    return True
+    return retVal

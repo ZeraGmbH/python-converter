@@ -78,5 +78,6 @@ class UserScript:
         main["Main"]["#childs"].append(net)
         main["Main"]["#childs"].append(meter)
         self.__outputDict["Main-Data"]["#childs"].append(main)
+        return True
         
 
