@@ -781,16 +781,20 @@ class UserScript:
         funcList.append(self.convertZeraGuiCurrentBurden)
         funcList.append(self.convertZeraGuiInstrumentTransformer)
         for func in funcList:
-            ret=func(input,metadata)
-            if type(ret) is list:
-                for ele in ret:
+            try:
+                ret=func(input,metadata)
+                if type(ret) is list:
+                    for ele in ret:
+                        res=dict()
+                        res=ele
+                        endResult.append(res)
+                elif type(ret) is dict:
                     res=dict()
-                    res=ele
+                    res=ret
                     endResult.append(res)
-            elif type(ret) is dict:
+            except BaseException as err:
+                logging.warning("Converting transaction failed with: "+str(err))
                 res=dict()
-                res=ret
-                endResult.append(res)
 
         return endResult
 
