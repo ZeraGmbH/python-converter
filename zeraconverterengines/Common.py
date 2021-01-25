@@ -70,12 +70,12 @@ def UnitNumberSeperator(string):
     retVal["value"]=0
     retVal["unit"]=""
     try:
-        exp=re.match("^([-+]{0,1})([1-9]{1,1}[0-9]*[\.,]{0,1}[0-9]*)\s*([aA-zZ]*)$",string)
-        tmp=str(exp.group(1))+str(exp.group(2))
+        exp=re.match("^([aA-zZ]*)([-+]{0,1})([1-9]{1,1}[0-9]*[\.,]{0,1}[0-9]*)\s*([aA-zZ]*)$",string)
+        tmp=str(exp.group(2))+str(exp.group(3))
         tmp=tmp.replace(",",".")
         retVal["value"]=float(tmp)
-        retVal["unit"]=exp.group(3)
-    except:
+        retVal["unit"]=exp.group(4)
+    except :
         retVal["value"]=0
         retVal["unit"]=""
     return retVal

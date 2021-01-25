@@ -181,7 +181,7 @@ class UserScript:
         eleList=list()
         URange=float(0)
         IRange=float(0)
-        for c in range(1,4):
+        for c in range(1,3):
             uDictVal=zeracom.UnitNumberSeperator(vals["RangeModule1"]["PAR_Channel"+ str(c)+"Range"])
             iDictVal=zeracom.UnitNumberSeperator(vals["RangeModule1"]["PAR_Channel"+ str(c+3)+"Range"])
             if URange < uDictVal["value"]:
