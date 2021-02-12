@@ -307,7 +307,7 @@ class UserScript:
         eleList.append({"Lambda1" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda1"])})
         eleList.append({"Lambda2" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda2"])})
         eleList.append({"Lambda3" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda3"])})
-        eleList.append({"SLambda" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda1"]+vals["LambdaModule1"]["ACT_Lambda3"]+vals["LambdaModule1"]["ACT_Lambda3"])}) 
+        eleList.append({"SLambda" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda4"])})
 
         return eleList
 
@@ -586,7 +586,7 @@ class UserScript:
             eleList.append({"Type" : "Duration"})        
         else:
             eleList.append({"Type" : "Start/Stop"})  
-        eleList.append({"Measurement-Time" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+";s"}) # wird benötigt
+        eleList.append({"E-MTime" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+";s"}) # wird benötigt
         eleList.append({"Energie" :  self.formatNumber(vals["SEM1Module1"]["ACT_Energy"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})          # wird benötigt
         eleList.append({"E-Begin" :  self.formatNumber(vals["SEM1Module1"]["PAR_T0Input"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})    # wird benötigt
         eleList.append({"E-End" :  self.formatNumber(vals["SEM1Module1"]["PAR_T1input"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})      # wird benötigt
@@ -634,13 +634,13 @@ class UserScript:
             eleList.append({"Type" : "Duration"})        
         else:
             eleList.append({"Type" : "Start/Stop"})  
-        eleList.append({"Measurement-Time" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+";s"}) # wird benötigt
+        eleList.append({"P-MTime" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+";s"}) # wird benötigt
         # eleList.append({"Energie" : ""})   
         # eleList.append({"E-Begin" : ""})    
         # eleList.append({"E-End" : ""})      
         # eleList.append({"E-Cz" : ""})       
         # eleList.append({"E-Error" : ""})    
-        eleList.append({"Power" :  self.formatNumber(vals["SPM1Module1"]["ACT_Energy"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})          # wird benötigt
+        eleList.append({"Power" :  self.formatNumber(vals["SPM1Module1"]["ACT_Power"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})          # wird benötigt
         eleList.append({"P-Begin" :  self.formatNumber(vals["SPM1Module1"]["PAR_T0Input"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})    # wird benötigt
         eleList.append({"P-End" :  self.formatNumber(vals["SPM1Module1"]["PAR_T1input"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})      # wird benötigt
         eleList.append({"P-Cz" :  self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})       # wird benötigt
