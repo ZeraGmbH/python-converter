@@ -130,31 +130,31 @@ class UserScript:
 
         for session in self.__inputDict.keys(): 
             for key in self.__inputDict[session]["dynamic"].keys(): 
-                contentSets=self.__inputDict[session]["dynamic"][key]["contentset_names"].split(",")     
-                guiContext=self.__inputDict[session]["dynamic"][key]["guiContext"]
-          
-                for content in self.__convertDict.keys():
-                    if content in contentSets:
-                        for guiCon in self.__convertDict[content].keys():
-                            if guiCon == guiContext or content == "ZeraAll":
-                                try:
-                                    if content == "ZeraAll":
-                                        resList=self.__convertDict[content]["ZeraAll"](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key, "device" : device})
-                                    else:
-                                        resList=self.__convertDict[content][guiCon](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key,"device" : device})
+                if key.find("Snapshot") != -1:
+                    contentSets=self.__inputDict[session]["dynamic"][key]["contentset_names"].split(",")
+                    guiContext=self.__inputDict[session]["dynamic"][key]["guiContext"]
+                    for content in self.__convertDict.keys():
+                        if content in contentSets:
+                            for guiCon in self.__convertDict[content].keys():
+                                if guiCon == guiContext or content == "ZeraAll":
+                                    try:
+                                        if content == "ZeraAll":
+                                            resList=self.__convertDict[content]["ZeraAll"](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key, "device" : device})
+                                        else:
+                                            resList=self.__convertDict[content][guiCon](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key,"device" : device})
 
-                                    if type(resList) is list:
-                                        for ele in resList:
+                                        if type(resList) is list:
+                                            for ele in resList:
+                                                res=dict()
+                                                res["Result"]=ele
+                                                self.__outputDict["result-Data"]["#childs"].append(res)
+                                        elif type(resList) is dict:
                                             res=dict()
-                                            res["Result"]=ele
+                                            res["Result"]=resList
                                             self.__outputDict["result-Data"]["#childs"].append(res)
-                                    elif type(resList) is dict:
-                                        res=dict()
-                                        res["Result"]=resList
-                                        self.__outputDict["result-Data"]["#childs"].append(res)
-                                except BaseException as err:
-                                    logging.warning("Converting transaction "+key+" of type "+content+" failed with: "+str(err))
-                                    retVal=False
+                                    except BaseException as err:
+                                        logging.warning("Converting transaction "+key+" of type "+content+" failed with: "+str(err))
+                                        retVal=False
         return retVal
 
     def TimeCommon(self,preadd,input):
