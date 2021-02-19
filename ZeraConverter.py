@@ -49,6 +49,7 @@ def main(argv):
 	global outputFile
 	global userscript
 	global conversionType
+	global filterExp
 	global session
 	global usecase
 	global gui
@@ -81,6 +82,7 @@ def main(argv):
 			outputFile = "./test/out.xml"
 			session= "ses1all"
 			userscript= "zeraconverterengines.MTVisRes"
+			filterExp="Snapshot"
 			parameters="{'digits' : '8', 'decimalPlaces' : '2', 'local' : 'DE'}"
 
 		converter = con.ConversionUnit()
@@ -97,6 +99,7 @@ def main(argv):
 
 	try:
 		if usecase != useDef.Help:
+			converter.setFilter(filterExp)
 			converter.setInputFile(inputFile)
 			converter.setOutputFile(outputFile)
 			converter.setType(conversionType)

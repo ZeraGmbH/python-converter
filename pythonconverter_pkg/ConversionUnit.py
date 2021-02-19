@@ -14,6 +14,7 @@ class ConversionUnit:
 		self.__userScriptPath=""
 		self.__userScript=""
 		self.__session=""
+		self.__filter=""
 		self.__eparameter=dict()
 		self.__iMap=dict()
 		self.__oMap=dict()
@@ -31,6 +32,10 @@ class ConversionUnit:
 
 	def setType(self, conType):
 		self.__conType = conType
+		return True
+
+	def setFilter(self, filter):
+		self.__filter=filter
 		return True
 
 	def setConFile(self, conFile):
@@ -98,12 +103,14 @@ class ConversionUnit:
 		self.__iMap[self.__session]["dynamic"]=dict()
 		self.__iMap[self.__session]["static"]=dict()
 		for con in transList :
-			tmpDict=dict()
-			tmpDict["contentset_names"]=con["contentset_names"]
-			tmpDict["timestemp"]=con["start_time"]
-			tmpDict["guiContext"]=con["guicontext_name"]
-			tmpDict["values"]=self.__iInt.readDataset(con["transaction_name"])
-			self.__iMap[self.__session]["dynamic"][con["transaction_name"]]=tmpDict
+			# only write to dict, if transaction fits filter or no filter is set.
+			if con["transaction_name"].find(self.__filter) != -1 or not self.__filter:
+				tmpDict=dict()
+				tmpDict["contentset_names"]=con["contentset_names"]
+				tmpDict["timestemp"]=con["start_time"]
+				tmpDict["guiContext"]=con["guicontext_name"]
+				tmpDict["values"]=self.__iInt.readDataset(con["transaction_name"])
+				self.__iMap[self.__session]["dynamic"][con["transaction_name"]]=tmpDict
 		self.__iMap[self.__session]["static"]=self.__readStaticData()
 		
 			
