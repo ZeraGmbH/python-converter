@@ -12,6 +12,7 @@ outputFile=""
 engine=""
 session=""
 params=""
+filterExp=""
 
 def setInputPath(p_path):
     global inputFile
@@ -33,6 +34,10 @@ def setParams(p_params):
     global params
     params=p_params
 
+def setFilter(p_filter):
+    global filterExp
+    filterExp=p_filter
+
 def checkInputFile():
     retVal=False
     my_file = Path(inputFile)
@@ -53,6 +58,7 @@ def convert():
     print(inputFile)
     print(outputFile)
     print(engine)
+    print(filterExp)
     print(params)
     if(checkInputFile() ==False):
         return False
@@ -63,6 +69,8 @@ def convert():
         if converter.setInputFile(inputFile) == False:
             retVal=False
         if converter.setOutputFile(outputFile) == False:
+            retVal=False
+        if converter.setFilter(filterExp) == False:
             retVal=False
         if converter.setUserScript(engine) == False:
             retVal=False
