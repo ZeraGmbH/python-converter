@@ -355,7 +355,7 @@ class UserScript:
         result=dict()
         eleList=list()
 
-        for ch in range(1,9):
+        for ch in range(1,7):
             result=dict()
             eleList=list()
             eleList.append({"ID" : metadata["session"]})
@@ -366,7 +366,7 @@ class UserScript:
             eleList.append({"Datatype" : "Harmonic-Data"})
             NameAdd=""
 
-            if ch < 5:
+            if ch < 4:
                 NameAdd=" U"+ str(ch)
             else:
                 NameAdd=" I"+ str(ch-4)
@@ -380,7 +380,7 @@ class UserScript:
             eleList.append({"M-Mode" : ""})
             eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
 
-            if ch < 5:
+            if ch < 4:
                 eleList.append({"Channel" : "UL"+ str(ch)})
             else:
                 eleList.append({"Channel" : "IL"+ str(ch-4)})
