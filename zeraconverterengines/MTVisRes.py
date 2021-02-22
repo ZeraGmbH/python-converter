@@ -365,11 +365,14 @@ class UserScript:
             eleList.append({"Function" : "Harmonics-Measurement"})
             eleList.append({"Datatype" : "Harmonic-Data"})
             NameAdd=""
+            unit=""
 
             if ch < 4:
                 NameAdd=" U"+ str(ch)
+                unit="V"
             else:
                 NameAdd=" I"+ str(ch-4)
+                unit="A"
 
             eleList.append(self.TimeCommon("HT "+NameAdd+" ",input))
 
@@ -393,14 +396,18 @@ class UserScript:
             real = vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[2]
             imag = vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[3]
             baseAbs = np.linalg.norm(np.array([float(real),float(imag)]))
-            baseAng = np.angle(np.array([float(real),float(imag)]))
+            baseAng = np.angle(np.complex(float(real),float(imag)), deg=True)
             for sample in vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";"):
                 count = count + 1
                 if count >= 2:
                     count = 0
                     imag = sample
                     val = np.array([float(real),float(imag)])
-                    eleList.append({"Harm" :  self.formatNumber(i)+";"+ self.formatNumber(np.linalg.norm(val)/baseAbs*100)+";%;"+ self.formatNumber(np.angle(np.complex(val[0],val[1]), deg=True))+";deg"})
+                    if i != 1:
+                        eleList.append({"Harm" :  str(i)+";"+ self.formatNumber(np.linalg.norm(val)/baseAbs*100)+";%;"+ self.formatNumber(np.angle(np.complex(val[0],val[1]), deg=True))+";deg"})
+                    else:
+                        eleList.append({"Harm" :  str(i)+";"+self.formatNumber(baseAbs)+";"+unit+";"+self.formatNumber(baseAng)+";deg"})
+
                     i=i+1
                 else:
                     real = sample
