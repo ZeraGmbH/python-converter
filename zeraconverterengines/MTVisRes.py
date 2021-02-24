@@ -589,11 +589,11 @@ class UserScript:
         eleList.append({"Function" : "Register-Test"})
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
-        if vals["SPM1Module1"]["PAR_Targeted"] == 1:
+        if vals["SEM1Module1"]["PAR_Targeted"] == 1:
             eleList.append({"Type" : "Duration"})        
         else:
             eleList.append({"Type" : "Start/Stop"})  
-        eleList.append({"E-MTime" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+";s"}) # wird benötigt
+        eleList.append({"E-MTime" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+" s"}) # wird benötigt
         eleList.append({"Energie" :  self.formatNumber(vals["SEM1Module1"]["ACT_Energy"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})          # wird benötigt
         eleList.append({"E-Begin" :  self.formatNumber(vals["SEM1Module1"]["PAR_T0Input"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})    # wird benötigt
         eleList.append({"E-End" :  self.formatNumber(vals["SEM1Module1"]["PAR_T1input"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})      # wird benötigt
@@ -637,11 +637,11 @@ class UserScript:
         eleList.append({"Function" : "Register-Test"})
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
-        if vals["SEM1Module1"]["PAR_Targeted"] == 1:
+        if vals["SPM1Module1"]["PAR_Targeted"] == 1:
             eleList.append({"Type" : "Duration"})        
         else:
             eleList.append({"Type" : "Start/Stop"})  
-        eleList.append({"P-MTime" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+";s"}) # wird benötigt
+        eleList.append({"P-MTime" :  self.formatNumber(vals["SPM1Module1"]["ACT_Time"])+" s"}) # wird benötigt
         # eleList.append({"Energie" : ""})   
         # eleList.append({"E-Begin" : ""})    
         # eleList.append({"E-End" : ""})      
