@@ -545,7 +545,7 @@ class UserScript:
 
         # eleList.append({"RF" : ""})
         eleList.append({"Cz" :  self.formatNumber(vals["SEC1Module1"]["PAR_DutConstant"])+";"+"x1"+";"+ self.formatNumber(vals["SEC1Module1"]["PAR_DUTConstUnit"])})
-        eleList.append({"M-Puls" :  self.formatNumber(vals["SEC1Module1"]["PAR_MRate"])})
+        eleList.append({"M-Puls" :  str(vals["SEC1Module1"]["PAR_MRate"])})
         eleList.append({"M-Inp" : self.formatNumber(vals["SEC1Module1"]["PAR_DutInput"])})
         eleList.append({"Error" :  self.formatNumber(vals["SEC1Module1"]["ACT_Result"])})
         eleList.append({"N-Value" : ""})
