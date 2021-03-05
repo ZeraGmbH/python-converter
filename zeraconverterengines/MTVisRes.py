@@ -354,8 +354,18 @@ class UserScript:
         endresult=list()
         result=dict()
         eleList=list()
+        channelMap=dict()
+        channelMap["1"]=["U1","V"]
+        channelMap["2"]=["U2","V"]
+        channelMap["3"]=["U3","V"]
+        channelMap["4"]=["I1","A"]
+        channelMap["5"]=["I2","A"]
+        channelMap["6"]=["I3","A"]
+        channelMap["7"]=["UAUX","V"]
+        channelMap["8"]=["IAUX","A"]
 
-        for ch in range(1,7):
+
+        for ch in range(1,9):
             result=dict()
             eleList=list()
             eleList.append({"ID" : metadata["session"]})
@@ -367,13 +377,8 @@ class UserScript:
             NameAdd=""
             unit=""
 
-            if ch < 4:
-                NameAdd=" U"+ str(ch)
-                unit="V"
-            else:
-                NameAdd=" I"+ str(ch-4)
-                unit="A"
-
+            NameAdd=channelMap[str(ch)][0]
+            unit=channelMap[str(ch)][1]
             eleList.append(self.TimeCommon("HT "+NameAdd+" ",input))
 
             eleList.append(self.RangeCommon(input,metadata))
@@ -382,11 +387,7 @@ class UserScript:
             eleList.append({"I-PrimSek" : "1/1;A;1.00"})
             eleList.append({"M-Mode" : ""})
             eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
-
-            if ch < 4:
-                eleList.append({"Channel" : "UL"+ str(ch)})
-            else:
-                eleList.append({"Channel" : "IL"+ str(ch-4)})
+            eleList.append({"Channel" : NameAdd})
             
             if vals["THDNModule1"]["ACT_THDN"+ str(ch)] is not None:
                 eleList.append({"Total-Harm" :  self.formatNumber(vals["THDNModule1"]["ACT_THDN"+ str(ch)])+";%"})
