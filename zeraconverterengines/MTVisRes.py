@@ -5,6 +5,7 @@ import numpy as np
 import zeraconverterengines.Common as zeracom
 import warnings
 import logging
+import json
 
 
 class UserScript:
@@ -548,11 +549,16 @@ class UserScript:
         eleList.append({"Cz" :  self.formatNumber(vals["SEC1Module1"]["PAR_DutConstant"])+";"+"x1"+";"+ self.formatNumber(vals["SEC1Module1"]["PAR_DUTConstUnit"])})
         eleList.append({"M-Puls" :  str(vals["SEC1Module1"]["PAR_MRate"])})
         eleList.append({"M-Inp" : self.formatNumber(vals["SEC1Module1"]["PAR_DutInput"])})
-        eleList.append({"Error" :  self.formatNumber(vals["SEC1Module1"]["ACT_Result"])})
-        eleList.append({"N-Value" : ""})
-        eleList.append({"Spread" : ""})
-        eleList.append({"Average" : ""})
-        eleList.append({"Deviation" : ""})
+        eleList.append({"Error" :  self.formatNumber(vals["SEC1Module1"]["ACT_Result"])}+"%")
+        if vals["SEC1Module1"]["PAR_MeasCount"] > 1:
+            multimeas=json.loads(vals["SEC1Module1"]["ACT_MulResult"])
+            eleList.append({"N-Value" : str(vals["SEC1Module1"]["PAR_MeasCount"])})
+            eleList.append({"Spread" : ""})
+            eleList.append({"Average" : self.formatNumber(multimeas["mean"])+"%"})
+            if vals["SEC1Module1"]["PAR_MeasCount"] > 2:
+                eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN1"])+"%"})
+            else:
+                eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN"])+"%"})
 
         result["#childs"]=eleList
         return result
