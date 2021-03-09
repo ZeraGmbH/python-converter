@@ -555,10 +555,7 @@ class UserScript:
             eleList.append({"N-Value" : str(vals["SEC1Module1"]["PAR_MeasCount"])})
             eleList.append({"Spread" : ""})
             eleList.append({"Average" : self.formatNumber(multimeas["mean"])+"%"})
-            if vals["SEC1Module1"]["PAR_MeasCount"] > 2:
-                eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN1"])+"%"})
-            else:
-                eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN"])+"%"})
+            eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN1"])+"%"})
 
         result["#childs"]=eleList
         return result
