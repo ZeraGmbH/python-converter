@@ -556,8 +556,9 @@ class UserScript:
         if totalCount > 1:
             eleList.append({"N-Value" : str(totalCount)})
             eleList.append({"Spread" : ""})
-            eleList.append({"Average" : self.formatNumber(multimeas["mean"])+"%"})
-            eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN1"])+"%"})
+            # In case we store multi measurement with no power, all results are NaN/null here
+            eleList.append({"Average" : self.formatNumber(multimeas["mean"])+"%" if multimeas["mean"] else "---"})
+            eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN1"])+"%"} if multimeas["stddevN1"] else "---")
 
         result["#childs"]=eleList
         return result
