@@ -550,15 +550,19 @@ class UserScript:
         eleList.append({"M-Puls" :  str(vals["SEC1Module1"]["PAR_MRate"])})
         eleList.append({"M-Inp" : self.formatNumber(vals["SEC1Module1"]["PAR_DutInput"])})
         eleList.append({"Error" :  self.formatNumber(vals["SEC1Module1"]["ACT_Result"])+"%"})
-        if vals["SEC1Module1"]["PAR_MeasCount"] > 1:
-            multimeas=json.loads(vals["SEC1Module1"]["ACT_MulResult"])
-            eleList.append({"N-Value" : str(vals["SEC1Module1"]["PAR_MeasCount"])})
+        multimeas=json.loads(vals["SEC1Module1"]["ACT_MulResult"])
+        # maybe we should think about a totalCount in ACT_MulResult...
+        totalCount = vals["SEC1Module1"]["ACT_MulCount"]
+        if totalCount > 1:
+            eleList.append({"N-Value" : str(totalCount)})
             eleList.append({"Spread" : ""})
             eleList.append({"Average" : self.formatNumber(multimeas["mean"])+"%"})
-            if vals["SEC1Module1"]["PAR_MeasCount"] > 2:
-                eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN1"])+"%"})
-            else:
-                eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN"])+"%"})
+            eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN1"])+"%"})
+        else:
+            eleList.append({"N-Value" : ""})
+            eleList.append({"Spread" : ""})
+            eleList.append({"Average" : ""})
+            eleList.append({"Deviation" : ""})
 
         result["#childs"]=eleList
         return result
