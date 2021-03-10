@@ -549,7 +549,7 @@ class UserScript:
         eleList.append({"Cz" :  self.formatNumber(vals["SEC1Module1"]["PAR_DutConstant"])+";"+"x1"+";"+ self.formatNumber(vals["SEC1Module1"]["PAR_DUTConstUnit"])})
         eleList.append({"M-Puls" :  str(vals["SEC1Module1"]["PAR_MRate"])})
         eleList.append({"M-Inp" : self.formatNumber(vals["SEC1Module1"]["PAR_DutInput"])})
-        eleList.append({"Error" :  self.formatNumber(vals["SEC1Module1"]["ACT_Result"])}+"%")
+        eleList.append({"Error" :  self.formatNumber(vals["SEC1Module1"]["ACT_Result"])+"%"})
         if vals["SEC1Module1"]["PAR_MeasCount"] > 1:
             multimeas=json.loads(vals["SEC1Module1"]["ACT_MulResult"])
             eleList.append({"N-Value" : str(vals["SEC1Module1"]["PAR_MeasCount"])})
