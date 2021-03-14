@@ -555,7 +555,7 @@ class UserScript:
         totalCount = vals["SEC1Module1"]["ACT_MulCount"]
         if totalCount > 1:
             eleList.append({"N-Value" : str(totalCount)})
-            eleList.append({"Spread" : ""})
+            eleList.append({"Spread" : self.formatNumber(multimeas["range"])+"%"})
             eleList.append({"Average" : self.formatNumber(multimeas["mean"])+"%"})
             eleList.append({"Deviation" : self.formatNumber(multimeas["stddevN1"])+"%"})
         else:
