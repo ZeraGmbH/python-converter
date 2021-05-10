@@ -168,7 +168,7 @@ class UserScript:
             date=datetimeObj.strftime("%m.%d.%Y")
         elif "de" in self.__local:
             time=datetimeObj.strftime("%H:%M:%S")
-            date=datetimeObj.strftime("%H:%M:%S")
+            date=datetimeObj.strftime("%d.%m.%Y")
         else:
             time=datetimeObj.strftime("%H:%M:%S")
             date=datetimeObj.strftime("%m.%d.%Y")           
