@@ -2,13 +2,10 @@
 
 #Systemmodules
 import sys, getopt
-import math
 
 #custom imports
 from pythonconverter_pkg import ConversionUnit as con
 
-#testimports
-from pythonconverter_pkg import XmlInterface as zxml
 
 def enum(**enums):
     return type('Enum', (), enums)
@@ -25,6 +22,7 @@ parameters = ""
 usecase = useDef.Help
 gui = False
 converter = object
+filterExp= ""
 
 
 
