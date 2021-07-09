@@ -158,8 +158,8 @@ class UserScript:
                                         retVal=False
         return retVal
 
-    def TimeCommon(self,preadd,input):
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
+    def TimeCommon(self,preadd,compList):
+        datetimeObj= datetime.strptime(compList["timestemp"], '%a %b %d %H:%M:%S %Y')
         eleList=list()
         time=""
         date=""
@@ -177,8 +177,8 @@ class UserScript:
         return eleList
 
 
-    def RangeCommon(self,input, metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def RangeCommon(self,compList, metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         eleList=list()
         URange=float(0)
         IRange=float(0)
@@ -194,8 +194,8 @@ class UserScript:
         eleList.append({"I-Range" :  self.formatNumber(IRange)+";"+iDictVal["unit"]})
         return eleList
 
-    def ActualValuesCommon(self,input, metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def ActualValuesCommon(self,compList, metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         eleList=list()
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : "DEU"})
@@ -206,7 +206,7 @@ class UserScript:
         eleList.append({"I-PrimSek" : "1/1;A;1.00"})
         eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         
-        eleList.append(self.RangeCommon(input,metadata))
+        eleList.append(self.RangeCommon(compList,metadata))
 
         UPN=list()
 
@@ -301,8 +301,8 @@ class UserScript:
         return eleList
 
 
-    def LambdaCommon(self,input, metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def LambdaCommon(self,compList, metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         eleList=list()
 
         eleList.append({"Lambda1" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda1"])})
@@ -312,16 +312,16 @@ class UserScript:
 
         return eleList
 
-    def convertZeraGuiActualValues(self,input, metadata):
+    def convertZeraGuiActualValues(self,compList, metadata):
         endResult=list()
         result=dict()
         eleList=list()
         eleList.append({"Datatype" : "Actual-Values"})
         eleList.append({"Function" : "Value-Measurement"})
 
-        eleList.append(self.TimeCommon("AV ",input))
-        eleList.append(self.ActualValuesCommon(input,metadata))
-        eleList.append(self.LambdaCommon(input,metadata))
+        eleList.append(self.TimeCommon("AV ",compList))
+        eleList.append(self.ActualValuesCommon(compList,metadata))
+        eleList.append(self.LambdaCommon(compList,metadata))
         
         result["#childs"]=eleList
         endResult.append(result)
@@ -329,29 +329,29 @@ class UserScript:
 
 
 
-    def convertZeraGuiVectorDiagramm(self,input, metadata):
+    def convertZeraGuiVectorDiagramm(self,compList, metadata):
         endResult=list()
         result=dict()
         eleList=list()
-        eleList.append(self.TimeCommon("VV ",input))
+        eleList.append(self.TimeCommon("VV ",compList))
         eleList.append({"Datatype" : "Actual-Values"})
         eleList.append({"Function" : "Vector-Measurement"})
-        eleList.append(self.ActualValuesCommon(input,metadata))
-        eleList.append(self.LambdaCommon(input,metadata))
+        eleList.append(self.ActualValuesCommon(compList,metadata))
+        eleList.append(self.LambdaCommon(compList,metadata))
         
         
         result["#childs"]=eleList
         endResult.append(result)
         return endResult
 
-    def convertZeraGuiPowerValues(self,input, metadata):
-        return self.convertZeraGuiActualValues(input,metadata)
+    def convertZeraGuiPowerValues(self,compList, metadata):
+        return self.convertZeraGuiActualValues(compList,metadata)
 
-    def convertZeraGuiRMSValues(self,input, metadata):
-        return self.convertZeraGuiActualValues(input,metadata)
+    def convertZeraGuiRMSValues(self,compList, metadata):
+        return self.convertZeraGuiActualValues(compList,metadata)
 
-    def convertZeraGuiHarmonicTable(self,input, metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def convertZeraGuiHarmonicTable(self,compList, metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         endresult=list()
         result=dict()
         eleList=list()
@@ -380,9 +380,9 @@ class UserScript:
 
             NameAdd=channelMap[str(ch)][0]
             unit=channelMap[str(ch)][1]
-            eleList.append(self.TimeCommon("HT "+NameAdd+" ",input))
+            eleList.append(self.TimeCommon("HT "+NameAdd+" ",compList))
 
-            eleList.append(self.RangeCommon(input,metadata))
+            eleList.append(self.RangeCommon(compList,metadata))
 
             eleList.append({"U-PrimSek" : "1/1;U;1.00"})
             eleList.append({"I-PrimSek" : "1/1;A;1.00"})
@@ -419,13 +419,13 @@ class UserScript:
 
         return endresult
 
-    def convertZeraGuiHarmonicChart(self,input,metadata):
-        return self.convertZeraGuiHarmonicTable(input,metadata)
+    def convertZeraGuiHarmonicChart(self,compList,metadata):
+        return self.convertZeraGuiHarmonicTable(compList,metadata)
         
         
         
-    def convertZeraGuiCurveDisplay(self,input,metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def convertZeraGuiCurveDisplay(self,compList,metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -441,14 +441,14 @@ class UserScript:
             eleList.append({"Function" : "Curve-Measurement"})
             eleList.append({"Datatype" : "Sample-Data"})
 
-            eleList.append(self.TimeCommon("CD "+"UI "+str(ch)+" ",input))
+            eleList.append(self.TimeCommon("CD "+"UI "+str(ch)+" ",compList))
 
             eleList.append({"U-PrimSek" : "1"})
             eleList.append({"I-PrimSek" : "1"})
             eleList.append({"M-Mode" : ""})
             eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
 
-            eleList.append(self.RangeCommon(input,metadata))
+            eleList.append(self.RangeCommon(compList,metadata))
 
             i=0    
             for sample in vals["OSCIModule1"]["ACT_OSCI"+ str(ch)].split(";"):
@@ -473,8 +473,8 @@ class UserScript:
 
 
 
-    def convertZeraGuiHarmonicPowerTable(self,input,metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def convertZeraGuiHarmonicPowerTable(self,compList,metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -490,14 +490,14 @@ class UserScript:
             eleList.append({"Function" : "Selektiv-Measurement"})
             eleList.append({"Datatype" : "Selektiv-Data"})
 
-            eleList.append(self.TimeCommon("HP "+"UI"+ str(ch)+" ",input))
+            eleList.append(self.TimeCommon("HP "+"UI"+ str(ch)+" ",compList))
 
             eleList.append({"U-PrimSek" : "1/1;V;1.00"})
             eleList.append({"I-PrimSek" : "1/1;A;1.00"})
             eleList.append({"M-Mode" : ""})
             eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
 
-            eleList.append(self.RangeCommon(input,metadata))
+            eleList.append(self.RangeCommon(compList,metadata))
             
 
             eleList.append({"ChannelU" : "U"+ str(ch)})
@@ -517,18 +517,18 @@ class UserScript:
 
         return endResult
 
-    def convertZeraGuiHarmonicPowerChart(self,input,metadata):
-        return self.convertZeraGuiHarmonicPowerTable(input,metadata)
+    def convertZeraGuiHarmonicPowerChart(self,compList,metadata):
+        return self.convertZeraGuiHarmonicPowerTable(compList,metadata)
 
-    def convertZeraGuiMeterTest(self,input,metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def convertZeraGuiMeterTest(self,compList,metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
 
-        eleList=self.ActualValuesCommon(input, metadata)
-        eleList.append(self.LambdaCommon(input,metadata))
-        eleList.append(self.TimeCommon("MT ",input))
+        eleList=self.ActualValuesCommon(compList, metadata)
+        eleList.append(self.LambdaCommon(compList,metadata))
+        eleList.append(self.TimeCommon("MT ",compList))
 
         eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         eleList.append({"AdjustData" : ""})
@@ -567,11 +567,11 @@ class UserScript:
         result["#childs"]=eleList
         return result
 
-    def convertZeraGuiEnergyComparison(self,input, metadata):
+    def convertZeraGuiEnergyComparison(self,compList, metadata):
         print("MtVis can not display Energy Comparison Data")
 
-    def convertZeraGuiEnergyRegister(self,input,metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def convertZeraGuiEnergyRegister(self,compList,metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -580,11 +580,11 @@ class UserScript:
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
         eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         eleList.append({"AdjustData" : "ok"})
-        datetimeObj= datetime.strptime(input["timestemp"], '%a %b %d %H:%M:%S %Y')
+        datetimeObj= datetime.strptime(compList["timestemp"], '%a %b %d %H:%M:%S %Y')
 
-        eleList.append(self.TimeCommon("ER ",input))
+        eleList.append(self.TimeCommon("ER ",compList))
         
-        eleList.append(self.RangeCommon(input,metadata))
+        eleList.append(self.RangeCommon(compList,metadata))
         
         mode=""
         if  self.formatNumber(vals["SEM1Module1"]["PAR_RefInput"]) == "P":
@@ -619,8 +619,8 @@ class UserScript:
         result["#childs"]=eleList
         return result
 
-    def convertZeraGuiPowerRegister(self,input, metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def convertZeraGuiPowerRegister(self,compList, metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -630,9 +630,9 @@ class UserScript:
         eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         eleList.append({"AdjustData" : ""})
 
-        eleList.append(self.TimeCommon("PR ",input))
+        eleList.append(self.TimeCommon("PR ",compList))
         
-        eleList.append(self.RangeCommon(input,metadata))
+        eleList.append(self.RangeCommon(compList,metadata))
         
         mode = ""
         if  self.formatNumber(vals["SPM1Module1"]["PAR_RefInput"]) == "P":
@@ -667,8 +667,8 @@ class UserScript:
         result["#childs"]=eleList
         return result
 
-    def convertZeraGuiVoltageBurden(self,input, metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def convertZeraGuiVoltageBurden(self,compList, metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -678,9 +678,9 @@ class UserScript:
         #eleList.append({"Device-Typ" : metadata["device"]["type"]})
         #eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         #eleList.append({"AdjustData" : ""})
-        eleList=self.ActualValuesCommon(input, metadata)
+        eleList=self.ActualValuesCommon(compList, metadata)
 
-        eleList.append(self.TimeCommon("VB ",input))
+        eleList.append(self.TimeCommon("VB ",compList))
 
         #eleList.append(self.RangeCommon(input,metadata))
 
@@ -699,8 +699,8 @@ class UserScript:
         result["#childs"]=eleList
         return result
 
-    def convertZeraGuiCurrentBurden(self,input, metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def convertZeraGuiCurrentBurden(self,compList, metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -710,9 +710,9 @@ class UserScript:
         #eleList.append({"Device-Typ" : metadata["device"]["type"]})
         #eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         #eleList.append({"AdjustData" : ""})
-        eleList=self.ActualValuesCommon(input, metadata)
+        eleList=self.ActualValuesCommon(compList, metadata)
 
-        eleList.append(self.TimeCommon("CB ",input))
+        eleList.append(self.TimeCommon("CB ",compList))
         eleList.append({"M-Mode" : ""})
         #eleList.append(self.RangeCommon(input,metadata))
         #eleList.append({"U-PrimSek" : "1/1;V;1.00"})
@@ -729,8 +729,8 @@ class UserScript:
         result["#childs"]=eleList
         return result
 
-    def convertZeraGuiInstrumentTransformer(self,input, metadata):
-        vals=zeracom.entityComponentSort(input["values"])
+    def convertZeraGuiInstrumentTransformer(self,compList, metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
@@ -740,9 +740,9 @@ class UserScript:
         eleList.append({"Device-No" : metadata["device"]["serial"]}) 
         eleList.append({"AdjustData" : ""})
 
-        eleList.append(self.TimeCommon("IT ",input))
+        eleList.append(self.TimeCommon("IT ",compList))
         
-        eleList.append(self.RangeCommon(input,metadata))
+        eleList.append(self.RangeCommon(compList,metadata))
         
         eleList.append({"M-Mode" : ""})
         eleList.append({"U-PrimSek" : "1/1;V;1.00"})
@@ -780,13 +780,13 @@ class UserScript:
         result["#childs"]=eleList
         return result
 
-    def convertZeraGuiCEDPower(self,input, metadata):
+    def convertZeraGuiCEDPower(self,compList, metadata):
         print("MtVis can not display CED Power Data")
 
-    def convertZeraGuiDCReference(self,input, metadata):
+    def convertZeraGuiDCReference(self,compList, metadata):
         print("MtVis can not Display DC Reference Data")
 
-    def convertZeraAll(self,input, metadata):
+    def convertZeraAll(self,compList, metadata):
         endResult=list()
         funcList=list()
         funcList.append(self.convertZeraGuiActualValues)
@@ -800,7 +800,7 @@ class UserScript:
         funcList.append(self.convertZeraGuiInstrumentTransformer)
         for func in funcList:
             try:
-                ret=func(input,metadata)
+                ret=func(compList,metadata)
                 if type(ret) is list:
                     for ele in ret:
                         res=dict()
