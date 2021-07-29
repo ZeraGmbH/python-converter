@@ -114,7 +114,7 @@ class UserScript:
 
     def manipulate(self):
         retVal=True
-        self.__outputDict["result-Data"]={"#childs" : []}
+        self.__outputDict["Result-Data"]={"#childs" : []}
         retVal=self.iterateTransactions()
         return retVal
 
