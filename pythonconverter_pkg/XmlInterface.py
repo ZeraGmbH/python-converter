@@ -70,7 +70,6 @@ class XmlInterface(zdb.DatabaseInterface):
 
     def indent(self,elem, level=0):
         i = "\n" + level*"  "
-        length=len(elem)
         if len(elem):
             if not elem.text or not elem.text.strip():
                 elem.text = i + "  "
