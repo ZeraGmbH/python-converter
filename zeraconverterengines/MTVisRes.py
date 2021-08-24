@@ -123,8 +123,8 @@ class UserScript:
         device=dict()
         try:
             vals = zeracom.entityComponentSort(zeracom.getStatic(self.__inputDict))
-            device["type"]=str(vals["StatusModule1"]["INF_DeviceType"])
-            device["serial"]=str(vals["StatusModule1"]["PAR_SerialNr"])
+            device["type"]=str(zeracom.readSafe(vals,["StatusModule1","INF_DeviceType"]))
+            device["serial"]=str(zeracom.readSafe(vals,["StatusModule1","PAR_SerialNr"]))
         except:
             device["type"]="ZVP Device"
             device["serial"]="N/A"
@@ -148,11 +148,11 @@ class UserScript:
                                             for ele in resList:
                                                 res=dict()
                                                 res["Result"]=ele
-                                                self.__outputDict["result-Data"]["#childs"].append(res)
+                                                self.__outputDict["Result-Data"]["#childs"].append(res)
                                         elif type(resList) is dict:
                                             res=dict()
                                             res["Result"]=resList
-                                            self.__outputDict["result-Data"]["#childs"].append(res)
+                                            self.__outputDict["Result-Data"]["#childs"].append(res)
                                     except BaseException as err:
                                         logging.warning("Converting transaction "+key+" of type "+content+" failed with: "+str(err))
                                         retVal=False
@@ -183,8 +183,8 @@ class UserScript:
         URange=float(0)
         IRange=float(0)
         for c in range(1,3):
-            uDictVal=zeracom.UnitNumberSeperator(vals["RangeModule1"]["PAR_Channel"+ str(c)+"Range"])
-            iDictVal=zeracom.UnitNumberSeperator(vals["RangeModule1"]["PAR_Channel"+ str(c+3)+"Range"])
+            uDictVal=zeracom.UnitNumberSeperator(zeracom.readSafe(vals,["RangeModule1","PAR_Channel"+ str(c)+"Range"]))
+            iDictVal=zeracom.UnitNumberSeperator(zeracom.readSafe(vals,["RangeModule1","PAR_Channel"+ str(c+3)+"Range"]))
             if URange < uDictVal["value"]:
                 URange=uDictVal["value"]
             if IRange < iDictVal["value"]:
@@ -210,28 +210,28 @@ class UserScript:
 
         UPN=list()
 
-        UPN.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN1"].split(";")]))
-        UPN.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN2"].split(";")]))
-        UPN.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN3"].split(";")]))
+        UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN1"]).split(";")]))
+        UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN2"]).split(";")]))
+        UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN3"]).split(";")]))
 
-        eleList.append({"UPN1" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN1"])+";V"})
-        eleList.append({"UPN2" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN2"])+";V"})
-        eleList.append({"UPN3" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN3"])+";V"})
+        eleList.append({"UPN1" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]))+";V"})
+        eleList.append({"UPN2" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]))+";V"})
+        eleList.append({"UPN3" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"]))+";V"})
 
-        eleList.append({"UPP12" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPP1"])+";V"})
-        eleList.append({"UPP23" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPP2"])+";V"})
-        eleList.append({"UPP31" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPP3"])+";V"})
+        eleList.append({"UPP12" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP1"]))+";V"})
+        eleList.append({"UPP23" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP2"]))+";V"})
+        eleList.append({"UPP31" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP3"]))+";V"})
 
         IL=list()
 
         #@TODO: is this 4,5,6 or 5,6,7 AUX channel
-        IL.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN4"].split(";")]))
-        IL.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN5"].split(";")]))
-        IL.append(np.array([float(i) for i in vals["DFTModule1"]["ACT_DFTPN6"].split(";")]))
+        IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN4"]).split(";")]))
+        IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN5"]).split(";")]))
+        IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN6"]).split(";")]))
 
-        eleList.append({"IL1" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN4"])+";A"})
-        eleList.append({"IL2" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN5"])+";A"})
-        eleList.append({"IL3" :  self.formatNumber(vals["RMSModule1"]["ACT_RMSPN6"])+";A"})
+        eleList.append({"IL1" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]))+";A"})
+        eleList.append({"IL2" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]))+";A"})
+        eleList.append({"IL3" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"]))+";A"})
 
         eleList.append({"IDC1" : ""})
         eleList.append({"IDC2" : ""})
@@ -255,29 +255,29 @@ class UserScript:
         eleList.append({"PHI2" :  self.formatNumber(UI2)+";deg"})
         eleList.append({"PHI3" :  self.formatNumber(UI3)+";deg"})
         
-        eleList.append({"S1" :   self.formatNumber(vals["POWER1Module3"]["ACT_PQS1"])+";VA"})
-        eleList.append({"S2" :   self.formatNumber(vals["POWER1Module3"]["ACT_PQS2"])+";VA"})
-        eleList.append({"S3" :   self.formatNumber(vals["POWER1Module3"]["ACT_PQS3"])+";VA"})
+        eleList.append({"S1" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]))+";VA"})
+        eleList.append({"S2" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]))+";VA"})
+        eleList.append({"S3" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]))+";VA"})
         
-        eleList.append({"P1" :  self.formatNumber(vals["POWER1Module1"]["ACT_PQS1"])+";W"})
-        eleList.append({"P2" :  self.formatNumber(vals["POWER1Module1"]["ACT_PQS2"])+";W"})
-        eleList.append({"P3" :  self.formatNumber(vals["POWER1Module1"]["ACT_PQS3"])+";W"})
+        eleList.append({"P1" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"]))+";W"})
+        eleList.append({"P2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"]))+";W"})
+        eleList.append({"P3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"]))+";W"})
 
-        eleList.append({"Q1" :  self.formatNumber(vals["POWER1Module2"]["ACT_PQS1"])+";VAR"})
-        eleList.append({"Q2" :  self.formatNumber(vals["POWER1Module2"]["ACT_PQS2"])+";VAR"})
-        eleList.append({"Q3" :  self.formatNumber(vals["POWER1Module2"]["ACT_PQS3"])+";VAR"})
+        eleList.append({"Q1" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"]))+";VAR"})
+        eleList.append({"Q2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"]))+";VAR"})
+        eleList.append({"Q3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"]))+";VAR"})
 
         
-        SP=vals["POWER1Module1"]["ACT_PQS1"]+vals["POWER1Module1"]["ACT_PQS2"]+vals["POWER1Module1"]["ACT_PQS3"]
-        SQ=vals["POWER1Module2"]["ACT_PQS1"]+vals["POWER1Module2"]["ACT_PQS2"]+vals["POWER1Module2"]["ACT_PQS3"]
-        SS=vals["POWER1Module3"]["ACT_PQS1"]+vals["POWER1Module3"]["ACT_PQS2"]+vals["POWER1Module3"]["ACT_PQS3"]
+        SP=zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"])
+        SQ=zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"])
+        SS=zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"])
 
         eleList.append({"SS" :  self.formatNumber(SS)+";VA"})
         eleList.append({"SP" :  self.formatNumber(SP)+";W"})
         eleList.append({"SQ" :  self.formatNumber(SQ)+";var"})
         
         eleList.append({"RF" : ""})
-        eleList.append({"FREQ" :  self.formatNumber(vals["RangeModule1"]["ACT_Frequency"])})
+        eleList.append({"FREQ" :  self.formatNumber(zeracom.readSafe(vals,["RangeModule1","ACT_Frequency"]))})
         eleList.append({"UD1" : ""})
         eleList.append({"UD2" : ""})
         eleList.append({"UD3" : ""})
@@ -305,10 +305,10 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=list()
 
-        eleList.append({"Lambda1" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda1"])})
-        eleList.append({"Lambda2" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda2"])})
-        eleList.append({"Lambda3" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda3"])})
-        eleList.append({"SLambda" :  self.formatNumber(vals["LambdaModule1"]["ACT_Lambda4"])})
+        eleList.append({"Lambda1" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda1"]))})
+        eleList.append({"Lambda2" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda2"]))})
+        eleList.append({"Lambda3" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda3"]))})
+        eleList.append({"SLambda" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda4"]))})
 
         return eleList
 
@@ -365,8 +365,12 @@ class UserScript:
         channelMap["7"]=["UAUX","V"]
         channelMap["8"]=["IAUX","A"]
 
+        upper=7
+        if "ACT_FFT7" in vals["FFTModule1"]:
+            upper=9
 
-        for ch in range(1,9):
+
+        for ch in range(1,upper):
             result=dict()
             eleList=list()
             eleList.append({"ID" : metadata["session"]})
@@ -390,16 +394,16 @@ class UserScript:
             eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
             eleList.append({"Channel" : NameAdd})
             
-            if vals["THDNModule1"]["ACT_THDN"+ str(ch)] is not None:
-                eleList.append({"Total-Harm" :  self.formatNumber(vals["THDNModule1"]["ACT_THDN"+ str(ch)])+";%"})
+            if zeracom.readSafe(vals,["THDNModule1","ACT_THDN"+ str(ch)]) is not None:
+                eleList.append({"Total-Harm" :  self.formatNumber(zeracom.readSafe(vals,["THDNModule1","ACT_THDN"+ str(ch)]))+";%"})
 
             count = 0
             i=0
-            real = vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[2]
-            imag = vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[3]
+            real = zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[2]
+            imag = zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[3]
             baseAbs = np.linalg.norm(np.array([float(real),float(imag)]))
             baseAng = np.angle(np.complex(float(real),float(imag)), deg=True)
-            for sample in vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";"):
+            for sample in zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";"):
                 count = count + 1
                 if count >= 2:
                     count = 0
@@ -451,14 +455,14 @@ class UserScript:
             eleList.append(self.RangeCommon(compList,metadata))
 
             i=0    
-            for sample in vals["OSCIModule1"]["ACT_OSCI"+ str(ch)].split(";"):
+            for sample in zeracom.readSafe(vals,["OSCIModule1","ACT_OSCI"+ str(ch)]).split(";"):
                 i=i+1
                 eleList.append({"SampleA" :  self.formatNumber(i)+";"+sample+";V"})
 
             eleList.append({"ChannelA" : "U"+ str(ch)})
 
             i=0    
-            for sample in vals["OSCIModule1"]["ACT_OSCI"+ str(ch+4)].split(";"):
+            for sample in zeracom.readSafe(vals,["OSCIModule1","ACT_OSCI"+ str(ch+4)]).split(";"):
                 i=i+1
                 eleList.append({"SampleB" :  self.formatNumber(i)+";"+sample+";A"})
 
@@ -502,14 +506,14 @@ class UserScript:
 
             eleList.append({"ChannelU" : "U"+ str(ch)})
             eleList.append({"ChannelI" : "I"+ str(ch)})
-
-            for i in range(1,41):
+            fftLen=len(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+str(ch)]).split(";"))
+            for i in range(1,int(fftLen/2)):
                 pqs=list()
-                U=np.linalg.norm(np.array([float(vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[2*i-1]),float(vals["FFTModule1"]["ACT_FFT"+ str(ch)].split(";")[2*i])]))
-                I=np.linalg.norm(np.array([float(vals["FFTModule1"]["ACT_FFT"+ str(ch+4)].split(";")[2*i-1]),float(vals["FFTModule1"]["ACT_FFT"+ str(ch+4)].split(";")[2*i])]))
-                pqs.append(float(vals["Power3Module1"]["ACT_HPP"+ str(ch)].split(";")[i]))
-                pqs.append(float(vals["Power3Module1"]["ACT_HPQ"+ str(ch)].split(";")[i]))
-                pqs.append(float(vals["Power3Module1"]["ACT_HPS"+ str(ch)].split(";")[i]))
+                U=np.linalg.norm(np.array([float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[2*i-1]),float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[2*i])]))
+                I=np.linalg.norm(np.array([float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch+4)]).split(";")[2*i-1]),float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch+4)]).split(";")[2*i])]))
+                pqs.append(float(zeracom.readSafe(vals,["Power3Module1","ACT_HPP"+ str(ch)]).split(";")[i]))
+                pqs.append(float(zeracom.readSafe(vals,["Power3Module1","ACT_HPQ"+ str(ch)]).split(";")[i]))
+                pqs.append(float(zeracom.readSafe(vals,["Power3Module1","ACT_HPS"+ str(ch)]).split(";")[i]))
                 eleList.append({"HarmValue" : "N;"+ self.formatNumber(i)+";U;"+ self.formatNumber(U)+";V;I;"+ self.formatNumber(I)+";A;P;"+ self.formatNumber(pqs[0])+";W;Q;"+ self.formatNumber(pqs[1])+";var;S;"+ self.formatNumber(pqs[2])+";VA"})
 
             result["#childs"]=eleList
@@ -537,22 +541,28 @@ class UserScript:
         eleList.append({"Place-No" : "1"})
 
         mode=""
-        if  self.formatNumber(vals["SEC1Module1"]["PAR_RefInput"]) == "P":
-            mode=vals["POWER1Module1"]["PAR_MeasuringMode"]
-        elif  self.formatNumber(vals["SEC1Module1"]["PAR_RefInput"]) == "Q":
-            mode=vals["POWER1Module2"]["PAR_MeasuringMode"]
-        elif  self.formatNumber(vals["SEC1Module1"]["PAR_RefInput"]) == "S":
-            mode=vals["POWER1Module3"]["PAR_MeasuringMode"]
+        if  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"])) == "P":
+            mode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
+        elif  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"])) == "Q":
+            mode=zeracom.readSafe(vals,["POWER1Module2","PAR_MeasuringMode"])
+        elif  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"])) == "S":
+            mode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
         eleList.append({"M-Mode" :  self.formatNumber(mode)})
 
         # eleList.append({"RF" : ""})
-        eleList.append({"Cz" :  self.formatNumber(vals["SEC1Module1"]["PAR_DutConstant"])+";"+"x1"+";"+ self.formatNumber(vals["SEC1Module1"]["PAR_DUTConstUnit"])})
-        eleList.append({"M-Puls" :  str(vals["SEC1Module1"]["PAR_MRate"])})
-        eleList.append({"M-Inp" : self.formatNumber(vals["SEC1Module1"]["PAR_DutInput"])})
-        eleList.append({"Error" :  self.formatNumber(vals["SEC1Module1"]["ACT_Result"])+"%"})
-        multimeas=json.loads(vals["SEC1Module1"]["ACT_MulResult"])
+        eleList.append({"Cz" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_DutConstant"]))+";"+"x1"+";"+ self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_DUTConstUnit"]))})
+        eleList.append({"M-Puls" :  str(zeracom.readSafe(vals,["SEC1Module1","PAR_MRate"]))})
+        eleList.append({"M-Inp" : self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_DutInput"]))})
+        eleList.append({"Error" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_Result"]))+"%"})
+        multiMeasJson=zeracom.readSafe(vals,["SEC1Module1","ACT_MulResult"])
+        totalCount=0
+        try:
+            multimeas=json.loads(multiMeasJson)
+            totalCount = zeracom.readSafe(vals,["SEC1Module1","ACT_MulCount"])
+        except:
+            totalCount=0
         # maybe we should think about a totalCount in ACT_MulResult...
-        totalCount = vals["SEC1Module1"]["ACT_MulCount"]
+        
         if totalCount > 1:
             eleList.append({"N-Value" : str(totalCount)})
             eleList.append({"Spread" : self.formatNumber(multimeas["range"])+"%"})
@@ -587,12 +597,12 @@ class UserScript:
         eleList.append(self.RangeCommon(compList,metadata))
         
         mode=""
-        if  self.formatNumber(vals["SEM1Module1"]["PAR_RefInput"]) == "P":
-            mode=vals["POWER1Module1"]["PAR_MeasuringMode"]
-        elif  self.formatNumber(vals["SEM1Module1"]["PAR_RefInput"]) == "Q":
-            mode=vals["POWER1Module2"]["PAR_MeasuringMode"]
-        elif  self.formatNumber(vals["SEM1Module1"]["PAR_RefInput"]) == "S":
-            mode=vals["POWER1Module3"]["PAR_MeasuringMode"]
+        if  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_RefInput"])) == "P":
+            mode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
+        elif  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_RefInput"])) == "Q":
+            mode=zeracom.readSafe(vals,["POWER1Module2","PAR_MeasuringMode"])
+        elif  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_RefInput"])) == "S":
+            mode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
         eleList.append({"M-Mode" :  self.formatNumber(mode)})
         eleList.append({"U-PrimSek" : "1/1;V;1.00"})
         eleList.append({"I-PrimSek" : "1/1;A;1.00"})
@@ -600,16 +610,16 @@ class UserScript:
         eleList.append({"Function" : "Register-Test"})
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
-        if vals["SEM1Module1"]["PAR_Targeted"] == 1:
+        if zeracom.readSafe(vals,["SEM1Module1","PAR_Targeted"]) == 1:
             eleList.append({"Type" : "Duration"})        
         else:
             eleList.append({"Type" : "Start/Stop"})  
-        eleList.append({"E-MTime" :  self.formatNumber(vals["SEM1Module1"]["ACT_Time"])+" s"}) # wird benötigt
-        eleList.append({"Energie" :  self.formatNumber(vals["SEM1Module1"]["ACT_Energy"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})          # wird benötigt
-        eleList.append({"E-Begin" :  self.formatNumber(vals["SEM1Module1"]["PAR_T0Input"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})    # wird benötigt
-        eleList.append({"E-End" :  self.formatNumber(vals["SEM1Module1"]["PAR_T1input"])+";"+ self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})      # wird benötigt
-        eleList.append({"E-Cz" :  self.formatNumber(vals["SEM1Module1"]["PAR_TXUNIT"])})       # wird benötigt
-        eleList.append({"E-Error" :  self.formatNumber(vals["SEM1Module1"]["ACT_Result"])+";%"})    # wird benötigt
+        eleList.append({"E-MTime" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Time"]))+" s"}) # wird benötigt
+        eleList.append({"Energie" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Energy"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})          # wird benötigt
+        eleList.append({"E-Begin" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_T0Input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})    # wird benötigt
+        eleList.append({"E-End" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_T1input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})      # wird benötigt
+        eleList.append({"E-Cz" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})       # wird benötigt
+        eleList.append({"E-Error" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Result"]))+";%"})    # wird benötigt
         # eleList.append({"Power" : ""})      
         # eleList.append({"P-Begin" : ""})    
         # eleList.append({"P-End" : ""})      
@@ -635,12 +645,12 @@ class UserScript:
         eleList.append(self.RangeCommon(compList,metadata))
         
         mode = ""
-        if  self.formatNumber(vals["SPM1Module1"]["PAR_RefInput"]) == "P":
-            mode=vals["POWER1Module1"]["PAR_MeasuringMode"]
-        elif  self.formatNumber(vals["SPM1Module1"]["PAR_RefInput"]) == "Q":
-            mode=vals["POWER1Module2"]["PAR_MeasuringMode"]
-        elif  self.formatNumber(vals["SPM1Module1"]["PAR_RefInput"]) == "S":
-            mode=vals["POWER1Module3"]["PAR_MeasuringMode"]
+        if  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_RefInput"])) == "P":
+            mode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
+        elif  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_RefInput"])) == "Q":
+            mode=zeracom.readSafe(vals,["POWER1Module2","PAR_MeasuringMode"])
+        elif  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_RefInput"])) == "S":
+            mode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
         eleList.append({"M-Mode" :  self.formatNumber(mode)})
         eleList.append({"U-PrimSek" : "1/1;V;1.00"})
         eleList.append({"I-PrimSek" : "1/1;A;1.00"})
@@ -648,21 +658,21 @@ class UserScript:
         eleList.append({"Function" : "Register-Test"})
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
-        if vals["SPM1Module1"]["PAR_Targeted"] == 1:
+        if zeracom.readSafe(vals,["SPM1Module1","PAR_Targeted"]) == 1:
             eleList.append({"Type" : "Duration"})        
         else:
             eleList.append({"Type" : "Start/Stop"})  
-        eleList.append({"P-MTime" :  self.formatNumber(vals["SPM1Module1"]["ACT_Time"])+" s"}) # wird benötigt
+        eleList.append({"P-MTime" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Time"]))+" s"}) # wird benötigt
         # eleList.append({"Energie" : ""})   
         # eleList.append({"E-Begin" : ""})    
         # eleList.append({"E-End" : ""})      
         # eleList.append({"E-Cz" : ""})       
         # eleList.append({"E-Error" : ""})    
-        eleList.append({"Power" :  self.formatNumber(vals["SPM1Module1"]["ACT_Power"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})          # wird benötigt
-        eleList.append({"P-Begin" :  self.formatNumber(vals["SPM1Module1"]["PAR_T0Input"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})    # wird benötigt
-        eleList.append({"P-End" :  self.formatNumber(vals["SPM1Module1"]["PAR_T1input"])+";"+ self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})      # wird benötigt
-        eleList.append({"P-Cz" :  self.formatNumber(vals["SPM1Module1"]["PAR_TXUNIT"])})       # wird benötigt
-        eleList.append({"P-Error" :  self.formatNumber(vals["SPM1Module1"]["ACT_Result"])+";%"})    # wird benötigt 
+        eleList.append({"Power" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Power"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})          # wird benötigt
+        eleList.append({"P-Begin" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_T0Input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})    # wird benötigt
+        eleList.append({"P-End" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_T1input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})      # wird benötigt
+        eleList.append({"P-Cz" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})       # wird benötigt
+        eleList.append({"P-Error" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Result"]))+";%"})    # wird benötigt 
 
         result["#childs"]=eleList
         return result
@@ -690,10 +700,10 @@ class UserScript:
         #eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "U-Burden"})
         eleList.append({"Datatype" : "UBurden-Value"})
-        eleList.append({"U-Nominal" :  self.formatNumber(vals["Burden1Module2"]["PAR_NominalRange"])+";V"}) 
-        eleList.append({"B-Nominal" :  self.formatNumber(vals["Burden1Module2"]["PAR_NominalBurden"])+";VA"}) 
-        eleList.append({"W-Length" :  self.formatNumber(vals["Burden1Module2"]["PAR_WireLength"])+";m"})   
-        eleList.append({"W-Gauge" :  self.formatNumber(vals["Burden1Module2"]["PAR_WCrosssection"])+";mm2"})  
+        eleList.append({"U-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalRange"]))+";V"}) 
+        eleList.append({"B-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalBurden"]))+";VA"}) 
+        eleList.append({"W-Length" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_WireLength"]))+";m"})   
+        eleList.append({"W-Gauge" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_WCrosssection"]))+";mm2"})  
         
 
         result["#childs"]=eleList
@@ -720,10 +730,10 @@ class UserScript:
         #eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "I-Burden"})
         eleList.append({"Datatype" : "IBurden-Value"})
-        eleList.append({"I-Nominal" :  self.formatNumber(vals["Burden1Module1"]["PAR_NominalRange"])+";A"})  
-        eleList.append({"B-Nominal" :   self.formatNumber(vals["Burden1Module1"]["PAR_NominalBurden"])+";VA"})  
-        eleList.append({"W-Length" :   self.formatNumber(vals["Burden1Module1"]["PAR_WireLength"])+";m"})   
-        eleList.append({"W-Gauge" :   self.formatNumber(vals["Burden1Module1"]["PAR_WCrosssection"])+";mm2"})
+        eleList.append({"I-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalRange"]))+";A"})  
+        eleList.append({"B-Nominal" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalBurden"]))+";VA"})  
+        eleList.append({"W-Length" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_WireLength"]))+";m"})   
+        eleList.append({"W-Gauge" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_WCrosssection"]))+";mm2"})
         
 
         result["#childs"]=eleList
@@ -759,17 +769,17 @@ class UserScript:
         # eleList.append({"VT-Angle-deg" : ""})
         # eleList.append({"VT-Angle-min" : ""})
         # eleList.append({"VT-Angle-crad" : ""})
-        eleList.append({"CT-N" :  self.formatNumber(vals["Transformer1Module1"]["PAR_PrimClampPrim"])+"/"+ self.formatNumber(vals["Transformer1Module1"]["PAR_PrimClampSec"])+";A"})
-        eleList.append({"CT-X" :  self.formatNumber(vals["Transformer1Module1"]["PAR_DutPrimary"])+"/"+ self.formatNumber(vals["Transformer1Module1"]["PAR_DutSecondary"])+";A"})
-        eleList.append({"CT_Xc" :  self.formatNumber(vals["Transformer1Module1"]["PAR_SecClampPrim"])+"/"+ self.formatNumber(vals["Transformer1Module1"]["PAR_SecClampSec"])+"/"+ self.formatNumber(vals["Transformer1Module1"]["PAR_DutSecondary"])+";A"})
-        eleList.append({"I-Prim" :  self.formatNumber(vals["Transformer1Module1"]["ACT_IXPrimary1"])+";A"})     # wird benötigt
-        eleList.append({"I-Sek-N" :  self.formatNumber(vals["Transformer1Module1"]["ACT_INSecondary1"])+";A"})     # wird benötigt
-        eleList.append({"I-Sek-X" :  self.formatNumber(vals["Transformer1Module1"]["ACT_IXSecondary1"])+";A"})     # wird benötigt
+        eleList.append({"CT-N" :  self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","PAR_PrimClampPrim"]))+"/"+ self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","PAR_PrimClampSec"]))+";A"})
+        eleList.append({"CT-X" :  self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","PAR_DutPrimary"]))+"/"+ self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","PAR_DutSecondary"]))+";A"})
+        eleList.append({"CT_Xc" :  self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","PAR_SecClampPrim"]))+"/"+ self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","PAR_SecClampSec"]))+"/"+ self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","PAR_DutSecondary"]))+";A"})
+        eleList.append({"I-Prim" :  self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","ACT_IXPrimary1"]))+";A"})     # wird benötigt
+        eleList.append({"I-Sek-N" :  self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","ACT_INSecondary1"]))+";A"})     # wird benötigt
+        eleList.append({"I-Sek-X" :  self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","ACT_IXSecondary1"]))+";A"})     # wird benötigt
         #@TODO XC is missing
-        eleList.append({"CT-Value" :  self.formatNumber(vals["Transformer1Module1"]["ACT_Error1"])+";%"})
-        eleList.append({"CT-Angle-deg" :  self.formatNumber(vals["Transformer1Module1"]["ACT_Angle1"])+";deg"})
-        acrad=vals["Transformer1Module1"]["ACT_Angle1"]*math.pi/180*100
-        amin=vals["Transformer1Module1"]["ACT_Angle1"]*60
+        eleList.append({"CT-Value" :  self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","ACT_Error1"]))+";%"})
+        eleList.append({"CT-Angle-deg" :  self.formatNumber(zeracom.readSafe(vals,["Transformer1Module1","ACT_Angle1"]))+";deg"})
+        acrad=zeracom.readSafe(vals,["Transformer1Module1","ACT_Angle1"])*math.pi/180*100
+        amin=zeracom.readSafe(vals,["Transformer1Module1","ACT_Angle1"])*60
         eleList.append({"CT-Angle-min" :  self.formatNumber(amin)+";min"})
         eleList.append({"CT-Angle-crad" :  self.formatNumber(acrad)+";crad"})
         # eleList.append({"VTCT-Value" : ""})
