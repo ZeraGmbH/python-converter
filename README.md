@@ -70,6 +70,49 @@ If the engines api does not fit, the pythonscript will hang in debugging mode or
 in normal execution. You will not be able to catch the python exception. However it should not crash 
 the C++ application either. Only the terminal will tell you what happened in this case.
 
+## Error Flags
+
+Errors are stored in __errorRegister and __userScriptErrors. 
+
+errorRegister contains genral programm errors and warnings.
+userScriptErrors contains userScript specific errors. Their 
+meaning might vary depending on the script(engine).
+
+Make sure to use only the first 16 bit in each register.
+
+errorRegister
+   - 0: all good
+- errors:
+   - 1: userScript error
+   - 2: open input database error
+   - 4: open output database error
+   - 8: database read error
+   - 16: manipulate set error
+   - 32: write output database error
+   - 64: not used
+   - 128: not used
+- warnings:
+   - 256: input database close warning
+   - 512: invalid parameter syntax warning
+   - 1024: session empty or does not exist
+    ....
+
+MTVisRes userScript
+
+userScriptErrors
+  - 0: all good
+- if error:
+  - 1: critical error (not used)
+- details and warnigs:
+  - 2: one or more transactions not exported warning
+
+
+Zeraconverter.py and CppInterface.convert() returns: 
+
+|16 bit| 16 bit |
+|------|--------|
+|userScriptErrors|errorRegister|
+
 ## Write your custom conversion engine
 
 comming soon
