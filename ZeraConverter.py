@@ -54,6 +54,8 @@ def main(argv):
     global converter
     global parameters
 
+    retVal = 0
+
     print("Database Converter")
 
 
@@ -95,19 +97,25 @@ def main(argv):
         if session != "" and inputFile != "" and outputFile != "":
             usecase=useDef.Convert
 
-    try:
         if usecase != useDef.Help:
-            converter.setFilter(filterExp)
-            converter.setInputFile(inputFile)
-            converter.setOutputFile(outputFile)
-            converter.setType(conversionType)
-            converter.seteParam(parameters)
-            if converter.setUserScript(userscript) == False:
-                raise Exception()
-    #converter.setConfigFile(configFile)
-    except:
-        print("engine import error")
-        return None
+            try:
+                if converter.seteParam(parameters) == False:
+                    raise Exception("set parameter error")
+                if converter.setInputFile(inputFile) == False:
+                    raise Exception("set input file error")
+                if converter.setOutputFile(outputFile) == False:
+                    raise Exception("set output file error")
+                if converter.setFilter(filterExp) == False:
+                    raise Exception("set Filter Error")
+                if converter.setUserScript(userscript) == False:
+                    raise Exception("Load Userscript error")
+                if converter.convert(session) == False:
+                    raise Exception("Conversion Error")
+            except Exception as error:
+                print("Fatal Error:", error)
+            retVal = converter.getErrorRegister() | (converter.getUserScriptErrors() << 16)
+            print(bin(retVal))
+            return retVal
 
         
     if usecase == useDef.Help:
