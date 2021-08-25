@@ -113,13 +113,13 @@ class UserScript:
         return strNum
 
     def manipulate(self):
-        retVal=True
+        retVal=0
         self.__outputDict["Result-Data"]={"#childs" : []}
         retVal=self.iterateTransactions()
         return retVal
 
     def iterateTransactions(self):
-        retVal=True
+        retVal=0
         device=dict()
         try:
             vals = zeracom.entityComponentSort(zeracom.getStatic(self.__inputDict))
@@ -155,7 +155,7 @@ class UserScript:
                                             self.__outputDict["Result-Data"]["#childs"].append(res)
                                     except BaseException as err:
                                         logging.warning("Converting transaction "+key+" of type "+content+" failed with: "+str(err))
-                                        retVal=False
+                                        retVal=2
         return retVal
 
     def TimeCommon(self,preadd,compList):
