@@ -19,38 +19,26 @@ class SqlInterface(zdb.DatabaseInterface):
 
     def readDatasetList(self, p_record):
         ret=""
-        try:
-            self.db.execute("SELECT transactions.transaction_name, transactions.contentset_names, transactions.guiContext_name ,transactions.start_time FROM sessions INNER JOIN transactions ON sessions.id = transactions.sessionid Where session_name=?", [p_record])
-            ret=self.db.fetchall()
-        except:
-            print("is not a compatible database")
+        self.db.execute("SELECT transactions.transaction_name, transactions.contentset_names, transactions.guiContext_name ,transactions.start_time FROM sessions INNER JOIN transactions ON sessions.id = transactions.sessionid Where session_name=?", [p_record])
+        ret=self.db.fetchall()
         return [dict(row) for row in ret]
 
     def readSessionList(self):
         ret=""
-        try:
-            self.db.execute("SELECT session_name FROM sessions")
-            ret=self.db.fetchall()
-        except:
-            print("is not a compatible database")    
+        self.db.execute("SELECT session_name FROM sessions")
+        ret=self.db.fetchall()
         return ret
         
     def readDataset(self,datasetName):
         ret=""
-        try:
-            self.db.execute("SELECT entities.entity_name, components.component_name, valuemap.component_value FROM transactions INNER JOIN transactions_valuemap ON transactions.id = transactions_valuemap.transactionsid INNER JOIN valuemap ON transactions_valuemap.valueid = valuemap.id INNER JOIN components ON valuemap.componentid = components.id INNER JOIN entities ON valuemap.entityiesid = entities.id WHERE transaction_name =?;", [datasetName])
-            ret=self.db.fetchall()
-        except:
-            print("is not a compatible database")    
+        self.db.execute("SELECT entities.entity_name, components.component_name, valuemap.component_value FROM transactions INNER JOIN transactions_valuemap ON transactions.id = transactions_valuemap.transactionsid INNER JOIN valuemap ON transactions_valuemap.valueid = valuemap.id INNER JOIN components ON valuemap.componentid = components.id INNER JOIN entities ON valuemap.entityiesid = entities.id WHERE transaction_name =?;", [datasetName])
+        ret=self.db.fetchall()
         return [dict(row) for row in ret]
 
     def readStaticData(self,p_record):
         ret=""
-        try:
-            self.db.execute("SELECT entities.entity_name, components.component_name, valuemap.component_value FROM sessions INNER JOIN sessions_valuemap ON sessions.id = sessions_valuemap.sessionsid INNER JOIN valuemap ON sessions_valuemap.valueid = valuemap.id INNER JOIN components ON valuemap.componentid = components.id INNER JOIN entities ON valuemap.entityiesid = entities.id WHERE session_name =?;", [p_record])
-            ret=self.db.fetchall()
-        except:
-            print("is not a compatible database")    
+        self.db.execute("SELECT entities.entity_name, components.component_name, valuemap.component_value FROM sessions INNER JOIN sessions_valuemap ON sessions.id = sessions_valuemap.sessionsid INNER JOIN valuemap ON sessions_valuemap.valueid = valuemap.id INNER JOIN components ON valuemap.componentid = components.id INNER JOIN entities ON valuemap.entityiesid = entities.id WHERE session_name =?;", [p_record])
+        ret=self.db.fetchall()
         return [dict(row) for row in ret]
 
 

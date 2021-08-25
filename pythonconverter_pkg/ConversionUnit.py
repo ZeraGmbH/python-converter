@@ -109,44 +109,53 @@ class ConversionUnit:
     def __readStaticData(self):
         return self.__iInt.readStaticData(self.__session)
 
-    #read from input database
+    # read from input database
     def __read(self):
-        print("not implemented yet")
-        transList = self.__readTransactionList()
-        self.__iMap[self.__session]=dict()
-        self.__iMap[self.__session]["dynamic"]=dict()
-        self.__iMap[self.__session]["static"]=dict()
-        for con in transList :
-            # only write to dict, if transaction fits filter or no filter is set.
-            if con["transaction_name"].find(self.__filter) != -1 or not self.__filter:
-                tmpDict=dict()
-                tmpDict["contentset_names"]=con["contentset_names"]
-                tmpDict["timestemp"]=con["start_time"]
-                tmpDict["guiContext"]=con["guicontext_name"]
-                tmpDict["values"]=self.__iInt.readDataset(con["transaction_name"])
-                self.__iMap[self.__session]["dynamic"][con["transaction_name"]]=tmpDict
-        self.__iMap[self.__session]["static"]=self.__readStaticData()
-        
-            
-
-    
-    # manipulate input dataset (dict)
-    def __manipulateSet(self):
-        retVal=True
-        if self.__userScriptPath != "" :
-            manUnit=self.__userScript.UserScript()
-            manUnit.setParams(self.__eparameter)
-            manUnit.setInput(self.__iMap)
-            retVal=manUnit.manipulate()
-            self.__oMap = manUnit.getOutput()
+        retVal = True
+        try:
+            transList = self.__readTransactionList()
+            self.__iMap[self.__session] = dict()
+            self.__iMap[self.__session]["dynamic"] = dict()
+            self.__iMap[self.__session]["static"] = dict()
+            for con in transList:
+                # only write to dict, if transaction fits filter or no filter is set.
+                if con["transaction_name"].find(self.__filter) != -1 or not self.__filter:
+                    tmpDict = dict()
+                    tmpDict["contentset_names"] = con["contentset_names"]
+                    tmpDict["timestemp"] = con["start_time"]
+                    tmpDict["guiContext"] = con["guicontext_name"]
+                    tmpDict["values"] = self.__iInt.readDataset(
+                        con["transaction_name"])
+                    self.__iMap[self.__session]["dynamic"][con["transaction_name"]] = tmpDict
+            self.__iMap[self.__session]["static"] = self.__readStaticData()
+        except:
+            retVal = False
         return retVal
 
+    # manipulate input dataset (dict)
+
+    def __manipulateSet(self):
+        retVal = True
+        if self.__userScriptPath != "":
+            try:
+                manUnit = self.__userScript.UserScript()
+                manUnit.setParams(self.__eparameter)
+                manUnit.setInput(self.__iMap)
+                self.__userScriptErrors = manUnit.manipulate()
+                self.__oMap = manUnit.getOutput()
+            except:
+                retVal = False
+        else:
+            retVal = False
+        return retVal
 
     # write data to output database
+
     def __write(self):
-        self.__oInt.writeDataset(self.__oMap)
-        self.__oInt.saveChanges()
-
-
-
-
+        retVal=True
+        try:
+            self.__oInt.writeDataset(self.__oMap)
+            self.__oInt.saveChanges()
+        except:
+            retVal=False
+        return retVal
