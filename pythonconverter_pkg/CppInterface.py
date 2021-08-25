@@ -53,29 +53,31 @@ def checkEngine():
         retVal=True
     return retVal
 
+
 def convert():
-    retVal=True
+    retVal=0
     print(inputFile)
     print(outputFile)
     print(engine)
     print(filterExp)
     print(params)
-    if(checkInputFile() ==False):
-        return False
+    if checkInputFile() == False:
+        return 2 # open database error
     try:       
         converter = con.ConversionUnit()
         if converter.seteParam(params) == False:
-            retVal=False
+            raise Exception("set parameter error")
         if converter.setInputFile(inputFile) == False:
-            retVal=False
+            raise Exception("set input file error")
         if converter.setOutputFile(outputFile) == False:
-            retVal=False
+            raise Exception("set output file error")
         if converter.setFilter(filterExp) == False:
-            retVal=False
+            raise Exception("set Filter Error")
         if converter.setUserScript(engine) == False:
-            retVal=False
+            raise Exception("Load Userscript error")
         if converter.convert(session) == False:
-            retVal=False
-    except:
-        return False
+            raise Exception("Conversion Error")
+    except Exception as error:
+        logging.warning("Fatal Error: ",  error)
+    retVal = converter.getErrorRegister() | (converter.getUserScriptErrors() << 16)
     return retVal
