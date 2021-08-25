@@ -17,11 +17,15 @@ class XmlInterface(zdb.DatabaseInterface):
         self.root = []
 
     def openDatabase(self, uri):
-        self.path = uri
-        if path.exists(uri):
-            uri=uri+"_"
-        if not path.exists(path.dirname(self.path)):
-            os.makedirs(path.dirname(self.path))
+        try:
+            self.path = uri
+            if path.exists(uri):
+                uri=uri+"_"
+            if not path.exists(path.dirname(self.path)):
+                os.makedirs(path.dirname(self.path))
+            return True
+        except:
+            return False
 
 
     def closeDatabase(self):

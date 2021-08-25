@@ -8,17 +8,24 @@ class SqlLiteInterface(zsq.SqlInterface):
         super().__init__()
 
     def openDatabase(self,uri):
+        retVal=True
         self.file=uri
         try:
             self.conn = sqlite3.connect(uri)
             self.conn.row_factory = sqlite3.Row
             self.db=self.conn.cursor()
-        except sqlite3.Error:
-            print("db error")
-        return 1
+        except sqlite3.Error as Error:
+            print("db error", Error)
+            retVal=False
+        return retVal
 
     def closeDatabase(self):
-        self.conn.close()
+        retVal=True
+        try:
+            self.conn.close()
+        except:
+            retVal=False
+        return retVal
 
     def execute(self, command):
         self.db.execute(command)
