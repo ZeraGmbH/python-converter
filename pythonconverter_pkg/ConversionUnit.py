@@ -7,20 +7,34 @@ import json
 class ConversionUnit:
     def __init__(self):
         print("init Converison Unit")
-        self.__inputFile=""
-        self.__outputFile=""
-        self.__conType=""
-        self.__conFile=""
-        self.__userScriptPath=""
-        self.__userScript=""
-        self.__session=""
-        self.__filter=""
-        self.__eparameter=dict()
-        self.__iMap=dict()
-        self.__oMap=dict()
+        self.__inputFile = ""
+        self.__outputFile = ""
+        self.__conType = ""
+        self.__conFile = ""
+        self.__userScriptPath = ""
+        self.__userScript = ""
+        self.__session = ""
+        self.__filter = ""
+        self.__eparameter = dict()
+        self.__iMap = dict()
+        self.__oMap = dict()
+        self.__userScriptErrors = 0
+        self.__errorRegister = 0
         self.__dbFact = dbFactory.DatabaseInterfaceFactory()
         self.__iInt = self.__dbFact.InputInterface(self.__conType)
         self.__oInt = self.__dbFact.OutputInterface(self.__conType)
+
+    def getErrorRegister(self):
+        return self.__errorRegister
+
+    def clearErrorRegister(self):
+        self.__errorRegister = 0
+
+    def getUserScriptErrors(self):
+        return self.__userScriptErrors
+
+    def clearUserScriptErrors(self):
+        self.__userScriptErrors = 0
 
     def setInputFile(self, inputFile):
         self.__inputFile=inputFile
