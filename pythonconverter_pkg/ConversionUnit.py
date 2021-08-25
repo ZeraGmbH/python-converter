@@ -3,6 +3,8 @@
 import importlib.util
 from pythonconverter_pkg import DatabaseInterfaceFactory as dbFactory
 import json
+import warnings
+import logging
 
 class ConversionUnit:
     def __init__(self):
@@ -58,13 +60,15 @@ class ConversionUnit:
 
     def seteParam(self, eparams):
         retVal=True
-        try:
-            json_acceptable_string = eparams.replace("'", "\"")
-            self.__eparameter = json.loads(json_acceptable_string)
-        except:
-            self.__eparameter = dict()
-            self.__errorRegister = self.__errorRegister | (1  << 9)
-            console.log("Bad Parameters. Ignoring!")
+        self.__eparameter = dict()
+        if eparams:
+            try:
+                json_acceptable_string = eparams.replace("'", "\"")
+                self.__eparameter = json.loads(json_acceptable_string)
+            except:
+                self.__eparameter = dict()
+                self.__errorRegister = self.__errorRegister | (1  << 9)
+                logging.warning("Bad Parameters. Ignoring!")
         return retVal
 
     def setUserScript(self, file):
