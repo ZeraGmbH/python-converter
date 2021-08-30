@@ -105,6 +105,7 @@ userScriptErrors
   - 1: critical error (not used)
 - details and warnigs:
   - 2: one or more transactions not exported warning
+  - 4: one or more unknown transaction (guiContext or Content type)
 
 
 Zeraconverter.py and CppInterface.convert() returns: 

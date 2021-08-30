@@ -68,6 +68,8 @@ class UserScript:
         funcMap["ZeraAll"]=self.convertZeraAll
         self.__convertDict["ZeraAll"]=funcMap
 
+        self.__convertDict["ZeraQuartzReference"]=dict()
+
         #print(self.__convertDict)
 
     def setInput(self, p_dict):
@@ -134,28 +136,33 @@ class UserScript:
                 if key.find("Snapshot") != -1:
                     contentSets=self.__inputDict[session]["dynamic"][key]["contentset_names"].split(",")
                     guiContext=self.__inputDict[session]["dynamic"][key]["guiContext"]
-                    for content in self.__convertDict.keys():
-                        if content in contentSets:
-                            for guiCon in self.__convertDict[content].keys():
-                                if guiCon == guiContext or content == "ZeraAll":
-                                    try:
-                                        if content == "ZeraAll":
-                                            resList=self.__convertDict[content]["ZeraAll"](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key, "device" : device})
-                                        else:
-                                            resList=self.__convertDict[content][guiCon](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key,"device" : device})
+                    for content in contentSets:
+                        if content in self.__convertDict.keys():
+                            if guiContext in self.__convertDict[content].keys() or content == "ZeraAll":
+                                try:
+                                    if content == "ZeraAll":
+                                        resList=self.__convertDict[content]["ZeraAll"](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key, "device" : device})
+                                    else:
+                                        resList=self.__convertDict[content][guiContext](self.__inputDict[session]["dynamic"][key],{"session" : session, "transaction" : key,"device" : device})
 
-                                        if type(resList) is list:
-                                            for ele in resList:
-                                                res=dict()
-                                                res["Result"]=ele
-                                                self.__outputDict["Result-Data"]["#childs"].append(res)
-                                        elif type(resList) is dict:
+                                    if type(resList) is list:
+                                        for ele in resList:
                                             res=dict()
-                                            res["Result"]=resList
+                                            res["Result"]=ele
                                             self.__outputDict["Result-Data"]["#childs"].append(res)
-                                    except BaseException as err:
-                                        logging.warning("Converting transaction "+key+" of type "+content+" failed with: "+str(err))
-                                        retVal=2
+                                    elif type(resList) is dict:
+                                        res=dict()
+                                        res["Result"]=resList
+                                        self.__outputDict["Result-Data"]["#childs"].append(res)
+                                except BaseException as err:
+                                    logging.warning("Converting transaction "+key+" of type "+content+" failed with: "+str(err))
+                                    retVal=retVal | 2
+                            else:
+                                retVal=retVal | 4
+                                logging.warning("Unknown guicontext: " + guiContext)
+                        else:
+                            retVal=retVal | 4
+                            logging.warning("Unknown content type : " + content)
         return retVal
 
     def TimeCommon(self,preadd,compList):
