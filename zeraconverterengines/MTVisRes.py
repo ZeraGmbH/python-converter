@@ -485,7 +485,7 @@ class UserScript:
 
         rangeMax=3
         if zeracom.readSafe(vals,["FFTModule1","ACT_FFT8"]) != "":
-            readMax=4
+            rangeMax=4
 
         for ch in range(1,4):
             result=dict()
