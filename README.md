@@ -86,31 +86,31 @@ meaning might vary depending on the script(engine).
 Make sure to use only the first 16 bit in each register.
 
 errorRegister
-   - 0: all good
-- errors:
-   - 1: userScript error
-   - 2: open input database error
-   - 4: open output database error
-   - 8: database read error
-   - 16: manipulate set error
-   - 32: write output database error
-   - 64: not used
-   - 128: not used
-- warnings:
-   - 256: input database close warning
-   - 512: invalid parameter syntax warning
-   - 1024: session empty or does not exist
+   - value 0: all good
+- error bits:
+   - 0: userScript error
+   - 1: open input database error
+   - 2: open output database error
+   - 3: database read error
+   - 4: manipulate set error
+   - 5: write output database error
+   - 6: not used
+   - 7: not used
+- warning bits:
+   - 8: input database close warning
+   - 9: invalid parameter syntax warning
+   - 10: session empty or does not exist
     ....
 
 MTVisRes userScript
 
 userScriptErrors
-  - 0: all good
-- if error:
-  - 1: critical error (not used)
-- details and warnigs:
-  - 2: one or more transactions not exported warning
-  - 4: one or more unknown transaction (guiContext or Content type)
+  - value 0: all good
+- error bits:
+  - 0 (16): critical error (not used)
+- detail and warning bits:
+  - 1 (17): one or more transactions not exported warning
+  - 2 (18): one or more unknown transaction (guiContext or Content type)
 
 Zeraconverter.py and CppInterface.convert() returns:
 
