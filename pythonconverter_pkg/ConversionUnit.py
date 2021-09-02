@@ -1,10 +1,9 @@
 
 #custom modules
 import importlib.util
-from pythonconverter_pkg import DatabaseInterfaceFactory as dbFactory
 import json
-import warnings
 import logging
+from pythonconverter_pkg import DatabaseInterfaceFactory as dbFactory
 
 class ConversionUnit:
     def __init__(self):
