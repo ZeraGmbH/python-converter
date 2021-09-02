@@ -11,22 +11,22 @@ class UserScript:
 
     def __init__(self):
         print("init Manipulation")
-        self.__inputDict=dict()
-        self.__outputDict=dict()
+        self.__inputDict={}
+        self.__outputDict={}
         # decimal places definition
         self.__dec=4
         self.__digits=8
         self.__local="EN"
 
-        self.__convertDict = dict()
-        funcMap=dict()
+        self.__convertDict = {}
+        funcMap={}
         funcMap["ZeraGuiActualValues"]=self.convertZeraGuiActualValues
         funcMap["ZeraGuiVectorDiagramm"]=self.convertZeraGuiVectorDiagramm
         funcMap["ZeraGuiPowerValues"]=self.convertZeraGuiPowerValues
         funcMap["ZeraGuiRMSValues"]=self.convertZeraGuiRMSValues
 
         self.__convertDict["ZeraActualValues"]=funcMap
-        funcMap=dict()
+        funcMap={}
 
         funcMap["ZeraGuiHarmonicTable"]=self.convertZeraGuiHarmonicTable
         funcMap["ZeraGuiHarmonicChart"]=self.convertZeraGuiHarmonicChart
@@ -34,11 +34,11 @@ class UserScript:
         funcMap["ZeraGuiHarmonicPowerChart"]=self.convertZeraGuiHarmonicPowerChart
 
         self.__convertDict["ZeraHarmonics"]=funcMap
-        funcMap=dict()
+        funcMap={}
 
         funcMap["ZeraGuiCurveDisplay"]=self.convertZeraGuiCurveDisplay
         self.__convertDict["ZeraCurves"]=funcMap
-        funcMap=dict()
+        funcMap={}
 
         funcMap["ZeraGuiMeterTest"]=self.convertZeraGuiMeterTest
         funcMap["ZeraGuiEnergyComparison"]=self.convertZeraGuiEnergyComparison
@@ -46,28 +46,28 @@ class UserScript:
         funcMap["ZeraGuiPowerRegister"]=self.convertZeraGuiPowerRegister
 
         self.__convertDict["ZeraComparison"]=funcMap
-        funcMap=dict()
+        funcMap={}
 
         funcMap["ZeraGuiVoltageBurden"]=self.convertZeraGuiVoltageBurden
         funcMap["ZeraGuiCurrentBurden"]=self.convertZeraGuiCurrentBurden
 
         self.__convertDict["ZeraBurden"]=funcMap
-        funcMap=dict()
+        funcMap={}
 
         funcMap["ZeraGuiInstrumentTransformer"]=self.convertZeraGuiInstrumentTransformer
 
         self.__convertDict["ZeraTransformer"]=funcMap
-        funcMap=dict()
+        funcMap={}
 
         funcMap["ZeraGuiCEDPower"]=self.convertZeraGuiCEDPower
         funcMap["ZeraGuiDCReference"]=self.convertZeraGuiDCReference
 
         self.__convertDict["ZeraDCReference"]=funcMap
-        funcMap=dict()
+        funcMap={}
         funcMap["ZeraAll"]=self.convertZeraAll
         self.__convertDict["ZeraAll"]=funcMap
 
-        self.__convertDict["ZeraQuartzReference"]=dict()
+        self.__convertDict["ZeraQuartzReference"]={}
 
         #print(self.__convertDict)
 
@@ -121,7 +121,7 @@ class UserScript:
 
     def iterateTransactions(self):
         retVal=0
-        device=dict()
+        device={}
         try:
             vals = zeracom.entityComponentSort(zeracom.getStatic(self.__inputDict))
             device["type"]=str(zeracom.readSafe(vals,["StatusModule1","INF_DeviceType"]))
@@ -148,11 +148,11 @@ class UserScript:
 
                                     if type(resList) is list:
                                         for ele in resList:
-                                            res=dict()
+                                            res={}
                                             res["Result"]=ele
                                             self.__outputDict["Result-Data"]["#childs"].append(res)
                                     elif type(resList) is dict:
-                                        res=dict()
+                                        res={}
                                         res["Result"]=resList
                                         self.__outputDict["Result-Data"]["#childs"].append(res)
                                 except BaseException as err:
@@ -322,7 +322,7 @@ class UserScript:
 
     def convertZeraGuiActualValues(self,compList, metadata):
         endResult=list()
-        result=dict()
+        result={}
         eleList=list()
         eleList.append({"Datatype" : "Actual-Values"})
         eleList.append({"Function" : "Value-Measurement"})
@@ -337,7 +337,7 @@ class UserScript:
 
     def convertZeraGuiVectorDiagramm(self,compList, metadata):
         endResult=list()
-        result=dict()
+        result={}
         eleList=list()
         eleList.append(self.TimeCommon("VV ",compList))
         eleList.append({"Datatype" : "Actual-Values"})
@@ -358,9 +358,9 @@ class UserScript:
     def convertZeraGuiHarmonicTable(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         endresult=list()
-        result=dict()
+        result={}
         eleList=list()
-        channelMap=dict()
+        channelMap={}
         channelMap["1"]=["U1","V"]
         channelMap["2"]=["U2","V"]
         channelMap["3"]=["U3","V"]
@@ -375,7 +375,7 @@ class UserScript:
             upper=9
 
         for ch in range(1,upper):
-            result=dict()
+            result={}
             eleList=list()
             eleList.append({"ID" : metadata["session"]})
             eleList.append({"Language" : "DEU"})
@@ -433,13 +433,13 @@ class UserScript:
 
     def convertZeraGuiCurveDisplay(self,compList,metadata):
         vals=zeracom.entityComponentSort(compList["values"])
-        result=dict()
+        result={}
         endResult=list()
         eleList=list()
         endResult.append(result)
 
         for ch in range(1,5):
-            result=dict()
+            result={}
             eleList=list()
             eleList.append({"ID" : metadata["session"]})
             eleList.append({"Language" : "DEU"})
@@ -481,7 +481,7 @@ class UserScript:
 
     def convertZeraGuiHarmonicPowerTable(self,compList,metadata):
         vals=zeracom.entityComponentSort(compList["values"])
-        result=dict()
+        result={}
         endResult=list()
         eleList=list()
 
@@ -490,7 +490,7 @@ class UserScript:
             rangeMax=4
 
         for ch in range(1,4):
-            result=dict()
+            result={}
             eleList=list()
             eleList.append({"ID" : metadata["session"]})
             eleList.append({"Language" : "DEU"})
@@ -531,7 +531,7 @@ class UserScript:
 
     def convertZeraGuiMeterTest(self,compList,metadata):
         vals=zeracom.entityComponentSort(compList["values"])
-        result=dict()
+        result={}
         eleList=list()
 
         eleList=self.ActualValuesCommon(compList, metadata)
@@ -588,7 +588,7 @@ class UserScript:
 
     def convertZeraGuiEnergyRegister(self,compList,metadata):
         vals=zeracom.entityComponentSort(compList["values"])
-        result=dict()
+        result={}
         eleList=list()
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : ""})
@@ -643,7 +643,7 @@ class UserScript:
 
     def convertZeraGuiPowerRegister(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
-        result=dict()
+        result={}
         eleList=list()
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : ""})
@@ -698,7 +698,7 @@ class UserScript:
 
     def convertZeraGuiVoltageBurden(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
-        result=dict()
+        result={}
         eleList=list()
 
         #eleList.append({"ID" : metadata["session"]})
@@ -732,7 +732,7 @@ class UserScript:
 
     def convertZeraGuiCurrentBurden(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
-        result=dict()
+        result={}
         eleList=list()
 
         #eleList.append({"ID" : metadata["session"]})
@@ -764,7 +764,7 @@ class UserScript:
 
     def convertZeraGuiInstrumentTransformer(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
-        result=dict()
+        result={}
         eleList=list()
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : "DEU"})
@@ -843,16 +843,16 @@ class UserScript:
                 ret=func(compList,metadata)
                 if type(ret) is list:
                     for ele in ret:
-                        res=dict()
+                        res={}
                         res=ele
                         endResult.append(res)
                 elif type(ret) is dict:
-                    res=dict()
+                    res={}
                     res=ret
                     endResult.append(res)
             except BaseException as err:
                 logging.warning("Converting transaction failed with: "+str(err))
-                res=dict()
+                res={}
 
         return endResult
 

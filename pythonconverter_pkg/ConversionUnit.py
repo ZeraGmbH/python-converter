@@ -16,9 +16,9 @@ class ConversionUnit:
         self.__userScript = ""
         self.__session = ""
         self.__filter = ""
-        self.__eparameter = dict()
-        self.__iMap = dict()
-        self.__oMap = dict()
+        self.__eparameter = {}
+        self.__iMap = {}
+        self.__oMap = {}
         self.__userScriptErrors = 0
         self.__errorRegister = 0
         self.__dbFact = dbFactory.DatabaseInterfaceFactory()
@@ -59,13 +59,13 @@ class ConversionUnit:
 
     def seteParam(self, eparams):
         retVal=True
-        self.__eparameter = dict()
+        self.__eparameter = {}
         if eparams:
             try:
                 json_acceptable_string = eparams.replace("'", "\"")
                 self.__eparameter = json.loads(json_acceptable_string)
             except:
-                self.__eparameter = dict()
+                self.__eparameter = {}
                 self.__errorRegister = self.__errorRegister | (1  << 9)
                 logging.warning("Bad Parameters. Ignoring!")
         return retVal
@@ -129,13 +129,13 @@ class ConversionUnit:
             transList = self.__readTransactionList()
             if len(transList) is 0:
                 self.__errorRegister = self.__errorRegister | (1  << 10)
-            self.__iMap[self.__session] = dict()
-            self.__iMap[self.__session]["dynamic"] = dict()
-            self.__iMap[self.__session]["static"] = dict()
+            self.__iMap[self.__session] = {}
+            self.__iMap[self.__session]["dynamic"] = {}
+            self.__iMap[self.__session]["static"] = {}
             for con in transList:
                 # only write to dict, if transaction fits filter or no filter is set.
                 if con["transaction_name"].find(self.__filter) != -1 or not self.__filter:
-                    tmpDict = dict()
+                    tmpDict = {}
                     tmpDict["contentset_names"] = con["contentset_names"]
                     tmpDict["timestemp"] = con["start_time"]
                     tmpDict["guiContext"] = con["guicontext_name"]
