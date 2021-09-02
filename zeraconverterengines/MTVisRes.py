@@ -186,6 +186,7 @@ class UserScript:
         return eleList
 
     def RangeCommon(self,compList, metadata):
+        #pylint: disable=unused-argument
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=list()
         URange=float(0)
@@ -308,6 +309,7 @@ class UserScript:
         return eleList
 
     def LambdaCommon(self,compList, metadata):
+        #pylint: disable=unused-argument
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=list()
 
@@ -530,7 +532,6 @@ class UserScript:
     def convertZeraGuiMeterTest(self,compList,metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
-        endResult=list()
         eleList=list()
 
         eleList=self.ActualValuesCommon(compList, metadata)
@@ -582,12 +583,12 @@ class UserScript:
         return result
 
     def convertZeraGuiEnergyComparison(self,compList, metadata):
+        #pylint: disable=unused-argument
         print("MtVis can not display Energy Comparison Data")
 
     def convertZeraGuiEnergyRegister(self,compList,metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
-        endResult=list()
         eleList=list()
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : ""})
@@ -643,7 +644,6 @@ class UserScript:
     def convertZeraGuiPowerRegister(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
-        endResult=list()
         eleList=list()
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : ""})
@@ -699,7 +699,6 @@ class UserScript:
     def convertZeraGuiVoltageBurden(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
-        endResult=list()
         eleList=list()
 
         #eleList.append({"ID" : metadata["session"]})
@@ -734,7 +733,6 @@ class UserScript:
     def convertZeraGuiCurrentBurden(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
-        endResult=list()
         eleList=list()
 
         #eleList.append({"ID" : metadata["session"]})
@@ -767,7 +765,6 @@ class UserScript:
     def convertZeraGuiInstrumentTransformer(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
-        endResult=list()
         eleList=list()
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : "DEU"})
@@ -822,9 +819,11 @@ class UserScript:
         return result
 
     def convertZeraGuiCEDPower(self,compList, metadata):
+        #pylint: disable=unused-argument
         print("MtVis can not display CED Power Data")
 
     def convertZeraGuiDCReference(self,compList, metadata):
+        #pylint: disable=unused-argument
         print("MtVis can not Display DC Reference Data")
 
     def convertZeraAll(self,compList, metadata):
