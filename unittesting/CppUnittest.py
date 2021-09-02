@@ -38,7 +38,6 @@ class TestCppInterface(unittest.TestCase):
         CppInterface.setEngine("zeraconverterengines.MTVisMain")
         CppInterface.setFilter("Snapshot")
         self.assertEqual(CppInterface.convert(),0)
-        
 
 if __name__ == '__main__':
     unittest.main()

@@ -22,7 +22,7 @@ class UserScript:
     def manipulate(self):
         print("manipultate")
         self.__outputDict["Main-Data"]={"#childs" : [{}]}
-        
+
         eleList=list()
         general=dict()
         customer=dict()
@@ -79,5 +79,4 @@ class UserScript:
         main["Main"]["#childs"].append(meter)
         self.__outputDict["Main-Data"]["#childs"].append(main)
         return 0
-        
 

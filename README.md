@@ -1,8 +1,10 @@
 # PythonConverter
 Zera value database to xml converter
 
-This application takes an sqlite3 database as Input and converts it into an 
-xml file. The The database has to follow the structure described in 
+This application takes an sqlite3 database as Input and converts it into an
+
+xml file. The The database has to follow the structure described in
+
 the topic sql structure.
 
 The output depends on the used engine. Two Engines are shipped in this pkg.
@@ -11,7 +13,7 @@ Creates MTVis Main.xml file from mt310s2 database
 2. MTVisRes.py
 Creates MTVis Result.xml file from mt310s2 database
 
-## Install 
+## Install
 
 ### qtCreator
 
@@ -66,16 +68,19 @@ Call the functions in following order:
 4. convert()
 ```
 If the input database or engine is not existing nothing will happen and ```convert()``` will return false.
-If the engines api does not fit, the pythonscript will hang in debugging mode or return with an exception 
-in normal execution. You will not be able to catch the python exception. However it should not crash 
+If the engines api does not fit, the pythonscript will hang in debugging mode or return with an exception
+
+in normal execution. You will not be able to catch the python exception. However it should not crash
+
 the C++ application either. Only the terminal will tell you what happened in this case.
 
 ## Error Flags
 
-Errors are stored in __errorRegister and __userScriptErrors. 
+Errors are stored in __errorRegister and __userScriptErrors.
 
 errorRegister contains genral programm errors and warnings.
-userScriptErrors contains userScript specific errors. Their 
+userScriptErrors contains userScript specific errors. Their
+
 meaning might vary depending on the script(engine).
 
 Make sure to use only the first 16 bit in each register.
@@ -107,8 +112,7 @@ userScriptErrors
   - 2: one or more transactions not exported warning
   - 4: one or more unknown transaction (guiContext or Content type)
 
-
-Zeraconverter.py and CppInterface.convert() returns: 
+Zeraconverter.py and CppInterface.convert() returns:
 
 |16 bit| 16 bit |
 |------|--------|

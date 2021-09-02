@@ -6,12 +6,10 @@ import sys, getopt
 #custom imports
 from pythonconverter_pkg import ConversionUnit as con
 
-
 def enum(**enums):
     return type('Enum', (), enums)
 
 useDef = enum(Help=0, ShowSessions=2, ShowTransactions=3, Convert=4)
-
 
 inputFile = ""
 outputFile = ""
@@ -24,12 +22,6 @@ gui = False
 converter = object
 filterExp= ""
 
-
-
-
-
-
-
 def Help():
     print("USAGE:")
     print("#################")
@@ -39,8 +31,6 @@ def Help():
     print(" ./Converter -i <file>.db")
     print("Convert file")
     print("    ./Convert -i <file>.db -o <file>.xml --session=<sessionName>")
-
-
 
 def main(argv):
     global inputFile
@@ -57,7 +47,6 @@ def main(argv):
     retVal = 0
 
     print("Database Converter")
-
 
     try:
         opts, args = getopt.getopt(argv,"dghi:o:t:",["ifile=","ofile=","eparam=","session="])
@@ -117,7 +106,6 @@ def main(argv):
             print(bin(retVal))
             return retVal
 
-        
     if usecase == useDef.Help:
         Help()
     elif usecase == useDef.ShowSessions:
@@ -126,11 +114,11 @@ def main(argv):
         for ele in ret :
             print(i,": ",ele[0])
             i=i+1
-    elif usecase == useDef.Convert: 
+    elif usecase == useDef.Convert:
+
         retVal=converter.convert(session)
     print("Programm ended with "+str(retVal))
     return retVal
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])

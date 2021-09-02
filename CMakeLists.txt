@@ -15,7 +15,6 @@ file(GLOB SOURCES
     ${PROJECT_SOURCE_DIR}/zeraconverterengines/*.py
     )
 
-
 add_custom_target(${PROJECT_NAME} ALL
     SOURCES ${SOURCES}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
