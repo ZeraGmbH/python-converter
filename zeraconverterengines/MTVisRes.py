@@ -490,6 +490,9 @@ class UserScript:
         endResult=list()
         eleList=list()
         
+        rangeMax=3
+        if zeracom.readSafe(vals,["FFTModule1","ACT_FFT8"]) != "":
+            readMax=4
 
         for ch in range(1,4):
             result=dict()
@@ -517,7 +520,7 @@ class UserScript:
             for i in range(1,int(fftLen/2)):
                 pqs=list()
                 U=np.linalg.norm(np.array([float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[2*i-1]),float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[2*i])]))
-                I=np.linalg.norm(np.array([float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch+4)]).split(";")[2*i-1]),float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch+4)]).split(";")[2*i])]))
+                I=np.linalg.norm(np.array([float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch+rangeMax)]).split(";")[2*i-1]),float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch+rangeMax)]).split(";")[2*i])]))
                 pqs.append(float(zeracom.readSafe(vals,["Power3Module1","ACT_HPP"+ str(ch)]).split(";")[i]))
                 pqs.append(float(zeracom.readSafe(vals,["Power3Module1","ACT_HPQ"+ str(ch)]).split(";")[i]))
                 pqs.append(float(zeracom.readSafe(vals,["Power3Module1","ACT_HPS"+ str(ch)]).split(";")[i]))
