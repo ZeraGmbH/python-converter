@@ -10,7 +10,7 @@ class SqlInterface(zdb.DatabaseInterface):
         self.conn = []
         #self.c = pylint
         super().__init__()
-        
+
     def openDatabase(self,uri):
         super().openDatabase(uri)
 
@@ -28,7 +28,7 @@ class SqlInterface(zdb.DatabaseInterface):
         self.db.execute("SELECT session_name FROM sessions")
         ret=self.db.fetchall()
         return ret
-        
+
     def readDataset(self,datasetName):
         ret=""
         self.db.execute("SELECT entities.entity_name, components.component_name, valuemap.component_value FROM transactions INNER JOIN transactions_valuemap ON transactions.id = transactions_valuemap.transactionsid INNER JOIN valuemap ON transactions_valuemap.valueid = valuemap.id INNER JOIN components ON valuemap.componentid = components.id INNER JOIN entities ON valuemap.entityiesid = entities.id WHERE transaction_name =?;", [datasetName])
@@ -41,7 +41,6 @@ class SqlInterface(zdb.DatabaseInterface):
         ret=self.db.fetchall()
         return [dict(row) for row in ret]
 
-
     def dataSelect(self,selectString,selectVariables):
         self.db.execute(selectString,selectVariables)
         ret=self.db.fetchall()
@@ -49,5 +48,5 @@ class SqlInterface(zdb.DatabaseInterface):
 
     def execute(self, command):
         print("not implemented yet")
-    
+
     

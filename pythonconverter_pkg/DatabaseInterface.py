@@ -1,7 +1,7 @@
 
 
 class DatabaseInterface:
-    
+
     def __init__(self):
         self.path=""
         self.db = []
@@ -18,4 +18,4 @@ class DatabaseInterface:
         print("not implemented yet")
     def writeDataset(self):
         print("not implemented yet")
-    
+

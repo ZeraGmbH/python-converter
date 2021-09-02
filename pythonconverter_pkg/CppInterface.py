@@ -8,7 +8,6 @@ import logging
 #Custom moudles
 from pythonconverter_pkg import ConversionUnit as con
 
-
 inputFile =""
 outputFile=""
 engine=""
@@ -55,7 +54,6 @@ def checkEngine():
         retVal=True
     return retVal
 
-
 def convert():
     retVal=0
     print(inputFile)
@@ -65,7 +63,8 @@ def convert():
     print(params)
     if checkInputFile() == False:
         return 2 # open database error
-    try:       
+    try:
+
         converter = con.ConversionUnit()
         if converter.seteParam(params) == False:
             raise Exception("set parameter error")

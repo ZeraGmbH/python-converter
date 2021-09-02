@@ -9,7 +9,6 @@ from collections import defaultdict
 # custom modules
 from pythonconverter_pkg import DatabaseInterface as zdb
 
-
 class XmlInterface(zdb.DatabaseInterface):
     def __init__(self):
         print("init XML Interface")
@@ -26,7 +25,6 @@ class XmlInterface(zdb.DatabaseInterface):
             return True
         except:
             return False
-
 
     def closeDatabase(self):
         print("Not implemented yet")

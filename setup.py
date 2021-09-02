@@ -4,7 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pythonconverter_pkg", 
+    name="pythonconverter_pkg",
+
     version="0.0.1",
     author="Bastian Hamacher",
     author_email="b.hamacher@zera.de",

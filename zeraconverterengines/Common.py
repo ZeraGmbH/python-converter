@@ -2,7 +2,8 @@ from datetime import datetime
 import math
 import re
 
-# @input inputMap 
+# @input inputMap
+
 # @output Static session data as dict
 def getStatic(input):
     try:
@@ -30,8 +31,10 @@ def getTransactions(input):
         return list()
 
 # @input  dynamic Session data
-# @input transaction name 
-# @output transactionData dict 
+# @input transaction name
+
+# @output transactionData dict
+
 def getTransactionData(input, transaction):
     try:
         keys = [k  for  k in input.keys()]
@@ -62,9 +65,9 @@ def readSafe(vals,parList):
             else:
                 return ""
         if tmp==None:
-            return ""  
-        return tmp
+            return ""
 
+        return tmp
 
 def UnitNumberSeperator(string):
     retVal=dict()

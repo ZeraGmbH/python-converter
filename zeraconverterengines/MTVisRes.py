@@ -7,9 +7,8 @@ import warnings
 import logging
 import json
 
-
 class UserScript:
-    
+
     def __init__(self):
         print("init Manipulation")
         self.__inputDict=dict()
@@ -33,7 +32,7 @@ class UserScript:
         funcMap["ZeraGuiHarmonicChart"]=self.convertZeraGuiHarmonicChart
         funcMap["ZeraGuiHarmonicPowerTable"]=self.convertZeraGuiHarmonicPowerTable
         funcMap["ZeraGuiHarmonicPowerChart"]=self.convertZeraGuiHarmonicPowerChart
-        
+
         self.__convertDict["ZeraHarmonics"]=funcMap
         funcMap=dict()
 
@@ -131,8 +130,10 @@ class UserScript:
             device["type"]="ZVP Device"
             device["serial"]="N/A"
 
-        for session in self.__inputDict.keys(): 
-            for key in self.__inputDict[session]["dynamic"].keys(): 
+        for session in self.__inputDict.keys():
+
+            for key in self.__inputDict[session]["dynamic"].keys():
+
                 if key.find("Snapshot") != -1:
                     contentSets=self.__inputDict[session]["dynamic"][key]["contentset_names"].split(",")
                     guiContext=self.__inputDict[session]["dynamic"][key]["guiContext"]
@@ -178,11 +179,11 @@ class UserScript:
             date=datetimeObj.strftime("%d.%m.%Y")
         else:
             time=datetimeObj.strftime("%H:%M:%S")
-            date=datetimeObj.strftime("%m.%d.%Y")           
+            date=datetimeObj.strftime("%m.%d.%Y")
+
         eleList.append({"Time" : time})
         eleList.append({"Date" : preadd+date})
         return eleList
-
 
     def RangeCommon(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
@@ -207,12 +208,12 @@ class UserScript:
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : "DEU"})
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : metadata["device"]["serial"]})    
+        eleList.append({"Device-No" : metadata["device"]["serial"]})
 
         eleList.append({"U-PrimSek" : "1/1;V;1.00"})
         eleList.append({"I-PrimSek" : "1/1;A;1.00"})
         eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
-        
+
         eleList.append(self.RangeCommon(compList,metadata))
 
         UPN=list()
@@ -251,7 +252,7 @@ class UserScript:
         eleList.append({"AI1" :  self.formatNumber(np.angle(np.complex(IL[0][0],IL[0][1]), deg=True))+";deg"})
         eleList.append({"AI2" :  self.formatNumber(np.angle(np.complex(IL[1][0],IL[1][1]), deg=True))+";deg"})
         eleList.append({"AI3" :  self.formatNumber(np.angle(np.complex(IL[2][0],IL[2][1]), deg=True))+";deg"})
-        
+
         # UI Angle per phase
 
         UI1=np.angle(np.complex(IL[0][0],IL[0][1]), deg=True)-np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True)
@@ -261,11 +262,11 @@ class UserScript:
         eleList.append({"PHI1" :  self.formatNumber(UI1)+";deg"})
         eleList.append({"PHI2" :  self.formatNumber(UI2)+";deg"})
         eleList.append({"PHI3" :  self.formatNumber(UI3)+";deg"})
-        
+
         eleList.append({"S1" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]))+";VA"})
         eleList.append({"S2" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]))+";VA"})
         eleList.append({"S3" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]))+";VA"})
-        
+
         eleList.append({"P1" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"]))+";W"})
         eleList.append({"P2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"]))+";W"})
         eleList.append({"P3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"]))+";W"})
@@ -274,7 +275,6 @@ class UserScript:
         eleList.append({"Q2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"]))+";VAR"})
         eleList.append({"Q3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"]))+";VAR"})
 
-        
         SP=zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"])
         SQ=zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"])
         SS=zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"])
@@ -282,7 +282,7 @@ class UserScript:
         eleList.append({"SS" :  self.formatNumber(SS)+";VA"})
         eleList.append({"SP" :  self.formatNumber(SP)+";W"})
         eleList.append({"SQ" :  self.formatNumber(SQ)+";var"})
-        
+
         eleList.append({"RF" : ""})
         eleList.append({"FREQ" :  self.formatNumber(zeracom.readSafe(vals,["RangeModule1","ACT_Frequency"]))})
         eleList.append({"UD1" : ""})
@@ -307,7 +307,6 @@ class UserScript:
 
         return eleList
 
-
     def LambdaCommon(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=list()
@@ -329,12 +328,10 @@ class UserScript:
         eleList.append(self.TimeCommon("AV ",compList))
         eleList.append(self.ActualValuesCommon(compList,metadata))
         eleList.append(self.LambdaCommon(compList,metadata))
-        
+
         result["#childs"]=eleList
         endResult.append(result)
         return endResult
-
-
 
     def convertZeraGuiVectorDiagramm(self,compList, metadata):
         endResult=list()
@@ -345,8 +342,7 @@ class UserScript:
         eleList.append({"Function" : "Vector-Measurement"})
         eleList.append(self.ActualValuesCommon(compList,metadata))
         eleList.append(self.LambdaCommon(compList,metadata))
-        
-        
+
         result["#childs"]=eleList
         endResult.append(result)
         return endResult
@@ -376,14 +372,14 @@ class UserScript:
         if "ACT_FFT7" in vals["FFTModule1"]:
             upper=9
 
-
         for ch in range(1,upper):
             result=dict()
             eleList=list()
             eleList.append({"ID" : metadata["session"]})
             eleList.append({"Language" : "DEU"})
             eleList.append({"Device-Typ" : metadata["device"]["type"]})
-            eleList.append({"Device-No" : metadata["device"]["serial"]}) 
+            eleList.append({"Device-No" : metadata["device"]["serial"]})
+
             eleList.append({"Function" : "Harmonics-Measurement"})
             eleList.append({"Datatype" : "Harmonic-Data"})
             NameAdd=""
@@ -400,7 +396,7 @@ class UserScript:
             eleList.append({"M-Mode" : ""})
             eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
             eleList.append({"Channel" : NameAdd})
-            
+
             if zeracom.readSafe(vals,["THDNModule1","ACT_THDN"+ str(ch)]) is not None:
                 eleList.append({"Total-Harm" :  self.formatNumber(zeracom.readSafe(vals,["THDNModule1","ACT_THDN"+ str(ch)]))+";%"})
 
@@ -432,23 +428,22 @@ class UserScript:
 
     def convertZeraGuiHarmonicChart(self,compList,metadata):
         return self.convertZeraGuiHarmonicTable(compList,metadata)
-        
-        
-        
+
     def convertZeraGuiCurveDisplay(self,compList,metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
         endResult.append(result)
-        
+
         for ch in range(1,5):
             result=dict()
             eleList=list()
             eleList.append({"ID" : metadata["session"]})
             eleList.append({"Language" : "DEU"})
             eleList.append({"Device-Typ" : metadata["device"]["type"]})
-            eleList.append({"Device-No" : metadata["device"]["serial"]}) 
+            eleList.append({"Device-No" : metadata["device"]["serial"]})
+
             eleList.append({"Function" : "Curve-Measurement"})
             eleList.append({"Datatype" : "Sample-Data"})
 
@@ -461,14 +456,16 @@ class UserScript:
 
             eleList.append(self.RangeCommon(compList,metadata))
 
-            i=0    
+            i=0
+
             for sample in zeracom.readSafe(vals,["OSCIModule1","ACT_OSCI"+ str(ch)]).split(";"):
                 i=i+1
                 eleList.append({"SampleA" :  self.formatNumber(i)+";"+sample+";V"})
 
             eleList.append({"ChannelA" : "U"+ str(ch)})
 
-            i=0    
+            i=0
+
             for sample in zeracom.readSafe(vals,["OSCIModule1","ACT_OSCI"+ str(ch+4)]).split(";"):
                 i=i+1
                 eleList.append({"SampleB" :  self.formatNumber(i)+";"+sample+";A"})
@@ -477,19 +474,15 @@ class UserScript:
 
             result["#childs"]=eleList
             endResult.append(result)
-        
-        
+
         return endResult
-
-
-
 
     def convertZeraGuiHarmonicPowerTable(self,compList,metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         result=dict()
         endResult=list()
         eleList=list()
-        
+
         rangeMax=3
         if zeracom.readSafe(vals,["FFTModule1","ACT_FFT8"]) != "":
             readMax=4
@@ -500,7 +493,8 @@ class UserScript:
             eleList.append({"ID" : metadata["session"]})
             eleList.append({"Language" : "DEU"})
             eleList.append({"Device-Typ" : metadata["device"]["type"]})
-            eleList.append({"Device-No" : metadata["device"]["serial"]}) 
+            eleList.append({"Device-No" : metadata["device"]["serial"]})
+
             eleList.append({"Function" : "Selektiv-Measurement"})
             eleList.append({"Datatype" : "Selektiv-Data"})
 
@@ -512,7 +506,6 @@ class UserScript:
             eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
 
             eleList.append(self.RangeCommon(compList,metadata))
-            
 
             eleList.append({"ChannelU" : "U"+ str(ch)})
             eleList.append({"ChannelI" : "I"+ str(ch)})
@@ -544,7 +537,8 @@ class UserScript:
         eleList.append(self.LambdaCommon(compList,metadata))
         eleList.append(self.TimeCommon("MT ",compList))
 
-        eleList.append({"Device-No" : metadata["device"]["serial"]}) 
+        eleList.append({"Device-No" : metadata["device"]["serial"]})
+
         eleList.append({"AdjustData" : ""})
         eleList.append({"Function" : "Error-Measurement"})
         eleList.append({"Datatype" : "Meter-Error"})
@@ -572,7 +566,7 @@ class UserScript:
         except:
             totalCount=0
         # maybe we should think about a totalCount in ACT_MulResult...
-        
+
         if totalCount > 1:
             eleList.append({"N-Value" : str(totalCount)})
             eleList.append({"Spread" : self.formatNumber(multimeas["range"])+"%"})
@@ -598,14 +592,15 @@ class UserScript:
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : ""})
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : metadata["device"]["serial"]}) 
+        eleList.append({"Device-No" : metadata["device"]["serial"]})
+
         eleList.append({"AdjustData" : "ok"})
         datetimeObj= datetime.strptime(compList["timestemp"], '%a %b %d %H:%M:%S %Y')
 
         eleList.append(self.TimeCommon("ER ",compList))
-        
+
         eleList.append(self.RangeCommon(compList,metadata))
-        
+
         mode=""
         if  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_RefInput"])) == "P":
             mode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
@@ -621,20 +616,26 @@ class UserScript:
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
         if zeracom.readSafe(vals,["SEM1Module1","PAR_Targeted"]) == 1:
-            eleList.append({"Type" : "Duration"})        
+            eleList.append({"Type" : "Duration"})
+
         else:
-            eleList.append({"Type" : "Start/Stop"})  
+            eleList.append({"Type" : "Start/Stop"})
+
         eleList.append({"E-MTime" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Time"]))+" s"}) # wird benötigt
         eleList.append({"Energie" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Energy"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})          # wird benötigt
         eleList.append({"E-Begin" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_T0Input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})    # wird benötigt
         eleList.append({"E-End" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_T1input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})      # wird benötigt
         eleList.append({"E-Cz" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})       # wird benötigt
         eleList.append({"E-Error" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Result"]))+";%"})    # wird benötigt
-        # eleList.append({"Power" : ""})      
-        # eleList.append({"P-Begin" : ""})    
-        # eleList.append({"P-End" : ""})      
-        # eleList.append({"P-Cz" : ""})       
-        # eleList.append({"P-Error" : ""})    
+        # eleList.append({"Power" : ""})
+
+        # eleList.append({"P-Begin" : ""})
+
+        # eleList.append({"P-End" : ""})
+
+        # eleList.append({"P-Cz" : ""})
+
+        # eleList.append({"P-Error" : ""})
 
         result["#childs"]=eleList
         return result
@@ -647,13 +648,14 @@ class UserScript:
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : ""})
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : metadata["device"]["serial"]}) 
+        eleList.append({"Device-No" : metadata["device"]["serial"]})
+
         eleList.append({"AdjustData" : ""})
 
         eleList.append(self.TimeCommon("PR ",compList))
-        
+
         eleList.append(self.RangeCommon(compList,metadata))
-        
+
         mode = ""
         if  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_RefInput"])) == "P":
             mode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
@@ -669,20 +671,27 @@ class UserScript:
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
         if zeracom.readSafe(vals,["SPM1Module1","PAR_Targeted"]) == 1:
-            eleList.append({"Type" : "Duration"})        
+            eleList.append({"Type" : "Duration"})
+
         else:
-            eleList.append({"Type" : "Start/Stop"})  
+            eleList.append({"Type" : "Start/Stop"})
+
         eleList.append({"P-MTime" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Time"]))+" s"}) # wird benötigt
-        # eleList.append({"Energie" : ""})   
-        # eleList.append({"E-Begin" : ""})    
-        # eleList.append({"E-End" : ""})      
-        # eleList.append({"E-Cz" : ""})       
-        # eleList.append({"E-Error" : ""})    
+        # eleList.append({"Energie" : ""})
+
+        # eleList.append({"E-Begin" : ""})
+
+        # eleList.append({"E-End" : ""})
+
+        # eleList.append({"E-Cz" : ""})
+
+        # eleList.append({"E-Error" : ""})
+
         eleList.append({"Power" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Power"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})          # wird benötigt
         eleList.append({"P-Begin" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_T0Input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})    # wird benötigt
         eleList.append({"P-End" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_T1input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})      # wird benötigt
         eleList.append({"P-Cz" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})       # wird benötigt
-        eleList.append({"P-Error" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Result"]))+";%"})    # wird benötigt 
+        eleList.append({"P-Error" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Result"]))+";%"})    # wird benötigt
 
         result["#childs"]=eleList
         return result
@@ -692,11 +701,12 @@ class UserScript:
         result=dict()
         endResult=list()
         eleList=list()
-       
+
         #eleList.append({"ID" : metadata["session"]})
         #eleList.append({"Language" : ""})
         #eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        #eleList.append({"Device-No" : metadata["device"]["serial"]}) 
+        #eleList.append({"Device-No" : metadata["device"]["serial"]})
+
         #eleList.append({"AdjustData" : ""})
         eleList=self.ActualValuesCommon(compList, metadata)
 
@@ -710,11 +720,13 @@ class UserScript:
         #eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "U-Burden"})
         eleList.append({"Datatype" : "UBurden-Value"})
-        eleList.append({"U-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalRange"]))+";V"}) 
-        eleList.append({"B-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalBurden"]))+";VA"}) 
-        eleList.append({"W-Length" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_WireLength"]))+";m"})   
-        eleList.append({"W-Gauge" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_WCrosssection"]))+";mm2"})  
-        
+        eleList.append({"U-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalRange"]))+";V"})
+
+        eleList.append({"B-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalBurden"]))+";VA"})
+
+        eleList.append({"W-Length" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_WireLength"]))+";m"})
+
+        eleList.append({"W-Gauge" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_WCrosssection"]))+";mm2"})
 
         result["#childs"]=eleList
         return result
@@ -728,7 +740,8 @@ class UserScript:
         #eleList.append({"ID" : metadata["session"]})
         #eleList.append({"Language" : ""})
         #eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        #eleList.append({"Device-No" : metadata["device"]["serial"]}) 
+        #eleList.append({"Device-No" : metadata["device"]["serial"]})
+
         #eleList.append({"AdjustData" : ""})
         eleList=self.ActualValuesCommon(compList, metadata)
 
@@ -740,11 +753,13 @@ class UserScript:
         #eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "I-Burden"})
         eleList.append({"Datatype" : "IBurden-Value"})
-        eleList.append({"I-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalRange"]))+";A"})  
-        eleList.append({"B-Nominal" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalBurden"]))+";VA"})  
-        eleList.append({"W-Length" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_WireLength"]))+";m"})   
+        eleList.append({"I-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalRange"]))+";A"})
+
+        eleList.append({"B-Nominal" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalBurden"]))+";VA"})
+
+        eleList.append({"W-Length" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_WireLength"]))+";m"})
+
         eleList.append({"W-Gauge" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_WCrosssection"]))+";mm2"})
-        
 
         result["#childs"]=eleList
         return result
@@ -757,24 +772,30 @@ class UserScript:
         eleList.append({"ID" : metadata["session"]})
         eleList.append({"Language" : "DEU"})
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : metadata["device"]["serial"]}) 
+        eleList.append({"Device-No" : metadata["device"]["serial"]})
+
         eleList.append({"AdjustData" : ""})
 
         eleList.append(self.TimeCommon("IT ",compList))
-        
+
         eleList.append(self.RangeCommon(compList,metadata))
-        
+
         eleList.append({"M-Mode" : ""})
         eleList.append({"U-PrimSek" : "1/1;V;1.00"})
         eleList.append({"I-PrimSek" : "1/1;A;1.00"})
         eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "UI-Transformer"})
         eleList.append({"Datatype" : "UI-Transformer-Value"})
-        # eleList.append({"VT-N" : ""})       
-        # eleList.append({"VT-X" : ""})       
-        # eleList.append({"U-Prim" : ""})     
-        # eleList.append({"U-Sek-N" : ""})    
-        # eleList.append({"U-Sek-X" : ""})    
+        # eleList.append({"VT-N" : ""})
+
+        # eleList.append({"VT-X" : ""})
+
+        # eleList.append({"U-Prim" : ""})
+
+        # eleList.append({"U-Sek-N" : ""})
+
+        # eleList.append({"U-Sek-X" : ""})
+
         # eleList.append({"VT-Value" : ""})
         # eleList.append({"VT-Angle-deg" : ""})
         # eleList.append({"VT-Angle-min" : ""})
@@ -836,4 +857,3 @@ class UserScript:
 
         return endResult
 
-        
