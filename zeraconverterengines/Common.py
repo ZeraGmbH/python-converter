@@ -28,7 +28,7 @@ def getTransactions(input):
         keys = [k  for  k in input.keys()]
         return input[keys[0]]["dynamic"].keys()
     except:
-        return list()
+        return []
 
 # @input  dynamic Session data
 # @input transaction name
