@@ -3,8 +3,8 @@ import zeraconverterengines.Common as zeracom
 class UserScript:
     def __init__(self):
         print("init Manipulation")
-        self.__inputDict=dict()
-        self.__outputDict=dict()
+        self.__inputDict={}
+        self.__outputDict={}
 
     def setInput(self, p_dict):
         self.__inputDict=p_dict
@@ -20,11 +20,11 @@ class UserScript:
         self.__outputDict["Main-Data"]={"#childs" : [{}]}
 
         eleList=list()
-        general=dict()
-        customer=dict()
-        location=dict()
-        net=dict()
-        meter=dict()
+        general={}
+        customer={}
+        location={}
+        net={}
+        meter={}
         id = [k  for  k in self.__inputDict.keys()]
         vals = zeracom.entityComponentSort(zeracom.getStatic(self.__inputDict))
         eleList.append({"ID" : id[0]})
@@ -65,7 +65,7 @@ class UserScript:
         eleList.append({"Remark" : str(vals["CustomerData"]["PAR_MeterComment"])})
         meter["Meter"]={"#childs" : eleList}
 
-        main=dict()
+        main={}
         main["Main"]={"#childs" : [{}]}
 
         main["Main"]["#childs"].append(general)

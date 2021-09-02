@@ -42,7 +42,7 @@ class XmlInterface(zdb.DatabaseInterface):
     def readDataset(self, datasetName):
         print("not implemented yet")
 
-    def writeDataset(self, d=dict()):
+    def writeDataset(self, d={}):
         def _to_etree(d, root):
             if not d:
                 pass

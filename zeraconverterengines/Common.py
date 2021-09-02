@@ -45,9 +45,9 @@ def getTransactionData(input, transaction):
 # @input transactionData
 # @outpur entityComponent map with value
 def entityComponentSort(input):
-    result=dict()
+    result={}
     for ele in input:
-        compDict=dict()
+        compDict={}
         if ele["entity_name"] in result:
             compDict=result[ele["entity_name"]]
         compDict[ele["component_name"]] = ele["component_value"]
@@ -70,7 +70,7 @@ def readSafe(vals,parList):
     return tmp
 
 def UnitNumberSeperator(string):
-    retVal=dict()
+    retVal={}
     retVal["value"]=0
     retVal["unit"]=""
     try:
