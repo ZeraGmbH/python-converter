@@ -26,7 +26,7 @@ The best way to make sure the pythonpath is properly accounted for is to add it 
 ### terminal
 
 1. call: python setup.py sdist
-2. call: ython -m pip install dist/pythonconverter_pkg-0.0.1.tar.gz --prefix=${CMAKE_INSTALL_PREFIX}
+2. call: python -m pip install dist/pythonconverter_pkg-0.0.1.tar.gz --prefix=${CMAKE_INSTALL_PREFIX}
 
 Replace ${CMAKE_INSTALL_PREFIX} with a paht of your choice. Not using --prefix is equal to
 --prefix=/usr
@@ -37,7 +37,7 @@ Your can use this pkg from command line or implement it in C++.
 
 ### Run from command line
 
-In commad line just call:
+In command line just call:
 
 ```
 ZeraConverter -i <sqlitefile>.db -o <file>.xml --session=<sessionName>
@@ -56,7 +56,7 @@ Attention: The cmake is only wrapping around setup.py.
 ### Implement in C++
 
 In c++ you can use CppInterface to bind the conversion functions to your programm.
-It is recommendet to use the Zera PythonScriptingInterface to do that.
+It is recommended to use the Zera PythonScriptingInterface to do that.
 
 For more information visit: https://github.com/ZeraGmbH/PythonScriptingInterface
 
@@ -78,7 +78,7 @@ the C++ application either. Only the terminal will tell you what happened in thi
 
 Errors are stored in __errorRegister and __userScriptErrors.
 
-errorRegister contains genral programm errors and warnings.
+errorRegister contains general program errors and warnings.
 userScriptErrors contains userScript specific errors. Their
 
 meaning might vary depending on the script(engine).
@@ -120,7 +120,7 @@ Zeraconverter.py and CppInterface.convert() returns:
 
 ## Write your custom conversion engine
 
-comming soon
+coming soon
 
 ## sql structure
 
@@ -137,5 +137,5 @@ CREATE TABLE valuemap (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, value_time
 ## Test
 
 This project provides a sample database test/test.db. Calling ZeraConverter with -d this database will be converted to test/out.xml.
-Alle genrated files are consideret in .gitignore. So do not worry about those, if contributing to the project.
+All generated files are considered in .gitignore. So do not worry about those, if contributing to the project.
 
