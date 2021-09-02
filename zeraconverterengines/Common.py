@@ -57,17 +57,17 @@ def entityComponentSort(input):
 # @input dict
 # @ output dict value or ""
 def readSafe(vals,parList):
-        tmp=vals[parList[0]]
-        parList.pop(0)
-        for l in parList:
-            if l in tmp:
-                tmp=tmp[l]
-            else:
-                return ""
-        if tmp==None:
+    tmp=vals[parList[0]]
+    parList.pop(0)
+    for l in parList:
+        if l in tmp:
+            tmp=tmp[l]
+        else:
             return ""
+    if tmp==None:
+        return ""
 
-        return tmp
+    return tmp
 
 def UnitNumberSeperator(string):
     retVal=dict()
