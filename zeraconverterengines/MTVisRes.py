@@ -158,8 +158,8 @@ class UserScript:
                                     logging.warning("Converting transaction "+key+" of type "+content+" failed with: "+str(err))
                                     retVal=retVal | 2
                             else:
-                                retVal=retVal | 4
-                                logging.warning("Unknown guicontext: " + guiContext)
+                                #retVal=retVal | 4 # Custom conttent will always have this issue
+                                logging.warning("Unknown guicontext fot content: " + guiContext)
                         else:
                             retVal=retVal | 4
                             logging.warning("Unknown content type : " + content)
