@@ -19,7 +19,7 @@ class UserScript:
         print("manipultate")
         self.__outputDict["Main-Data"]={"#childs" : [{}]}
 
-        eleList=list()
+        eleList=[]
         general={}
         customer={}
         location={}
@@ -31,7 +31,7 @@ class UserScript:
         eleList.append({"State" : "exported"})
         eleList.append({"Remark" : str(vals["CustomerData"]["PAR_DatasetComment"])})
         general["General"]={"#childs" : eleList}
-        eleList=list()
+        eleList=[]
         eleList.append({"Firstname" : vals["CustomerData"]["PAR_CustomerFirstName"]})
         eleList.append({"Name" : vals["CustomerData"]["PAR_CustomerLastName"]})
         eleList.append({"Street" : vals["CustomerData"]["PAR_CustomerStreet"]})
@@ -41,7 +41,7 @@ class UserScript:
         eleList.append({"No" : str(vals["CustomerData"]["PAR_CustomerNumber"])})
         eleList.append({"Remark" : str(vals["CustomerData"]["PAR_CustomerComment"])})
         customer["Customer"]={"#childs" : eleList}
-        eleList=list()
+        eleList=[]
         eleList.append({"Firstname" : vals["CustomerData"]["PAR_LocationFirstName"]})
         eleList.append({"Name" : vals["CustomerData"]["PAR_LocationLastName"]})
         eleList.append({"Street" : vals["CustomerData"]["PAR_LocationStreet"]})
@@ -51,13 +51,13 @@ class UserScript:
         eleList.append({"No" : str(vals["CustomerData"]["PAR_LocationNumber"])})
         eleList.append({"Remark" : str(vals["CustomerData"]["PAR_LocationComment"])})
         location["Location"]={"#childs" : eleList}
-        eleList=list()
+        eleList=[]
 
         eleList.append({"Operator" : vals["CustomerData"]["PAR_PowerGridOperator"]})
         eleList.append({"Supplier" : vals["CustomerData"]["PAR_PowerGridSupplier"]})
         eleList.append({"Remark" : str(vals["CustomerData"]["PAR_PowerGridComment"])})
         net["Net"]={"#childs" : eleList}
-        eleList=list()
+        eleList=[]
 
         eleList.append({"Manufacturer" : vals["CustomerData"]["PAR_MeterManufacturer"]})
         eleList.append({"Manuf-No" : str(vals["CustomerData"]["PAR_MeterFactoryNumber"])})
