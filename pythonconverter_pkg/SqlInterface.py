@@ -1,6 +1,4 @@
-
 from pythonconverter_pkg import DatabaseInterface as zdb
-import json
 
 class SqlInterface(zdb.DatabaseInterface):
 
