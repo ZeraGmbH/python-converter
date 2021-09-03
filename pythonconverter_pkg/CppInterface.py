@@ -1,8 +1,6 @@
 
 #Systemmodules
-import sys
 from pathlib import Path
-import warnings
 import logging
 
 #Custom moudles

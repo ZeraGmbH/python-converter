@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
 #Systemmodules
-import sys, getopt
+import sys
+import getopt
 
 #custom imports
 from pythonconverter_pkg import ConversionUnit as con

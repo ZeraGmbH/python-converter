@@ -1,10 +1,6 @@
 # system modules
-import os.path
 from os import path
 from xml.etree import ElementTree as ET
-import pprint as pp
-import argparse
-from collections import defaultdict
 
 # custom modules
 from pythonconverter_pkg import DatabaseInterface as zdb
