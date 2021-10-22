@@ -1,4 +1,3 @@
-
 from datetime import datetime
 import math
 import logging
@@ -202,6 +201,30 @@ class UserScript:
         eleList.append({"I-Range" :  self.formatNumber(IRange)+";"+iDictVal["unit"]})
         return eleList
 
+    def ScaleCommon(self,compList, metadata):
+        vals=zeracom.entityComponentSort(compList["values"])
+        eleList=[]
+        uPrimSec="1/1;V;1.00"
+        iPrimSec="1/1;V;1.00"
+
+        ActScaleEnabled="OFF"
+        DutScaleEnabled="OFF"
+        if(zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingEnabledGroup0"]) == "1"):
+            ActScaleEnabled="ON"
+            uPrimSec=zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingGroup0"]+"A;1.00")
+        if(zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingEnabledGroup1"]) == "1"):
+            ActScaleEnabled="ON"
+            iPrimSec=zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingGroup1"]+"A;1.00")
+        if "SEC1Module1" in vals:
+            testMode=zeracom.readSafe(vals,["SEC1Module1","PAR_DutTypeMeasurePoint"])
+            if(testMode != "CpIpUp" and testMode != "CsIsUs" and testMode != ""):
+                DutScaleEnabled="ON"
+
+        eleList.append({"U-PrimSek" : uPrimSec})
+        eleList.append({"I-PrimSek" : iPrimSec})
+        eleList.append({"PrimSek-Val-Cz-Reg" : ActScaleEnabled+";"+DutScaleEnabled+";Off"})
+        return eleList
+
     def ActualValuesCommon(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
@@ -210,9 +233,7 @@ class UserScript:
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
         eleList.append({"Device-No" : metadata["device"]["serial"]})
 
-        eleList.append({"U-PrimSek" : "1/1;V;1.00"})
-        eleList.append({"I-PrimSek" : "1/1;A;1.00"})
-        eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
+        eleList.append(self.ScaleCommon(compList, metadata))
 
         eleList.append(self.RangeCommon(compList,metadata))
 
@@ -392,10 +413,8 @@ class UserScript:
 
             eleList.append(self.RangeCommon(compList,metadata))
 
-            eleList.append({"U-PrimSek" : "1/1;U;1.00"})
-            eleList.append({"I-PrimSek" : "1/1;A;1.00"})
+            eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
-            eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
             eleList.append({"Channel" : NameAdd})
 
             if zeracom.readSafe(vals,["THDNModule1","ACT_THDN"+ str(ch)]) is not None:
@@ -450,10 +469,8 @@ class UserScript:
 
             eleList.append(self.TimeCommon("CD "+"UI "+str(ch)+" ",compList))
 
-            eleList.append({"U-PrimSek" : "1"})
-            eleList.append({"I-PrimSek" : "1"})
+            eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
-            eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
 
             eleList.append(self.RangeCommon(compList,metadata))
 
@@ -501,10 +518,9 @@ class UserScript:
 
             eleList.append(self.TimeCommon("HP "+"UI"+ str(ch)+" ",compList))
 
-            eleList.append({"U-PrimSek" : "1/1;V;1.00"})
-            eleList.append({"I-PrimSek" : "1/1;A;1.00"})
+            eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
-            eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
+
 
             eleList.append(self.RangeCommon(compList,metadata))
 
@@ -609,9 +625,7 @@ class UserScript:
         elif  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_RefInput"])) == "S":
             mode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
         eleList.append({"M-Mode" :  self.formatNumber(mode)})
-        eleList.append({"U-PrimSek" : "1/1;V;1.00"})
-        eleList.append({"I-PrimSek" : "1/1;A;1.00"})
-        eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
+        eleList.append(self.ScaleCommon(compList, metadata))
         eleList.append({"Function" : "Register-Test"})
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
@@ -663,9 +677,7 @@ class UserScript:
         elif  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_RefInput"])) == "S":
             mode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
         eleList.append({"M-Mode" :  self.formatNumber(mode)})
-        eleList.append({"U-PrimSek" : "1/1;V;1.00"})
-        eleList.append({"I-PrimSek" : "1/1;A;1.00"})
-        eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
+        eleList.append(self.ScaleCommon(compList, metadata))
         eleList.append({"Function" : "Register-Test"})
         eleList.append({"Datatype" : "Register-Test"})
         eleList.append({"Place-No" : "1"})
@@ -777,9 +789,7 @@ class UserScript:
         eleList.append(self.RangeCommon(compList,metadata))
 
         eleList.append({"M-Mode" : ""})
-        eleList.append({"U-PrimSek" : "1/1;V;1.00"})
-        eleList.append({"I-PrimSek" : "1/1;A;1.00"})
-        eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
+        eleList.append(self.ScaleCommon(compList, metadata))
         eleList.append({"Function" : "UI-Transformer"})
         eleList.append({"Datatype" : "UI-Transformer-Value"})
         # eleList.append({"VT-N" : ""})
