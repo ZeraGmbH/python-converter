@@ -158,7 +158,7 @@ class UserScript:
                                     retVal=retVal | 2
                             else:
                                 #retVal=retVal | 4 # Custom conttent will always have this issue
-                                logging.warning("Unknown guicontext fot content: " + guiContext)
+                                logging.warning("Unknown guicontext for content: " + guiContext)
                         else:
                             retVal=retVal | 4
                             logging.warning("Unknown content type : " + content)
