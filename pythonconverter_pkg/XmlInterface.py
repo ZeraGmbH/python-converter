@@ -1,4 +1,5 @@
 # system modules
+import os
 from os import path
 from xml.etree import ElementTree as ET
 
@@ -16,8 +17,9 @@ class XmlInterface(zdb.DatabaseInterface):
             self.path = uri
             if path.exists(uri):
                 uri=uri+"_"
-            if not path.exists(path.dirname(self.path)):
-                os.makedirs(path.dirname(self.path))
+            dir=path.dirname(self.path)
+            if not path.exists(dir):
+                os.makedirs(dir)
             return True
         except:
             return False
