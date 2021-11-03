@@ -126,5 +126,13 @@ class TestCppInterface(unittest.TestCase):
         CppInterface.setFilter("Snapshot")
         self.assertEqual(CppInterface.convert(),0)
 
+    def test_targetFolderNotExisting(self):
+        CppInterface.setInputPath("test/comtest_ced.db")
+        CppInterface.setOutputPath("test/newFolder/result.xml")
+        CppInterface.setSession("all")
+        CppInterface.setEngine("zeraconverterengines.MTVisRes")
+        CppInterface.setFilter("Snapshot")
+        self.assertEqual(CppInterface.convert(),0)
+
 if __name__ == '__main__':
     unittest.main()
