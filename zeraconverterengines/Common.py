@@ -1,11 +1,9 @@
 import re
-
 # @input inputMap
-
 # @output Static session data as dict
 def getStatic(input):
     try:
-        keys = [k  for  k in input.keys()]
+        keys = [k for k in input.keys()]
         return input[keys[0]]["static"]
     except:
         return ""
@@ -43,41 +41,41 @@ def getTransactionData(input, transaction):
 # @input transactionData
 # @outpur entityComponent map with value
 def entityComponentSort(input):
-    result={}
+    result = {}
     for ele in input:
-        compDict={}
+        compDict = {}
         if ele["entity_name"] in result:
-            compDict=result[ele["entity_name"]]
+            compDict = result[ele["entity_name"]]
         compDict[ele["component_name"]] = ele["component_value"]
-        result[ele["entity_name"]]=compDict
+        result[ele["entity_name"]] = compDict
     return result
 
 # @input dict
 # @ output dict value or ""
 def readSafe(vals,parList):
-    tmp=vals[parList[0]]
+    tmp = vals[parList[0]]
     parList.pop(0)
     for l in parList:
         if l in tmp:
-            tmp=tmp[l]
+            tmp = tmp[l]
         else:
             return ""
-    if tmp==None:
+    if tmp == None:
         return ""
 
     return tmp
 
 def UnitNumberSeperator(string):
-    retVal={}
-    retVal["value"]=0
-    retVal["unit"]=""
+    retVal = {}
+    retVal["value"] = 0
+    retVal["unit"] = ""
     try:
-        exp=re.match("^([aA-zZ]*)([-+]{0,1})([1-9]{1,1}[0-9]*[\.,]{0,1}[0-9]*)\s*([aA-zZ]*)$",string)
-        tmp=str(exp.group(2))+str(exp.group(3))
-        tmp=tmp.replace(",",".")
-        retVal["value"]=float(tmp)
-        retVal["unit"]=exp.group(4)
+        exp = re.match("^([aA-zZ]*)([-+]{0,1})([1-9]{1,1}[0-9]*[\.,]{0,1}[0-9]*)\s*([aA-zZ]*)$",string)
+        tmp = str(exp.group(2))+str(exp.group(3))
+        tmp = tmp.replace(",", ".")
+        retVal["value"] = float(tmp)
+        retVal["unit"] = exp.group(4)
     except :
-        retVal["value"]=0
-        retVal["unit"]=""
+        retVal["value"] = 0
+        retVal["unit"] = ""
     return retVal

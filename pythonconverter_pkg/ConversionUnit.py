@@ -38,11 +38,11 @@ class ConversionUnit:
         self.__userScriptErrors = 0
 
     def setInputFile(self, inputFile):
-        self.__inputFile=inputFile
+        self.__inputFile = inputFile
         return True
 
     def setOutputFile(self, outputFile):
-        self.__outputFile=outputFile
+        self.__outputFile = outputFile
         return True
 
     def setType(self, conType):
@@ -58,7 +58,7 @@ class ConversionUnit:
         return True
 
     def seteParam(self, eparams):
-        retVal=True
+        retVal = True
         self.__eparameter = {}
         if eparams:
             try:
@@ -66,7 +66,7 @@ class ConversionUnit:
                 self.__eparameter = json.loads(json_acceptable_string)
             except:
                 self.__eparameter = {}
-                self.__errorRegister = self.__errorRegister | (1  << 9)
+                self.__errorRegister = self.__errorRegister | (1 << 9)
                 logging.warning("Bad Parameters. Ignoring!")
         return retVal
 
@@ -81,7 +81,7 @@ class ConversionUnit:
             else:
                 self.__userScript = importlib.import_module(self.__userScriptPath)
         except:
-            self.__errorRegister = self.__errorRegister | (1  << 0)
+            self.__errorRegister = self.__errorRegister | (1 << 0)
             retVal = False
         return retVal
 
@@ -96,22 +96,22 @@ class ConversionUnit:
         try:
             self.__session = p_session
             if not self.__iInt.openDatabase(self.__inputFile):
-                self.__errorRegister = self.__errorRegister | (1  << 1)
+                self.__errorRegister = self.__errorRegister | (1 << 1)
                 raise Exception("Fatal Error")
             if not self.__oInt.openDatabase(self.__outputFile):
-                self.__errorRegister = self.__errorRegister | (1  << 2)
+                self.__errorRegister = self.__errorRegister | (1 << 2)
                 raise Exception("Fatal Error")
             if not self.__read():
-                self.__errorRegister = self.__errorRegister | (1  << 3)
+                self.__errorRegister = self.__errorRegister | (1 << 3)
                 raise Exception("Fatal Error")
             if not self.__manipulateSet():
-                self.__errorRegister = self.__errorRegister | (1  << 4)
+                self.__errorRegister = self.__errorRegister | (1 << 4)
                 raise Exception("Fatal Error")
             if not self.__write():
-                self.__errorRegister = self.__errorRegister | (1  << 5)
+                self.__errorRegister = self.__errorRegister | (1 << 5)
                 raise Exception("Fatal Error")
             if not self.__iInt.closeDatabase():
-                self.__errorRegister = self.__errorRegister | (1  << 8)
+                self.__errorRegister = self.__errorRegister | (1 << 8)
         except Exception as error:
             retVal = False
         return retVal
@@ -128,7 +128,7 @@ class ConversionUnit:
         try:
             transList = self.__readTransactionList()
             if len(transList) is 0:
-                self.__errorRegister = self.__errorRegister | (1  << 10)
+                self.__errorRegister = self.__errorRegister | (1 << 10)
             self.__iMap[self.__session] = {}
             self.__iMap[self.__session]["dynamic"] = {}
             self.__iMap[self.__session]["static"] = {}
@@ -167,10 +167,10 @@ class ConversionUnit:
     # write data to output database
 
     def __write(self):
-        retVal=True
+        retVal = True
         try:
             self.__oInt.writeDataset(self.__oMap)
             self.__oInt.saveChanges()
         except:
-            retVal=False
+            retVal = False
         return retVal

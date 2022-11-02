@@ -3,16 +3,16 @@ import zeraconverterengines.Common as zeracom
 class UserScript:
     def __init__(self):
         print("init Manipulation")
-        self.__inputDict={}
-        self.__outputDict={}
+        self.__inputDict = {}
+        self.__outputDict = {}
 
     def setInput(self, p_dict):
-        self.__inputDict=p_dict
+        self.__inputDict = p_dict
 
     def getOutput(self):
         return self.__outputDict
 
-    def setParams(self,params):
+    def setParams(self, params):
         return
 
     def manipulate(self):
