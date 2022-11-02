@@ -62,7 +62,7 @@ db.sqlite3
 db.sqlite3-journal
 
 # Visual Studio Code
-.vscode/
+#.vscode/
 
 # Flask stuff:
 instance/
