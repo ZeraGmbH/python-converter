@@ -2,34 +2,35 @@ import sqlite3
 
 from pythonconverter_pkg import SqlInterface as zsq
 
+
 class SqlLiteInterface(zsq.SqlInterface):
     def __init__(self):
         print("init sqlite interface")
         super().__init__()
 
-    def openDatabase(self,uri):
-        retVal=True
-        self.file=uri
+    def openDatabase(self, uri):
+        retVal = True
+        self.file = uri
         try:
             self.conn = sqlite3.connect(uri)
             self.conn.row_factory = sqlite3.Row
-            self.db=self.conn.cursor()
+            self.db = self.conn.cursor()
         except sqlite3.Error as Error:
             print("db error", Error)
-            retVal=False
+            retVal = False
         return retVal
 
     def closeDatabase(self):
-        retVal=True
+        retVal = True
         try:
             self.conn.close()
         except:
-            retVal=False
+            retVal = False
         return retVal
 
     def execute(self, command):
         self.db.execute(command)
-        ret=self.db.fetchall()
+        ret = self.db.fetchall()
         print(ret)
 
     def save(self):

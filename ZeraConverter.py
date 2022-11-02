@@ -14,14 +14,14 @@ useDef = enum(Help=0, ShowSessions=2, ShowTransactions=3, Convert=4)
 
 inputFile = ""
 outputFile = ""
-userscript= ""
-conversionType="sql2xml"
+userscript = ""
+conversionType = "sql2xml"
 session = ""
 parameters = ""
 usecase = useDef.Help
 gui = False
 converter = object
-filterExp= ""
+filterExp = ""
 
 def Help():
     print("USAGE:")
@@ -81,7 +81,7 @@ def main(argv):
     print('Output file is ', outputFile)
 
     #define usecase depending on input data
-    usecase=useDef.Help
+    usecase = useDef.Help
     if inputFile != "" :
         usecase=useDef.ShowSessions
         if session != "" and inputFile != "" and outputFile != "":

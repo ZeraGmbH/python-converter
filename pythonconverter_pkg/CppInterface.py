@@ -6,54 +6,57 @@ import logging
 #Custom moudles
 from pythonconverter_pkg import ConversionUnit as con
 
-inputFile =""
-outputFile=""
-engine=""
-session=""
-params=""
-filterExp=""
+inputFile = ""
+outputFile = ""
+engine = ""
+session = ""
+params = ""
+filterExp = ""
+
 
 def setInputPath(p_path):
     global inputFile
-    inputFile=p_path
+    inputFile = p_path
+
 
 def setOutputPath(p_path):
     global outputFile
-    outputFile=p_path
+    outputFile = p_path
+
 
 def setEngine(p_path):
     global engine
-    engine=p_path
+    engine = p_path
 
 def setSession(p_session):
     global session
-    session=p_session
+    session = p_session
 
 def setParams(p_params):
     global params
-    params=p_params
+    params = p_params
 
 def setFilter(p_filter):
     global filterExp
-    filterExp=p_filter
+    filterExp = p_filter
 
 def checkInputFile():
-    retVal=False
+    retVal = False
     my_file = Path(inputFile)
     if my_file.is_file():
-        retVal=True
+        retVal = True
 
     return retVal
 
 def checkEngine():
-    retVal=False
+    retVal = False
     my_file = Path(engine)
     if my_file.is_file():
-        retVal=True
+        retVal = True
     return retVal
 
 def convert():
-    retVal=0
+    retVal = 0
     print(inputFile)
     print(outputFile)
     print(engine)
