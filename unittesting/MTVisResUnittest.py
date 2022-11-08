@@ -54,6 +54,12 @@ class MTVisResUnittest(unittest.TestCase):
         self.assertEqual(self.getTotalElements('IL2'), 2)
         self.assertEqual(self.getTotalElements('IL3'), 2)
 
+    def test_UIAngleValues(self):
+        self.assertEqual(self.getTotalElements('PHI1'), 2)
+        self.assertEqual(self.getTotalElements('PHI2'), 2)
+        self.assertEqual(self.getTotalElements('PHI3'), 2)
+
+
 
 
 if __name__ == '__main__':
