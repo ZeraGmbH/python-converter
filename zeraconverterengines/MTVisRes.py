@@ -348,7 +348,7 @@ class UserScript:
 
         UPN=self.UPNDftValues(compList)
         IL=self.IDftValues(compList)
-        
+
         eleList.append({"AU1" :  self.formatNumber(np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True))+";deg"})
         eleList.append({"AU2" :  self.formatNumber(np.angle(np.complex(UPN[1][0],UPN[1][1]), deg=True))+";deg"})
         eleList.append({"AU3" :  self.formatNumber(np.angle(np.complex(UPN[2][0],UPN[2][1]), deg=True))+";deg"})
@@ -773,30 +773,20 @@ class UserScript:
         result={}
         eleList=[]
 
-        #eleList.append({"ID" : metadata["session"]})
-        #eleList.append({"Language" : ""})
-        #eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        #eleList.append({"Device-No" : metadata["device"]["serial"]})
-
-        #eleList.append({"AdjustData" : ""})
-        eleList=self.ActualValuesCommon(compList, metadata)
+        eleList=self.SessionDeviceInfo(metadata, 'DEU')
+        eleList.append(self.ScaleCommon(compList, metadata))
+        eleList.append(self.RangeCommon(compList,metadata))
+        eleList.append(self.UPNRmsValues(compList))
+        eleList.append(self.IValues(compList))
+        eleList.append(self.UIPhaseAngleValues(compList))
         eleList.append(self.TimeCommon("VB ",compList))
-
-        #eleList.append(self.RangeCommon(input,metadata))
-
         eleList.append({"M-Mode" : ""})
-        #eleList.append({"U-PrimSek" : "1/1;V;1.00"})
-        #eleList.append({"I-PrimSek" : "1/1;A;1.00"})
-        #eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "U-Burden"})
         eleList.append({"Datatype" : "UBurden-Value"})
         eleList.append(self.VoltageBurdenValues(compList))
         eleList.append({"U-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalRange"]))+";V"})
-
         eleList.append({"B-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalBurden"]))+";VA"})
-
         eleList.append({"W-Length" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_WireLength"]))+";m"})
-
         eleList.append({"W-Gauge" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_WCrosssection"]))+";mm2"})
 
         result["#childs"]=eleList
@@ -806,19 +796,21 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         result={}
         eleList=[]
-        eleList=self.ActualValuesCommon(compList, metadata)
-        
+
+        eleList=self.SessionDeviceInfo(metadata, 'DEU')
+        eleList.append(self.ScaleCommon(compList, metadata))
+        eleList.append(self.RangeCommon(compList,metadata))
+        eleList.append(self.UPNRmsValues(compList))
+        eleList.append(self.IValues(compList))
+        eleList.append(self.UIPhaseAngleValues(compList))
         eleList.append(self.TimeCommon("CB ",compList))
         eleList.append({"M-Mode" : ""})
         eleList.append({"Function" : "I-Burden"})
         eleList.append({"Datatype" : "IBurden-Value"})
         eleList.append(self.CurrentBurdenValues(compList))
         eleList.append({"I-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalRange"]))+";A"})
-
         eleList.append({"B-Nominal" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalBurden"]))+";VA"})
-
         eleList.append({"W-Length" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_WireLength"]))+";m"})
-
         eleList.append({"W-Gauge" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_WCrosssection"]))+";mm2"})
 
         result["#childs"]=eleList
