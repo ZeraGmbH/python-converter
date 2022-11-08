@@ -269,7 +269,7 @@ class UserScript:
         
         return eleList 
 
-    def UPNValues(self, compList):
+    def UPNRmsValues(self, compList):
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
 
@@ -289,6 +289,43 @@ class UserScript:
         
         return eleList
 
+    def UPNDftValues(self, compList):
+        vals=zeracom.entityComponentSort(compList["values"])
+        UPN=[]
+
+        UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN1"]).split(";")]))
+        UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN2"]).split(";")]))
+        UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN3"]).split(";")]))
+
+        return UPN
+
+    def IDftValues(self, compList):
+        vals=zeracom.entityComponentSort(compList["values"])
+        IL=[]
+
+        #@TODO: is this 4,5,6 or 5,6,7 AUX channel
+        IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN4"]).split(";")]))
+        IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN5"]).split(";")]))
+        IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN6"]).split(";")]))
+        
+        return IL
+
+    def UIPhaseAngleValues(self, compList):
+        vals=zeracom.entityComponentSort(compList["values"])
+        eleList=[]
+
+        UPN=self.UPNDftValues(compList)
+        IL=self.IDftValues(compList)
+        UI1=np.angle(np.complex(IL[0][0],IL[0][1]), deg=True)-np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True)
+        UI2=np.angle(np.complex(IL[1][0],IL[1][1]), deg=True)-np.angle(np.complex(UPN[1][0],UPN[1][1]), deg=True)
+        UI3=np.angle(np.complex(IL[2][0],IL[2][1]), deg=True)-np.angle(np.complex(UPN[2][0],UPN[2][1]), deg=True)
+        
+        eleList.append({"PHI1" :  self.formatNumber(UI1)+";deg"})
+        eleList.append({"PHI2" :  self.formatNumber(UI2)+";deg"})
+        eleList.append({"PHI3" :  self.formatNumber(UI3)+";deg"})
+
+        return eleList
+
     def ActualValuesCommon(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
@@ -297,24 +334,11 @@ class UserScript:
 
         eleList.append(self.RangeCommon(compList,metadata))
         
-        UPN=[]
-
-        UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN1"]).split(";")]))
-        UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN2"]).split(";")]))
-        UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN3"]).split(";")]))
-
-        eleList.append(self.UPNValues(compList))
+        eleList.append(self.UPNRmsValues(compList))
 
         eleList.append({"UPP12" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP1"]))+";V"})
         eleList.append({"UPP23" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP2"]))+";V"})
         eleList.append({"UPP31" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP3"]))+";V"})
-
-        IL=[]
-
-        #@TODO: is this 4,5,6 or 5,6,7 AUX channel
-        IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN4"]).split(";")]))
-        IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN5"]).split(";")]))
-        IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN6"]).split(";")]))
 
         eleList.append(self.IValues(compList))
         
@@ -322,6 +346,9 @@ class UserScript:
         eleList.append({"IDC2" : ""})
         eleList.append({"IDC3" : ""})
 
+        UPN=self.UPNDftValues(compList)
+        IL=self.IDftValues(compList)
+        
         eleList.append({"AU1" :  self.formatNumber(np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True))+";deg"})
         eleList.append({"AU2" :  self.formatNumber(np.angle(np.complex(UPN[1][0],UPN[1][1]), deg=True))+";deg"})
         eleList.append({"AU3" :  self.formatNumber(np.angle(np.complex(UPN[2][0],UPN[2][1]), deg=True))+";deg"})
@@ -330,15 +357,7 @@ class UserScript:
         eleList.append({"AI2" :  self.formatNumber(np.angle(np.complex(IL[1][0],IL[1][1]), deg=True))+";deg"})
         eleList.append({"AI3" :  self.formatNumber(np.angle(np.complex(IL[2][0],IL[2][1]), deg=True))+";deg"})
 
-        # UI Angle per phase
-
-        UI1=np.angle(np.complex(IL[0][0],IL[0][1]), deg=True)-np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True)
-        UI2=np.angle(np.complex(IL[1][0],IL[1][1]), deg=True)-np.angle(np.complex(UPN[1][0],UPN[1][1]), deg=True)
-        UI3=np.angle(np.complex(IL[2][0],IL[2][1]), deg=True)-np.angle(np.complex(UPN[2][0],UPN[2][1]), deg=True)
-
-        eleList.append({"PHI1" :  self.formatNumber(UI1)+";deg"})
-        eleList.append({"PHI2" :  self.formatNumber(UI2)+";deg"})
-        eleList.append({"PHI3" :  self.formatNumber(UI3)+";deg"})
+        eleList.append(self.UIPhaseAngleValues(compList))
 
         eleList.append({"S1" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]))+";VA"})
         eleList.append({"S2" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]))+";VA"})
