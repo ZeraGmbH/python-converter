@@ -44,6 +44,11 @@ class MTVisResUnittest(unittest.TestCase):
         self.assertEqual(self.getTotalElements('Sn2'), 2)
         self.assertEqual(self.getTotalElements('Sn3'), 2)
 
+    def test_UPNValues(self):
+        self.assertEqual(self.getTotalElements('UPN1'), 2)
+        self.assertEqual(self.getTotalElements('UPN2'), 2)
+        self.assertEqual(self.getTotalElements('UPN3'), 2)
+
 
 
 if __name__ == '__main__':
