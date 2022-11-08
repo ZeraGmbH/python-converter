@@ -232,7 +232,43 @@ class UserScript:
         eleList.append({"Device-Typ" : metadata["device"]["type"]})
         eleList.append({"Device-No" : metadata["device"]["serial"]})
         return eleList
- 
+    
+    def CurrentBurdenValues (self, compList):
+        vals=zeracom.entityComponentSort(compList["values"])
+        eleList=[]
+
+        eleList.append({"Sb1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Burden1"]))+";VA"})
+        eleList.append({"Sb2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Burden2"]))+";VA"})
+        eleList.append({"Sb3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Burden3"]))+";VA"})
+        
+        eleList.append({"cosB1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_PFactor1"]))+";"})
+        eleList.append({"cosB2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_PFactor2"]))+";"})
+        eleList.append({"cosB3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_PFactor3"]))+";"})
+        
+        eleList.append({"Sn1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Ratio1"]))+";%"})
+        eleList.append({"Sn2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Ratio2"]))+";%"})
+        eleList.append({"Sn3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Ratio3"]))+";%"})
+         
+        return eleList
+
+    def VoltageBurdenValues (self, compList):
+        vals=zeracom.entityComponentSort(compList["values"])
+        eleList=[]
+
+        eleList.append({"Sb1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Burden1"]))+";VA"})
+        eleList.append({"Sb2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Burden2"]))+";VA"})
+        eleList.append({"Sb3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Burden3"]))+";VA"})
+
+        eleList.append({"cosB1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_PFactor1"]))+";"})
+        eleList.append({"cosB2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_PFactor2"]))+";"})
+        eleList.append({"cosB3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_PFactor3"]))+";"})
+
+        eleList.append({"Sn1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Ratio1"]))+";%"})
+        eleList.append({"Sn2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Ratio2"]))+";%"})
+        eleList.append({"Sn3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Ratio3"]))+";%"})
+        
+        return eleList 
+
     def ActualValuesCommon(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
@@ -709,7 +745,6 @@ class UserScript:
 
         #eleList.append({"AdjustData" : ""})
         eleList=self.ActualValuesCommon(compList, metadata)
-
         eleList.append(self.TimeCommon("VB ",compList))
 
         #eleList.append(self.RangeCommon(input,metadata))
@@ -720,6 +755,7 @@ class UserScript:
         #eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "U-Burden"})
         eleList.append({"Datatype" : "UBurden-Value"})
+        eleList.append(self.VoltageBurdenValues(compList))
         eleList.append({"U-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalRange"]))+";V"})
 
         eleList.append({"B-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","PAR_NominalBurden"]))+";VA"})
@@ -735,23 +771,13 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         result={}
         eleList=[]
-
-        #eleList.append({"ID" : metadata["session"]})
-        #eleList.append({"Language" : ""})
-        #eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        #eleList.append({"Device-No" : metadata["device"]["serial"]})
-
-        #eleList.append({"AdjustData" : ""})
         eleList=self.ActualValuesCommon(compList, metadata)
-
+        
         eleList.append(self.TimeCommon("CB ",compList))
         eleList.append({"M-Mode" : ""})
-        #eleList.append(self.RangeCommon(input,metadata))
-        #eleList.append({"U-PrimSek" : "1/1;V;1.00"})
-        #eleList.append({"I-PrimSek" : "1/1;A;1.00"})
-        #eleList.append({"PrimSek-Val-Cz-Reg" : "Off;Off;Off"})
         eleList.append({"Function" : "I-Burden"})
         eleList.append({"Datatype" : "IBurden-Value"})
+        eleList.append(self.CurrentBurdenValues(compList))
         eleList.append({"I-Nominal" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalRange"]))+";A"})
 
         eleList.append({"B-Nominal" :   self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","PAR_NominalBurden"]))+";VA"})
