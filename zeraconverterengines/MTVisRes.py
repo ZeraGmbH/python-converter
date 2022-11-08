@@ -225,18 +225,22 @@ class UserScript:
         eleList.append({"PrimSek-Val-Cz-Reg" : ActScaleEnabled+";"+DutScaleEnabled+";Off"})
         return eleList
 
+    def SessionDeviceInfo(self, metadata, Language):
+        eleList=[]
+        eleList.append({"ID" : metadata["session"]})
+        eleList.append({"Language" : Language})
+        eleList.append({"Device-Typ" : metadata["device"]["type"]})
+        eleList.append({"Device-No" : metadata["device"]["serial"]})
+        return eleList
+ 
     def ActualValuesCommon(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
-        eleList.append({"ID" : metadata["session"]})
-        eleList.append({"Language" : "DEU"})
-        eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : metadata["device"]["serial"]})
-
+        eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
         eleList.append(self.ScaleCommon(compList, metadata))
 
         eleList.append(self.RangeCommon(compList,metadata))
-
+        
         UPN=[]
 
         UPN.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN1"]).split(";")]))
@@ -397,10 +401,7 @@ class UserScript:
         for ch in range(1,upper):
             result={}
             eleList=[]
-            eleList.append({"ID" : metadata["session"]})
-            eleList.append({"Language" : "DEU"})
-            eleList.append({"Device-Typ" : metadata["device"]["type"]})
-            eleList.append({"Device-No" : metadata["device"]["serial"]})
+            eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
 
             eleList.append({"Function" : "Harmonics-Measurement"})
             eleList.append({"Datatype" : "Harmonic-Data"})
@@ -459,11 +460,7 @@ class UserScript:
         for ch in range(1,5):
             result={}
             eleList=[]
-            eleList.append({"ID" : metadata["session"]})
-            eleList.append({"Language" : "DEU"})
-            eleList.append({"Device-Typ" : metadata["device"]["type"]})
-            eleList.append({"Device-No" : metadata["device"]["serial"]})
-
+            eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
             eleList.append({"Function" : "Curve-Measurement"})
             eleList.append({"Datatype" : "Sample-Data"})
 
@@ -508,10 +505,7 @@ class UserScript:
         for ch in range(1,4):
             result={}
             eleList=[]
-            eleList.append({"ID" : metadata["session"]})
-            eleList.append({"Language" : "DEU"})
-            eleList.append({"Device-Typ" : metadata["device"]["type"]})
-            eleList.append({"Device-No" : metadata["device"]["serial"]})
+            eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
 
             eleList.append({"Function" : "Selektiv-Measurement"})
             eleList.append({"Datatype" : "Selektiv-Data"})
@@ -658,11 +652,7 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         result={}
         eleList=[]
-        eleList.append({"ID" : metadata["session"]})
-        eleList.append({"Language" : ""})
-        eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : metadata["device"]["serial"]})
-
+        eleList.append(self.SessionDeviceInfo(metadata, ''))
         eleList.append({"AdjustData" : ""})
 
         eleList.append(self.TimeCommon("PR ",compList))
@@ -777,11 +767,7 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         result={}
         eleList=[]
-        eleList.append({"ID" : metadata["session"]})
-        eleList.append({"Language" : "DEU"})
-        eleList.append({"Device-Typ" : metadata["device"]["type"]})
-        eleList.append({"Device-No" : metadata["device"]["serial"]})
-
+        eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
         eleList.append({"AdjustData" : ""})
 
         eleList.append(self.TimeCommon("IT ",compList))
