@@ -279,6 +279,16 @@ class UserScript:
 
         return eleList
 
+    def IValues(self, compList):
+        vals=zeracom.entityComponentSort(compList["values"])
+        eleList=[]
+
+        eleList.append({"IL1" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]))+";A"})
+        eleList.append({"IL2" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]))+";A"})
+        eleList.append({"IL3" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"]))+";A"})
+        
+        return eleList
+
     def ActualValuesCommon(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
@@ -306,10 +316,8 @@ class UserScript:
         IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN5"]).split(";")]))
         IL.append(np.array([float(i) for i in zeracom.readSafe(vals,["DFTModule1","ACT_DFTPN6"]).split(";")]))
 
-        eleList.append({"IL1" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]))+";A"})
-        eleList.append({"IL2" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]))+";A"})
-        eleList.append({"IL3" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"]))+";A"})
-
+        eleList.append(self.IValues(compList))
+        
         eleList.append({"IDC1" : ""})
         eleList.append({"IDC2" : ""})
         eleList.append({"IDC3" : ""})
