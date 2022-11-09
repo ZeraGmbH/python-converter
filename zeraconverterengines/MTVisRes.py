@@ -241,13 +241,13 @@ class UserScript:
         eleList.append({"Sb2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Burden2"]))+";VA"})
         eleList.append({"Sb3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Burden3"]))+";VA"})
         
-        eleList.append({"cosB1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_PFactor1"]))+";"})
-        eleList.append({"cosB2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_PFactor2"]))+";"})
-        eleList.append({"cosB3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_PFactor3"]))+";"})
+        eleList.append({"CosBeta1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_PFactor1"]))+";"})
+        eleList.append({"CosBeta2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_PFactor2"]))+";"})
+        eleList.append({"CosBeta3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_PFactor3"]))+";"})
         
-        eleList.append({"Sn1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Ratio1"]))+";%"})
-        eleList.append({"Sn2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Ratio2"]))+";%"})
-        eleList.append({"Sn3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Ratio3"]))+";%"})
+        eleList.append({"SN1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Ratio1"]))+";%"})
+        eleList.append({"SN2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Ratio2"]))+";%"})
+        eleList.append({"SN3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module1","ACT_Ratio3"]))+";%"})
          
         return eleList
 
@@ -259,13 +259,13 @@ class UserScript:
         eleList.append({"Sb2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Burden2"]))+";VA"})
         eleList.append({"Sb3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Burden3"]))+";VA"})
 
-        eleList.append({"cosB1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_PFactor1"]))+";"})
-        eleList.append({"cosB2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_PFactor2"]))+";"})
-        eleList.append({"cosB3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_PFactor3"]))+";"})
+        eleList.append({"CosBeta1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_PFactor1"]))+";"})
+        eleList.append({"CosBeta2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_PFactor2"]))+";"})
+        eleList.append({"CosBeta3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_PFactor3"]))+";"})
 
-        eleList.append({"Sn1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Ratio1"]))+";%"})
-        eleList.append({"Sn2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Ratio2"]))+";%"})
-        eleList.append({"Sn3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Ratio3"]))+";%"})
+        eleList.append({"SN1" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Ratio1"]))+";%"})
+        eleList.append({"SN2" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Ratio2"]))+";%"})
+        eleList.append({"SN3" :  self.formatNumber(zeracom.readSafe(vals,["Burden1Module2","ACT_Ratio3"]))+";%"})
         
         return eleList 
 
