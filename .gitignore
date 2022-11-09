@@ -131,8 +131,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# database files
-*.db
+# xml files
 *.xml
 
 # CMAKE qt
