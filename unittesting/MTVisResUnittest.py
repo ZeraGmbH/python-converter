@@ -36,13 +36,13 @@ class MTVisResUnittest(unittest.TestCase):
         self.assertEqual(self.getTotalElements('Sb2'), 2)
         self.assertEqual(self.getTotalElements('Sb3'), 2)
 
-        self.assertEqual(self.getTotalElements('cosB1'), 2)
-        self.assertEqual(self.getTotalElements('cosB2'), 2)
-        self.assertEqual(self.getTotalElements('cosB3'), 2)
+        self.assertEqual(self.getTotalElements('CosBeta1'), 2)
+        self.assertEqual(self.getTotalElements('CosBeta2'), 2)
+        self.assertEqual(self.getTotalElements('CosBeta3'), 2)
 
-        self.assertEqual(self.getTotalElements('Sn1'), 2)
-        self.assertEqual(self.getTotalElements('Sn2'), 2)
-        self.assertEqual(self.getTotalElements('Sn3'), 2)
+        self.assertEqual(self.getTotalElements('SN1'), 2)
+        self.assertEqual(self.getTotalElements('SN2'), 2)
+        self.assertEqual(self.getTotalElements('SN3'), 2)
 
     def test_UPNValues(self):
         self.assertEqual(self.getTotalElements('UPN1'), 2)
