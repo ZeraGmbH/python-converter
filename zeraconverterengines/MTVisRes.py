@@ -359,17 +359,20 @@ class UserScript:
 
         eleList.append(self.UIPhaseAngleValues(compList))
 
-        eleList.append({"S1" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]))+";VA"})
-        eleList.append({"S2" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]))+";VA"})
-        eleList.append({"S3" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]))+";VA"})
+        Smode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
+        eleList.append({"S1" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]))+";VA ("+Smode+")"})
+        eleList.append({"S2" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]))+";VA ("+Smode+")"})
+        eleList.append({"S3" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]))+";VA ("+Smode+")"})
 
-        eleList.append({"P1" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"]))+";W"})
-        eleList.append({"P2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"]))+";W"})
-        eleList.append({"P3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"]))+";W"})
-
-        eleList.append({"Q1" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"]))+";VAR"})
-        eleList.append({"Q2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"]))+";VAR"})
-        eleList.append({"Q3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"]))+";VAR"})
+        Pmode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
+        eleList.append({"P1" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"]))+";W ("+Pmode+")"})
+        eleList.append({"P2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"]))+";W ("+Pmode+")"})
+        eleList.append({"P3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"]))+";W ("+Pmode+")"})
+        
+        Qmode=zeracom.readSafe(vals,["POWER1Module2","PAR_MeasuringMode"])
+        eleList.append({"Q1" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"]))+";VAR ("+Qmode+")"})
+        eleList.append({"Q2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"]))+";VAR ("+Qmode+")"})
+        eleList.append({"Q3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"]))+";VAR ("+Qmode+")"})
 
         SP=zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"])
         SQ=zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"])
