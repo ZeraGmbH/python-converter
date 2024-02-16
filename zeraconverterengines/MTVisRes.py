@@ -642,6 +642,12 @@ class UserScript:
         eleList.append({"M-Puls" :  str(zeracom.readSafe(vals,["SEC1Module1","PAR_MRate"]))})
         eleList.append({"M-Inp" : self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_DutInput"]))})
         eleList.append({"Error" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_Result"]))+"%"})
+
+        eleList.append({"StartTime" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_StartTime"]))})
+        eleList.append({"StopTime" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_EndTime"]))})
+        eleList.append({"MTime" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_MeasTime"]))+"ms"})
+        eleList.append({"Err-Energie" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_Energy"]))+";kWh"})
+
         multiMeasJson=zeracom.readSafe(vals,["SEC1Module1","ACT_MulResult"])
         totalCount=0
         try:
