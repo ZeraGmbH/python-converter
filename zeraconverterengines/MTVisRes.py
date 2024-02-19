@@ -316,9 +316,9 @@ class UserScript:
 
         UPN=self.UPNDftValues(compList)
         IL=self.IDftValues(compList)
-        UI1=np.angle(np.complex(IL[0][0],IL[0][1]), deg=True)-np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True)
-        UI2=np.angle(np.complex(IL[1][0],IL[1][1]), deg=True)-np.angle(np.complex(UPN[1][0],UPN[1][1]), deg=True)
-        UI3=np.angle(np.complex(IL[2][0],IL[2][1]), deg=True)-np.angle(np.complex(UPN[2][0],UPN[2][1]), deg=True)
+        UI1=np.angle(complex(IL[0][0],IL[0][1]), deg=True)-np.angle(complex(UPN[0][0],UPN[0][1]), deg=True)
+        UI2=np.angle(complex(IL[1][0],IL[1][1]), deg=True)-np.angle(complex(UPN[1][0],UPN[1][1]), deg=True)
+        UI3=np.angle(complex(IL[2][0],IL[2][1]), deg=True)-np.angle(complex(UPN[2][0],UPN[2][1]), deg=True)
         
         eleList.append({"PHI1" :  self.formatNumber(UI1)+";deg"})
         eleList.append({"PHI2" :  self.formatNumber(UI2)+";deg"})
@@ -349,13 +349,13 @@ class UserScript:
         UPN=self.UPNDftValues(compList)
         IL=self.IDftValues(compList)
 
-        eleList.append({"AU1" :  self.formatNumber(np.angle(np.complex(UPN[0][0],UPN[0][1]), deg=True))+";deg"})
-        eleList.append({"AU2" :  self.formatNumber(np.angle(np.complex(UPN[1][0],UPN[1][1]), deg=True))+";deg"})
-        eleList.append({"AU3" :  self.formatNumber(np.angle(np.complex(UPN[2][0],UPN[2][1]), deg=True))+";deg"})
+        eleList.append({"AU1" :  self.formatNumber(np.angle(complex(UPN[0][0],UPN[0][1]), deg=True))+";deg"})
+        eleList.append({"AU2" :  self.formatNumber(np.angle(complex(UPN[1][0],UPN[1][1]), deg=True))+";deg"})
+        eleList.append({"AU3" :  self.formatNumber(np.angle(complex(UPN[2][0],UPN[2][1]), deg=True))+";deg"})
 
-        eleList.append({"AI1" :  self.formatNumber(np.angle(np.complex(IL[0][0],IL[0][1]), deg=True))+";deg"})
-        eleList.append({"AI2" :  self.formatNumber(np.angle(np.complex(IL[1][0],IL[1][1]), deg=True))+";deg"})
-        eleList.append({"AI3" :  self.formatNumber(np.angle(np.complex(IL[2][0],IL[2][1]), deg=True))+";deg"})
+        eleList.append({"AI1" :  self.formatNumber(np.angle(complex(IL[0][0],IL[0][1]), deg=True))+";deg"})
+        eleList.append({"AI2" :  self.formatNumber(np.angle(complex(IL[1][0],IL[1][1]), deg=True))+";deg"})
+        eleList.append({"AI3" :  self.formatNumber(np.angle(complex(IL[2][0],IL[2][1]), deg=True))+";deg"})
 
         eleList.append(self.UIPhaseAngleValues(compList))
 
@@ -500,7 +500,7 @@ class UserScript:
             real = zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[2]
             imag = zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[3]
             baseAbs = np.linalg.norm(np.array([float(real),float(imag)]))
-            baseAng = np.angle(np.complex(float(real),float(imag)), deg=True)
+            baseAng = np.angle(complex(float(real),float(imag)), deg=True)
             for sample in zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";"):
                 count = count + 1
                 if count >= 2:
@@ -508,7 +508,7 @@ class UserScript:
                     imag = sample
                     val = np.array([float(real),float(imag)])
                     if i != 1:
-                        eleList.append({"Harm" :  str(i)+";"+ self.formatNumber(np.linalg.norm(val)/baseAbs*100)+";%;"+ self.formatNumber(np.angle(np.complex(val[0],val[1]), deg=True))+";deg"})
+                        eleList.append({"Harm" :  str(i)+";"+ self.formatNumber(np.linalg.norm(val)/baseAbs*100)+";%;"+ self.formatNumber(np.angle(complex(val[0],val[1]), deg=True))+";deg"})
                     else:
                         eleList.append({"Harm" :  str(i)+";"+self.formatNumber(baseAbs)+";"+unit+";"+self.formatNumber(baseAng)+";deg"})
 
