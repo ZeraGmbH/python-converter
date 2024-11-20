@@ -111,6 +111,13 @@ class UserScript:
             strNum=str(num)
         return strNum
 
+    def formatAngle(self, num):
+        if type(num) == str:
+            return num
+        if num < 0:
+            num = num + 360
+        return self.formatNumber(num)
+
     def manipulate(self):
         retVal=0
         self.__outputDict["Result-Data"]={"#childs" : []}
@@ -349,13 +356,13 @@ class UserScript:
         UPN=self.UPNDftValues(compList)
         IL=self.IDftValues(compList)
 
-        eleList.append({"AU1" :  self.formatNumber(np.angle(complex(UPN[0][0],UPN[0][1]), deg=True))+";deg"})
-        eleList.append({"AU2" :  self.formatNumber(np.angle(complex(UPN[1][0],UPN[1][1]), deg=True))+";deg"})
-        eleList.append({"AU3" :  self.formatNumber(np.angle(complex(UPN[2][0],UPN[2][1]), deg=True))+";deg"})
+        eleList.append({"AU1" :  self.formatAngle(np.angle(complex(UPN[0][0],UPN[0][1]), deg=True))+";deg"})
+        eleList.append({"AU2" :  self.formatAngle(np.angle(complex(UPN[1][0],UPN[1][1]), deg=True))+";deg"})
+        eleList.append({"AU3" :  self.formatAngle(np.angle(complex(UPN[2][0],UPN[2][1]), deg=True))+";deg"})
 
-        eleList.append({"AI1" :  self.formatNumber(np.angle(complex(IL[0][0],IL[0][1]), deg=True))+";deg"})
-        eleList.append({"AI2" :  self.formatNumber(np.angle(complex(IL[1][0],IL[1][1]), deg=True))+";deg"})
-        eleList.append({"AI3" :  self.formatNumber(np.angle(complex(IL[2][0],IL[2][1]), deg=True))+";deg"})
+        eleList.append({"AI1" :  self.formatAngle(np.angle(complex(IL[0][0],IL[0][1]), deg=True))+";deg"})
+        eleList.append({"AI2" :  self.formatAngle(np.angle(complex(IL[1][0],IL[1][1]), deg=True))+";deg"})
+        eleList.append({"AI3" :  self.formatAngle(np.angle(complex(IL[2][0],IL[2][1]), deg=True))+";deg"})
 
         eleList.append(self.UIPhaseAngleValues(compList))
 
