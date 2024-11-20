@@ -118,6 +118,12 @@ class UserScript:
             num = num + 360
         return self.formatNumber(num)
 
+    def ms_to_hh_mm_ss(self, milliseconds):
+        seconds = milliseconds // 1000
+        hours, seconds = divmod(seconds, 3600)
+        minutes, seconds = divmod(seconds, 60)
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
     def manipulate(self):
         retVal=0
         self.__outputDict["Result-Data"]={"#childs" : []}
@@ -652,7 +658,9 @@ class UserScript:
 
         eleList.append({"StartTime" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_StartTime"]))})
         eleList.append({"StopTime" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_EndTime"]))})
-        eleList.append({"MTime" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_MeasTime"]))+"ms"})
+        durationMs = zeracom.readSafe(vals, ["SEC1Module1","ACT_MeasTime"])
+        eleList.append({"MTime" : self.ms_to_hh_mm_ss(durationMs)})
+
         eleList.append({"Err-Energie" :  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","ACT_Energy"]))+";kWh"})
 
         multiMeasJson=zeracom.readSafe(vals,["SEC1Module1","ACT_MulResult"])
