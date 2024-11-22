@@ -732,6 +732,10 @@ class UserScript:
             mode=zeracom.readSafe(vals,["POWER1Module2","PAR_MeasuringMode"])
         elif  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"])) == "S":
             mode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
+        elif  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"])) == "P AC":
+            mode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
+        elif  self.formatNumber(zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"])) == "P DC":
+            mode=zeracom.readSafe(vals,["POWER1Module4","PAR_MeasuringMode"])
         eleList.append({"M-Mode" :  self.formatNumber(mode)})
 
         # eleList.append({"RF" : ""})
