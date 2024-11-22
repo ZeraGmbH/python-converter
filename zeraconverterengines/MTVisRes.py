@@ -439,7 +439,7 @@ class UserScript:
 
 
         Smode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
-        SS=zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"])
+        SS=zeracom.readSafe(vals,["POWER1Module3","ACT_PQS4"])
         sPowerRowValues=[zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]),
                          zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]),
                          zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]),
@@ -451,7 +451,7 @@ class UserScript:
         eleList.append({"S3" :   self.formatNumber(sPowerRowValues[2]*scaleInfo["factor"])+";" + sPowerScaledUnit})
 
         Pmode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
-        SP=zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"])
+        SP=zeracom.readSafe(vals,["POWER1Module1","ACT_PQS4"])
         pPowerRowValues=[zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"]),
                          zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"]),
                          zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"]),
@@ -463,7 +463,7 @@ class UserScript:
         eleList.append({"P3" :  self.formatNumber(pPowerRowValues[2]*scaleInfo["factor"])+";" + pPowerScaledUnit})
 
         Qmode=zeracom.readSafe(vals,["POWER1Module2","PAR_MeasuringMode"])
-        SQ=zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"])
+        SQ=zeracom.readSafe(vals,["POWER1Module2","ACT_PQS4"])
         qPowerRowValues=[zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"]),
                          zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"]),
                          zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"]),
