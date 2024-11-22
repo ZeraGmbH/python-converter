@@ -438,18 +438,6 @@ class UserScript:
         eleList.append(self.UIPhaseAngleValues(compList))
 
 
-        Smode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
-        SS=zeracom.readSafe(vals,["POWER1Module3","ACT_PQS4"])
-        sPowerRowValues=[zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]),
-                         zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]),
-                         zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]),
-                         SS]
-        self.computeScaling(sPowerRowValues, scaleInfo)
-        sPowerScaledUnit = scaleInfo["unit"] + "VA ("+Smode+")"
-        eleList.append({"S1" :   self.formatNumber(sPowerRowValues[0]*scaleInfo["factor"])+";" + sPowerScaledUnit})
-        eleList.append({"S2" :   self.formatNumber(sPowerRowValues[1]*scaleInfo["factor"])+";" + sPowerScaledUnit})
-        eleList.append({"S3" :   self.formatNumber(sPowerRowValues[2]*scaleInfo["factor"])+";" + sPowerScaledUnit})
-
         Pmode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
         SP=zeracom.readSafe(vals,["POWER1Module1","ACT_PQS4"])
         pPowerRowValues=[zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"]),
@@ -473,6 +461,18 @@ class UserScript:
         eleList.append({"Q1" :  self.formatNumber(qPowerRowValues[0]*scaleInfo["factor"])+";" + qPowerScaledUnit})
         eleList.append({"Q2" :  self.formatNumber(qPowerRowValues[1]*scaleInfo["factor"])+";" + qPowerScaledUnit})
         eleList.append({"Q3" :  self.formatNumber(qPowerRowValues[2]*scaleInfo["factor"])+";" + qPowerScaledUnit})
+
+        Smode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
+        SS=zeracom.readSafe(vals,["POWER1Module3","ACT_PQS4"])
+        sPowerRowValues=[zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]),
+                         zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]),
+                         zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]),
+                         SS]
+        self.computeScaling(sPowerRowValues, scaleInfo)
+        sPowerScaledUnit = scaleInfo["unit"] + "VA ("+Smode+")"
+        eleList.append({"S1" :   self.formatNumber(sPowerRowValues[0]*scaleInfo["factor"])+";" + sPowerScaledUnit})
+        eleList.append({"S2" :   self.formatNumber(sPowerRowValues[1]*scaleInfo["factor"])+";" + sPowerScaledUnit})
+        eleList.append({"S3" :   self.formatNumber(sPowerRowValues[2]*scaleInfo["factor"])+";" + sPowerScaledUnit})
 
 
         eleList.append({"SS" :  self.formatNumber(sPowerRowValues[3]*scaleInfo["factor"])+";" + sPowerScaledUnit})
