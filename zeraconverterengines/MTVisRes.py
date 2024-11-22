@@ -101,7 +101,6 @@ class UserScript:
         return scaled
 
     def scaleSingleVal(self, value, scaleInfo):
-        print("Scaling: ", value)
         absValue = math.fabs(value)
         if(self.scaleSingleValForPrefix(absValue, 1e15, "P", scaleInfo)):
             return scaleInfo["factor"], scaleInfo["unit"]
@@ -323,22 +322,38 @@ class UserScript:
 
     def UPNRmsValues(self, compList):
         vals=zeracom.entityComponentSort(compList["values"])
+        scaleInfo = {
+            "factor": 0.0,
+            "unit": ""
+        }
         eleList=[]
 
-        eleList.append({"UPN1" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]))+";V"})
-        eleList.append({"UPN2" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]))+";V"})
-        eleList.append({"UPN3" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"]))+";V"})
+        rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]),
+                   zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]),
+                   zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"])]
+        self.computeScaling(rowValues, scaleInfo)
+        eleList.append({"UPN1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
+        eleList.append({"UPN2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
+        eleList.append({"UPN3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
 
         return eleList
 
     def IValues(self, compList):
         vals=zeracom.entityComponentSort(compList["values"])
+        scaleInfo = {
+            "factor": 0.0,
+            "unit": ""
+        }
         eleList=[]
 
-        eleList.append({"IL1" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]))+";A"})
-        eleList.append({"IL2" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]))+";A"})
-        eleList.append({"IL3" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"]))+";A"})
-        
+        rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]),
+                   zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]),
+                   zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"])]
+        self.computeScaling(rowValues, scaleInfo)
+        eleList.append({"IL1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
+        eleList.append({"IL2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
+        eleList.append({"IL3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
+
         return eleList
 
     def UPNDftValues(self, compList):
@@ -380,6 +395,10 @@ class UserScript:
 
     def ActualValuesCommon(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
+        scaleInfo = {
+            "factor": 0.0,
+            "unit": ""
+        }
         eleList=[]
         eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
         eleList.append(self.ScaleCommon(compList, metadata))
@@ -388,9 +407,13 @@ class UserScript:
         
         eleList.append(self.UPNRmsValues(compList))
 
-        eleList.append({"UPP12" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP1"]))+";V"})
-        eleList.append({"UPP23" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP2"]))+";V"})
-        eleList.append({"UPP31" :  self.formatNumber(zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP3"]))+";V"})
+        rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP1"]),
+                   zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP2"]),
+                   zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP3"])]
+        self.computeScaling(rowValues, scaleInfo)
+        eleList.append({"UPP12" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
+        eleList.append({"UPP23" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
+        eleList.append({"UPP31" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
 
         eleList.append(self.IValues(compList))
         
@@ -411,28 +434,47 @@ class UserScript:
 
         eleList.append(self.UIPhaseAngleValues(compList))
 
+
         Smode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
-        eleList.append({"S1" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]))+";VA ("+Smode+")"})
-        eleList.append({"S2" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]))+";VA ("+Smode+")"})
-        eleList.append({"S3" :   self.formatNumber(zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]))+";VA ("+Smode+")"})
+        SS=zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"])
+        sPowerRowValues=[zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"]),
+                         zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"]),
+                         zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]),
+                         SS]
+        self.computeScaling(sPowerRowValues, scaleInfo)
+        sPowerScaledUnit = scaleInfo["unit"] + "VA ("+Smode+")"
+        eleList.append({"S1" :   self.formatNumber(sPowerRowValues[0]*scaleInfo["factor"])+";" + sPowerScaledUnit})
+        eleList.append({"S2" :   self.formatNumber(sPowerRowValues[1]*scaleInfo["factor"])+";" + sPowerScaledUnit})
+        eleList.append({"S3" :   self.formatNumber(sPowerRowValues[2]*scaleInfo["factor"])+";" + sPowerScaledUnit})
 
         Pmode=zeracom.readSafe(vals,["POWER1Module1","PAR_MeasuringMode"])
-        eleList.append({"P1" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"]))+";W ("+Pmode+")"})
-        eleList.append({"P2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"]))+";W ("+Pmode+")"})
-        eleList.append({"P3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"]))+";W ("+Pmode+")"})
-        
-        Qmode=zeracom.readSafe(vals,["POWER1Module2","PAR_MeasuringMode"])
-        eleList.append({"Q1" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"]))+";VAR ("+Qmode+")"})
-        eleList.append({"Q2" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"]))+";VAR ("+Qmode+")"})
-        eleList.append({"Q3" :  self.formatNumber(zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"]))+";VAR ("+Qmode+")"})
-        
         SP=zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"])
-        SQ=zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"])
-        SS=zeracom.readSafe(vals,["POWER1Module3","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"])
+        pPowerRowValues=[zeracom.readSafe(vals,["POWER1Module1","ACT_PQS1"]),
+                         zeracom.readSafe(vals,["POWER1Module1","ACT_PQS2"]),
+                         zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"]),
+                         SP]
+        self.computeScaling(pPowerRowValues, scaleInfo)
+        pPowerScaledUnit = scaleInfo["unit"] + "W ("+Pmode+")"
+        eleList.append({"P1" :  self.formatNumber(pPowerRowValues[0]*scaleInfo["factor"])+";" + pPowerScaledUnit})
+        eleList.append({"P2" :  self.formatNumber(pPowerRowValues[1]*scaleInfo["factor"])+";" + pPowerScaledUnit})
+        eleList.append({"P3" :  self.formatNumber(pPowerRowValues[2]*scaleInfo["factor"])+";" + pPowerScaledUnit})
 
-        eleList.append({"SS" :  self.formatNumber(SS)+";VA"})
-        eleList.append({"SP" :  self.formatNumber(SP)+";W"})
-        eleList.append({"SQ" :  self.formatNumber(SQ)+";var"})
+        Qmode=zeracom.readSafe(vals,["POWER1Module2","PAR_MeasuringMode"])
+        SQ=zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"])+zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"])
+        qPowerRowValues=[zeracom.readSafe(vals,["POWER1Module2","ACT_PQS1"]),
+                         zeracom.readSafe(vals,["POWER1Module2","ACT_PQS2"]),
+                         zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"]),
+                         SQ]
+        self.computeScaling(qPowerRowValues, scaleInfo)
+        qPowerScaledUnit = scaleInfo["unit"] + "VAR ("+Qmode+")"
+        eleList.append({"Q1" :  self.formatNumber(qPowerRowValues[0]*scaleInfo["factor"])+";" + qPowerScaledUnit})
+        eleList.append({"Q2" :  self.formatNumber(qPowerRowValues[1]*scaleInfo["factor"])+";" + qPowerScaledUnit})
+        eleList.append({"Q3" :  self.formatNumber(qPowerRowValues[2]*scaleInfo["factor"])+";" + qPowerScaledUnit})
+
+
+        eleList.append({"SS" :  self.formatNumber(sPowerRowValues[3]*scaleInfo["factor"])+";" + sPowerScaledUnit})
+        eleList.append({"SP" :  self.formatNumber(pPowerRowValues[3]*scaleInfo["factor"])+";" + pPowerScaledUnit})
+        eleList.append({"SQ" :  self.formatNumber(qPowerRowValues[3]*scaleInfo["factor"])+";" + qPowerScaledUnit})
 
         eleList.append({"RF" : ""})
         eleList.append({"FREQ" :  self.formatNumber(zeracom.readSafe(vals,["RangeModule1","ACT_Frequency"]))})
