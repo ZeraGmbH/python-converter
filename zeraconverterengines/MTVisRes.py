@@ -89,6 +89,45 @@ class UserScript:
             retVal=False
         return retVal
 
+    def setScale(self, limit, limitPrefix, scaleInfo):
+        scaleInfo["factor"] = 1/limit
+        scaleInfo["unit"] = limitPrefix
+
+    def scaleSingleValForPrefix(self, absValue, limit, limitPrefix, scaleInfo):
+        scaled = False
+        if(absValue >= limit):
+            self.setScale(limit, limitPrefix, scaleInfo)
+            scaled = True
+        return scaled
+
+    def scaleSingleVal(self, value, scaleInfo):
+        print("Scaling: ", value)
+        absValue = math.fabs(value)
+        if(self.scaleSingleValForPrefix(absValue, 1e15, "P", scaleInfo)):
+            return scaleInfo["factor"], scaleInfo["unit"]
+        if(self.scaleSingleValForPrefix(absValue, 1e12, "T", scaleInfo)):
+            return scaleInfo["factor"], scaleInfo["unit"]
+        if(self.scaleSingleValForPrefix(absValue, 1e9, "G", scaleInfo)):
+            return scaleInfo["factor"], scaleInfo["unit"]
+        if(self.scaleSingleValForPrefix(absValue, 1e6, "M", scaleInfo)):
+            return scaleInfo["factor"], scaleInfo["unit"]
+        if(self.scaleSingleValForPrefix(absValue, 1e3, "k", scaleInfo)):
+            return scaleInfo["factor"], scaleInfo["unit"]
+        if(self.scaleSingleValForPrefix(absValue, 1, "", scaleInfo)):
+            return scaleInfo["factor"], scaleInfo["unit"]
+        if(self.scaleSingleValForPrefix(absValue, 1e-3, "m", scaleInfo)):
+            return scaleInfo["factor"], scaleInfo["unit"]
+        self.setScale(1e-6, "µ", scaleInfo)
+        return scaleInfo["factor"], scaleInfo["unit"]
+
+    def computeScaling(self, paramValues, scaleInfo):
+        maxAbsVal = 0.0
+        for value in paramValues:
+            absValue = math.fabs(value)
+            if(absValue > maxAbsVal):
+                maxAbsVal = absValue
+        return self.scaleSingleVal(maxAbsVal, scaleInfo)
+
     def formatNumber(self,num):
         try:
             if type(num) == str:
