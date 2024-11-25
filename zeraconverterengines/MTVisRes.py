@@ -157,7 +157,10 @@ class UserScript:
         return self.formatNumber(num)
 
     def ms_to_hh_mm_ss(self, milliseconds):
-        seconds = milliseconds // 1000
+        if(milliseconds == ""):
+            seconds = 0
+        else:
+            seconds = int(milliseconds) // 1000
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
         return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
