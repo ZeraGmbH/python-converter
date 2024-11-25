@@ -114,9 +114,7 @@ class UserScript:
             return scaleInfo["factor"], scaleInfo["unit"]
         if(self.scaleSingleValForPrefix(absValue, 1, "", scaleInfo)):
             return scaleInfo["factor"], scaleInfo["unit"]
-        if(self.scaleSingleValForPrefix(absValue, 1e-3, "m", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unit"]
-        self.setScale(1e-6, "µ", scaleInfo)
+        self.setScale(1e-3, "m", scaleInfo)
         return scaleInfo["factor"], scaleInfo["unit"]
 
     def computeScaling(self, paramValues, scaleInfo):
