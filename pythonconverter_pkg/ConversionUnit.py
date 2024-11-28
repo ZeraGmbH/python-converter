@@ -128,6 +128,9 @@ class ConversionUnit:
         try:
             transList = self.__readTransactionList()
             if len(transList) == 0:
+                print()
+                print("Transaction list is empty. Is session %s available???" % self.__session)
+                print()
                 self.__errorRegister = self.__errorRegister | (1 << 10)
             self.__iMap[self.__session] = {}
             self.__iMap[self.__session]["dynamic"] = {}
