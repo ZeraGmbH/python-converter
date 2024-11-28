@@ -410,7 +410,9 @@ class UserScript:
             "factor": 0.0,
             "unit": ""
         }
-        is_emob_dc = zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"]) == "P DC"
+        is_emob_dc = False
+        if "SEC1Module1" in vals:
+            is_emob_dc = zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"]) == "P DC"
 
         eleList=[]
         eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
@@ -739,7 +741,9 @@ class UserScript:
         result={}
         eleList=[]
 
-        is_emob_dc = zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"]) == "P DC"
+        is_emob_dc = False
+        if "SEC1Module1" in vals:
+            is_emob_dc = zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"]) == "P DC"
 
         eleList=self.ActualValuesCommon(compList, metadata)
         if not is_emob_dc:
