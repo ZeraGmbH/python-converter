@@ -493,6 +493,7 @@ class UserScript:
             eleList.append({"S2" :  self.formatNumber(sPowerRowValues[1]*scaleInfo["factor"])+";" + sPowerScaledUnit})
             eleList.append({"S3" :  self.formatNumber(sPowerRowValues[2]*scaleInfo["factor"])+";" + sPowerScaledUnit})
             eleList.append({"SS" :  self.formatNumber(sPowerRowValues[3]*scaleInfo["factor"])+";" + sPowerScaledUnit})
+            eleList.append({"FREQ" :  self.formatNumber(zeracom.readSafe(vals,["RangeModule1","ACT_Frequency"]))})
 
         else: # EMOB DC has power on PowerModule 4
             Pmode=zeracom.readSafe(vals,["POWER1Module4","PAR_MeasuringMode"])
@@ -506,12 +507,10 @@ class UserScript:
             eleList.append({"P1" :  self.formatNumber(pPowerRowValues[0]*scaleInfo["factor"])+";" + pPowerScaledUnit})
             eleList.append({"P2" :  self.formatNumber(pPowerRowValues[1]*scaleInfo["factor"])+";" + pPowerScaledUnit})
             eleList.append({"P3" :  self.formatNumber(pPowerRowValues[2]*scaleInfo["factor"])+";" + pPowerScaledUnit})
-            eleList.append({"SP" :  self.formatNumber(pPowerRowValues[3]*scaleInfo["factor"])+";" + pPowerScaledUnit})
 
 
 
         eleList.append({"RF" : ""})
-        eleList.append({"FREQ" :  self.formatNumber(zeracom.readSafe(vals,["RangeModule1","ACT_Frequency"]))})
         eleList.append({"UD1" : ""})
         eleList.append({"UD2" : ""})
         eleList.append({"UD3" : ""})
