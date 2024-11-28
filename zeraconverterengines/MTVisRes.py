@@ -241,16 +241,29 @@ class UserScript:
         eleList=[]
         URange=float(0)
         IRange=float(0)
-        for c in range(1,3):
-            uDictVal=zeracom.UnitNumberSeperator(zeracom.readSafe(vals,["RangeModule1","PAR_Channel"+ str(c)+"Range"]))
-            iDictVal=zeracom.UnitNumberSeperator(zeracom.readSafe(vals,["RangeModule1","PAR_Channel"+ str(c+3)+"Range"]))
-            if URange < uDictVal["value"]:
-                URange=uDictVal["value"]
-            if IRange < iDictVal["value"]:
-                IRange=iDictVal["value"]
+        if not self.IsEmobDcSession(vals):
+            uMaxRangeStr = ""
+            iMaxRangeStr = ""
+            for c in range(1, 3+1): # confusing but checkout https://www.w3schools.com/python/python_for_loops.asp
+                uRawValue = zeracom.readSafe(vals,["RangeModule1", "PAR_Channel"+ str(c)+"Range"])
+                uDictVal = zeracom.UnitNumberSeperator(uRawValue)
+                if URange < uDictVal["value"]:
+                    URange = uDictVal["value"]
+                    uMaxRangeStr = uRawValue
+                iRawValue = zeracom.readSafe(vals,["RangeModule1", "PAR_Channel"+ str(c+3)+"Range"])
+                iDictVal = zeracom.UnitNumberSeperator(iRawValue)
+                if IRange < iDictVal["value"]:
+                    IRange = iDictVal["value"]
+                    iMaxRangeStr = iRawValue
 
-        eleList.append({"U-Range" :  self.formatNumber(URange)+";"+uDictVal["unit"]})
-        eleList.append({"I-Range" :  self.formatNumber(IRange)+";"+iDictVal["unit"]})
+            eleList.append({"U-Range" : uMaxRangeStr + ";"})
+            eleList.append({"I-Range" : iMaxRangeStr + ";"})
+        else:
+            uRawValue =  zeracom.readSafe(vals,["RangeModule1","PAR_Channel7Range"])
+            iRawValue =  zeracom.readSafe(vals,["RangeModule1","PAR_Channel8Range"])
+            eleList.append({"U-Range" : uRawValue + ";"})
+            eleList.append({"I-Range" : iRawValue + ";"})
+
         return eleList
 
     def ScaleCommon(self,compList, metadata):
@@ -285,7 +298,7 @@ class UserScript:
         eleList.append({"Device-No" : metadata["device"]["serial"]})
         return eleList
     
-    def IsDcSession(self, vals):
+    def IsEmobDcSession(self, vals):
         isEmobDc = False
         if "SEC1Module1" in vals: # currently we have no better for EMOB DC
             isEmobDc = zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"]) == "P DC"
@@ -335,7 +348,7 @@ class UserScript:
         }
         eleList=[]
 
-        if not self.IsDcSession(vals):
+        if not self.IsEmobDcSession(vals):
             rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"])]
@@ -358,7 +371,7 @@ class UserScript:
         }
         eleList=[]
 
-        if not self.IsDcSession(vals):
+        if not self.IsEmobDcSession(vals):
             rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"])]
@@ -425,7 +438,7 @@ class UserScript:
         
         eleList.append(self.UPNRmsValues(compList))
 
-        is_dc = self.IsDcSession(vals)
+        is_dc = self.IsEmobDcSession(vals)
         if not is_dc:
             rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP1"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP2"]),
@@ -538,7 +551,7 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
 
-        if not self.IsDcSession(vals):
+        if not self.IsEmobDcSession(vals):
             eleList.append({"Lambda1" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda1"]))})
             eleList.append({"Lambda2" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda2"]))})
             eleList.append({"Lambda3" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda3"]))})
