@@ -127,7 +127,7 @@ class ConversionUnit:
         retVal = True
         try:
             transList = self.__readTransactionList()
-            if len(transList) is 0:
+            if len(transList) == 0:
                 self.__errorRegister = self.__errorRegister | (1 << 10)
             self.__iMap[self.__session] = {}
             self.__iMap[self.__session]["dynamic"] = {}
