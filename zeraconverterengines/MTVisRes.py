@@ -285,6 +285,12 @@ class UserScript:
         eleList.append({"Device-No" : metadata["device"]["serial"]})
         return eleList
     
+    def IsDcSession(self, vals):
+        isEmobDc = False
+        if "SEC1Module1" in vals: # currently we have no better for EMOB DC
+            isEmobDc = zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"]) == "P DC"
+        return isEmobDc
+
     def CurrentBurdenValues (self, compList):
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
@@ -321,7 +327,7 @@ class UserScript:
         
         return eleList 
 
-    def UPNRmsValues(self, compList, is_emob_dc = False):
+    def UPNRmsValues(self, compList):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
@@ -329,7 +335,7 @@ class UserScript:
         }
         eleList=[]
 
-        if not is_emob_dc:
+        if not self.IsDcSession(vals):
             rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"])]
@@ -344,7 +350,7 @@ class UserScript:
         eleList.append({"UPN3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
         return eleList
 
-    def IValues(self, compList, is_emob_dc = False):
+    def IValues(self, compList):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
@@ -352,7 +358,7 @@ class UserScript:
         }
         eleList=[]
 
-        if not is_emob_dc:
+        if not self.IsDcSession(vals):
             rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"])]
@@ -410,9 +416,6 @@ class UserScript:
             "factor": 0.0,
             "unit": ""
         }
-        is_emob_dc = False
-        if "SEC1Module1" in vals:
-            is_emob_dc = zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"]) == "P DC"
 
         eleList=[]
         eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
@@ -420,9 +423,10 @@ class UserScript:
 
         eleList.append(self.RangeCommon(compList,metadata))
         
-        eleList.append(self.UPNRmsValues(compList, is_emob_dc))
+        eleList.append(self.UPNRmsValues(compList))
 
-        if not is_emob_dc:
+        is_dc = self.IsDcSession(vals)
+        if not is_dc:
             rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP1"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP2"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP3"])]
@@ -431,13 +435,13 @@ class UserScript:
             eleList.append({"UPP23" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
             eleList.append({"UPP31" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
 
-        eleList.append(self.IValues(compList, is_emob_dc))
+        eleList.append(self.IValues(compList))
         
         eleList.append({"IDC1" : ""})
         eleList.append({"IDC2" : ""})
         eleList.append({"IDC3" : ""})
 
-        if not is_emob_dc:
+        if not is_dc:
             UPN=self.UPNDftValues(compList)
             IL=self.IDftValues(compList)
 
@@ -535,10 +539,11 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
 
-        eleList.append({"Lambda1" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda1"]))})
-        eleList.append({"Lambda2" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda2"]))})
-        eleList.append({"Lambda3" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda3"]))})
-        eleList.append({"SLambda" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda4"]))})
+        if not self.IsDcSession(vals):
+            eleList.append({"Lambda1" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda1"]))})
+            eleList.append({"Lambda2" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda2"]))})
+            eleList.append({"Lambda3" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda3"]))})
+            eleList.append({"SLambda" :  self.formatNumber(zeracom.readSafe(vals,["LambdaModule1","ACT_Lambda4"]))})
 
         return eleList
 
@@ -741,13 +746,8 @@ class UserScript:
         result={}
         eleList=[]
 
-        is_emob_dc = False
-        if "SEC1Module1" in vals:
-            is_emob_dc = zeracom.readSafe(vals,["SEC1Module1","PAR_RefInput"]) == "P DC"
-
         eleList=self.ActualValuesCommon(compList, metadata)
-        if not is_emob_dc:
-            eleList.append(self.LambdaCommon(compList,metadata))
+        eleList.append(self.LambdaCommon(compList,metadata))
         eleList.append(self.TimeCommon("MT ",compList))
 
         eleList.append({"Device-No" : metadata["device"]["serial"]})
