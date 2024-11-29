@@ -475,11 +475,12 @@ class UserScript:
                             zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"]),
                             SP]
             self.computeScaling(pPowerRowValues, scaleInfo)
-            pPowerScaledUnit = scaleInfo["unit"] + "W ("+Pmode+")"
-            eleList.append({"P1" :  self.formatNumber(pPowerRowValues[0]*scaleInfo["factor"])+";" + pPowerScaledUnit})
-            eleList.append({"P2" :  self.formatNumber(pPowerRowValues[1]*scaleInfo["factor"])+";" + pPowerScaledUnit})
-            eleList.append({"P3" :  self.formatNumber(pPowerRowValues[2]*scaleInfo["factor"])+";" + pPowerScaledUnit})
-            eleList.append({"SP" :  self.formatNumber(pPowerRowValues[3]*scaleInfo["factor"])+";" + pPowerScaledUnit})
+            pPowerUnit = scaleInfo["unit"] + "W"
+            pPowerUnitWithMode = pPowerUnit + " ("+Pmode+")"
+            eleList.append({"P1" :  self.formatNumber(pPowerRowValues[0]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
+            eleList.append({"P2" :  self.formatNumber(pPowerRowValues[1]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
+            eleList.append({"P3" :  self.formatNumber(pPowerRowValues[2]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
+            eleList.append({"SP" :  self.formatNumber(pPowerRowValues[3]*scaleInfo["factor"])+";" + pPowerUnit})
 
             Qmode=zeracom.readSafe(vals,["POWER1Module2","PAR_MeasuringMode"])
             SQ=zeracom.readSafe(vals,["POWER1Module2","ACT_PQS4"])
@@ -488,11 +489,12 @@ class UserScript:
                             zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"]),
                             SQ]
             self.computeScaling(qPowerRowValues, scaleInfo)
-            qPowerScaledUnit = scaleInfo["unit"] + "VAR ("+Qmode+")"
-            eleList.append({"Q1" :  self.formatNumber(qPowerRowValues[0]*scaleInfo["factor"])+";" + qPowerScaledUnit})
-            eleList.append({"Q2" :  self.formatNumber(qPowerRowValues[1]*scaleInfo["factor"])+";" + qPowerScaledUnit})
-            eleList.append({"Q3" :  self.formatNumber(qPowerRowValues[2]*scaleInfo["factor"])+";" + qPowerScaledUnit})
-            eleList.append({"SQ" :  self.formatNumber(qPowerRowValues[3]*scaleInfo["factor"])+";" + qPowerScaledUnit})
+            qPowerUnit = scaleInfo["unit"] + "VAR"
+            qPowerUnitWithMode = qPowerUnit + " ("+Qmode+")"
+            eleList.append({"Q1" :  self.formatNumber(qPowerRowValues[0]*scaleInfo["factor"])+";" + qPowerUnitWithMode})
+            eleList.append({"Q2" :  self.formatNumber(qPowerRowValues[1]*scaleInfo["factor"])+";" + qPowerUnitWithMode})
+            eleList.append({"Q3" :  self.formatNumber(qPowerRowValues[2]*scaleInfo["factor"])+";" + qPowerUnitWithMode})
+            eleList.append({"SQ" :  self.formatNumber(qPowerRowValues[3]*scaleInfo["factor"])+";" + qPowerUnit})
 
             Smode=zeracom.readSafe(vals,["POWER1Module3","PAR_MeasuringMode"])
             SS=zeracom.readSafe(vals,["POWER1Module3","ACT_PQS4"])
@@ -501,11 +503,12 @@ class UserScript:
                             zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]),
                             SS]
             self.computeScaling(sPowerRowValues, scaleInfo)
-            sPowerScaledUnit = scaleInfo["unit"] + "VA ("+Smode+")"
-            eleList.append({"S1" :  self.formatNumber(sPowerRowValues[0]*scaleInfo["factor"])+";" + sPowerScaledUnit})
-            eleList.append({"S2" :  self.formatNumber(sPowerRowValues[1]*scaleInfo["factor"])+";" + sPowerScaledUnit})
-            eleList.append({"S3" :  self.formatNumber(sPowerRowValues[2]*scaleInfo["factor"])+";" + sPowerScaledUnit})
-            eleList.append({"SS" :  self.formatNumber(sPowerRowValues[3]*scaleInfo["factor"])+";" + sPowerScaledUnit})
+            sPowerUnit = scaleInfo["unit"] + "VA"
+            sPowerUnitWithMode = sPowerUnit + " ("+Smode+")"
+            eleList.append({"S1" :  self.formatNumber(sPowerRowValues[0]*scaleInfo["factor"])+";" + sPowerUnitWithMode})
+            eleList.append({"S2" :  self.formatNumber(sPowerRowValues[1]*scaleInfo["factor"])+";" + sPowerUnitWithMode})
+            eleList.append({"S3" :  self.formatNumber(sPowerRowValues[2]*scaleInfo["factor"])+";" + sPowerUnitWithMode})
+            eleList.append({"SS" :  self.formatNumber(sPowerRowValues[3]*scaleInfo["factor"])+";" + sPowerUnit})
             eleList.append({"FREQ" :  self.formatNumber(zeracom.readSafe(vals,["RangeModule1","ACT_Frequency"]))})
 
         else: # EMOB DC has power on PowerModule 4
@@ -516,10 +519,10 @@ class UserScript:
                             zeracom.readSafe(vals,["POWER1Module4","ACT_PQS3"]),
                             SP]
             self.computeScaling(pPowerRowValues, scaleInfo)
-            pPowerScaledUnit = scaleInfo["unit"] + "W ("+Pmode+")"
-            eleList.append({"P1" :  self.formatNumber(pPowerRowValues[0]*scaleInfo["factor"])+";" + pPowerScaledUnit})
-            eleList.append({"P2" :  self.formatNumber(pPowerRowValues[1]*scaleInfo["factor"])+";" + pPowerScaledUnit})
-            eleList.append({"P3" :  self.formatNumber(pPowerRowValues[2]*scaleInfo["factor"])+";" + pPowerScaledUnit})
+            pPowerUnitWithMode = scaleInfo["unit"] + "W ("+Pmode+")"
+            eleList.append({"P1" :  self.formatNumber(pPowerRowValues[0]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
+            eleList.append({"P2" :  self.formatNumber(pPowerRowValues[1]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
+            eleList.append({"P3" :  self.formatNumber(pPowerRowValues[2]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
 
 
 
