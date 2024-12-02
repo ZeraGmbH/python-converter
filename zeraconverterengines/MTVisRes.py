@@ -859,21 +859,19 @@ class UserScript:
         else:
             eleList.append({"Type" : "Start/Stop"})
 
-        eleList.append({"E-MTime" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Time"]))+" s"}) # wird benötigt
+        if zeracom.readSafe(vals,["SEM1Module1","ACT_StartTime"]) != "": # introduced in 4.7.3
+            eleList.append({"E-StartTime" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_StartTime"]))})
+            eleList.append({"E-StopTime" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_EndTime"]))})
+            durationMs = zeracom.readSafe(vals, ["SEM1Module1","ACT_MeasTime"])
+            eleList.append({"E-MTime" : self.ms_to_hh_mm_ss(durationMs)})
+        else:
+            eleList.append({"E-MTime" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Time"]))+" s"})
+
         eleList.append({"Energie" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Energy"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})          # wird benötigt
         eleList.append({"E-Begin" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_T0Input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})    # wird benötigt
         eleList.append({"E-End" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_T1input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})      # wird benötigt
         eleList.append({"E-Cz" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_TXUNIT"]))})       # wird benötigt
         eleList.append({"E-Error" :  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","ACT_Result"]))+";%"})    # wird benötigt
-        # eleList.append({"Power" : ""})
-
-        # eleList.append({"P-Begin" : ""})
-
-        # eleList.append({"P-End" : ""})
-
-        # eleList.append({"P-Cz" : ""})
-
-        # eleList.append({"P-Error" : ""})
 
         result["#childs"]=eleList
         return result
@@ -907,16 +905,14 @@ class UserScript:
         else:
             eleList.append({"Type" : "Start/Stop"})
 
-        eleList.append({"P-MTime" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Time"]))+" s"}) # wird benötigt
-        # eleList.append({"Energie" : ""})
+        if zeracom.readSafe(vals,["SPM1Module1","ACT_StartTime"]) != "": # introduced in 4.7.3
+            eleList.append({"P-StartTime" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_StartTime"]))})
+            eleList.append({"P-StopTime" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_EndTime"]))})
+            durationMs = zeracom.readSafe(vals, ["SPM1Module1","ACT_MeasTime"])
+            eleList.append({"P-MTime" : self.ms_to_hh_mm_ss(durationMs)})
+        else:
+            eleList.append({"P-MTime" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Time"]))+" s"})
 
-        # eleList.append({"E-Begin" : ""})
-
-        # eleList.append({"E-End" : ""})
-
-        # eleList.append({"E-Cz" : ""})
-
-        # eleList.append({"E-Error" : ""})
 
         eleList.append({"Power" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","ACT_Power"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})          # wird benötigt
         eleList.append({"P-Begin" :  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_T0Input"]))+";"+ self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_TXUNIT"]))})    # wird benötigt
