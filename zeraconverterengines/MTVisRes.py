@@ -158,7 +158,8 @@ class UserScript:
         if(milliseconds == ""):
             seconds = 0
         else:
-            seconds = int(milliseconds) // 1000
+            secondsexact = milliseconds / 1000
+            seconds = round(secondsexact)
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
         return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
