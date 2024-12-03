@@ -680,13 +680,16 @@ class UserScript:
         for phase in range(len(phases)):
             UIdx = phases[phase][0]
             IIdx = phases[phase][1]
+            phaseName = str(phase+1)
+            if phase == 3:
+                phaseName = "AUX"
             result={}
             eleList=[]
             eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
             eleList.append({"Function" : "Curve-Measurement"})
             eleList.append({"Datatype" : "Sample-Data"})
 
-            eleList.append(self.TimeCommon("CD "+"UI "+str(phase+1)+" ",compList))
+            eleList.append(self.TimeCommon("CD " + "UI " + phaseName + " ", compList))
 
             eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
@@ -698,14 +701,14 @@ class UserScript:
                 i=i+1
                 eleList.append({"SampleA" :  self.formatNumber(i)+";"+sample+";V"})
 
-            eleList.append({"ChannelA" : "U"+ str(phase+1)})
+            eleList.append({"ChannelA" : "U" + phaseName})
 
             i=0
             for sample in zeracom.readSafe(vals,["OSCIModule1","ACT_OSCI"+ str(IIdx)]).split(";"):
                 i=i+1
                 eleList.append({"SampleB" :  self.formatNumber(i)+";"+sample+";A"})
 
-            eleList.append({"ChannelB" : "I"+ str(phase+1)})
+            eleList.append({"ChannelB" : "I" + phaseName})
 
             result["#childs"]=eleList
             endResult.append(result)
