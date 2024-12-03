@@ -679,6 +679,8 @@ class UserScript:
         phases = [[1, 4], [2, 5], [3, 6], [7, 8]]
         for phase in range(len(phases)):
             UIdx = phases[phase][0]
+            if zeracom.readSafe(vals,["OSCIModule1","ACT_OSCI"+ str(UIdx)]) == "":
+                continue
             IIdx = phases[phase][1]
             phaseName = str(phase+1)
             if phase == 3:
