@@ -723,11 +723,11 @@ class UserScript:
         endResult=[]
         eleList=[]
 
-        rangeMax=3
-        if zeracom.readSafe(vals,["FFTModule1","ACT_FFT8"]) != "":
-            rangeMax=4
-
-        for ch in range(1,4):
+        phaseCount = 3
+        for phase in range(1, phaseCount+1):
+            uIdx = phase
+            iIdx = phase + phaseCount
+            phaseStr = str(phase)
             result={}
             eleList=[]
             eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
@@ -735,27 +735,33 @@ class UserScript:
             eleList.append({"Function" : "Selektiv-Measurement"})
             eleList.append({"Datatype" : "Selektiv-Data"})
 
-            eleList.append(self.TimeCommon("HP "+"UI"+ str(ch)+" ",compList))
+            eleList.append(self.TimeCommon("HP "+ "UI" + phaseStr + " ", compList))
 
             eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
 
-
             eleList.append(self.RangeCommon(compList,metadata))
 
-            eleList.append({"ChannelU" : "U"+ str(ch)})
-            eleList.append({"ChannelI" : "I"+ str(ch)})
-            fftLen=len(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+str(ch)]).split(";"))
-            for i in range(1,int(fftLen/2)):
-                pqs=[]
-                U=np.linalg.norm(np.array([float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[2*i-1]),float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch)]).split(";")[2*i])]))
-                I=np.linalg.norm(np.array([float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch+rangeMax)]).split(";")[2*i-1]),float(zeracom.readSafe(vals,["FFTModule1","ACT_FFT"+ str(ch+rangeMax)]).split(";")[2*i])]))
-                pqs.append(float(zeracom.readSafe(vals,["Power3Module1","ACT_HPP"+ str(ch)]).split(";")[i]))
-                pqs.append(float(zeracom.readSafe(vals,["Power3Module1","ACT_HPQ"+ str(ch)]).split(";")[i]))
-                pqs.append(float(zeracom.readSafe(vals,["Power3Module1","ACT_HPS"+ str(ch)]).split(";")[i]))
-                eleList.append({"HarmValue" : "N;"+ self.formatNumber(i)+";U;"+ self.formatNumber(U)+";V;I;"+ self.formatNumber(I)+";A;P;"+ self.formatNumber(pqs[0])+";W;Q;"+ self.formatNumber(pqs[1])+";var;S;"+ self.formatNumber(pqs[2])+";VA"})
+            eleList.append({"ChannelU" : "U" + phaseStr})
+            eleList.append({"ChannelI" : "I" + phaseStr})
 
-            result["#childs"]=eleList
+            uFftTotal = zeracom.readSafe(vals,["FFTModule1","ACT_FFT" + str(uIdx)])
+            iFftTotal = zeracom.readSafe(vals,["FFTModule1","ACT_FFT" + str(iIdx)])
+            fftLen = len(zeracom.readSafe(vals,["FFTModule1","ACT_FFT" + phaseStr]).split(";"))
+            for i in range(0, int(fftLen/2)):
+                uRe = float(uFftTotal.split(";")[2*i])
+                uIm = float(uFftTotal.split(";")[2*i+1])
+                U = math.sqrt(uRe*uRe + uIm*uIm)
+                iRe = float(iFftTotal.split(";")[2*i])
+                iIm = float(iFftTotal.split(";")[2*i+1])
+                I = math.sqrt(iRe*iRe + iIm*iIm)
+
+                P = float(zeracom.readSafe(vals,["Power3Module1","ACT_HPP"+ phaseStr]).split(";")[i])
+                Q = float(zeracom.readSafe(vals,["Power3Module1","ACT_HPQ"+ phaseStr]).split(";")[i])
+                S = float(zeracom.readSafe(vals,["Power3Module1","ACT_HPS"+ phaseStr]).split(";")[i])
+                eleList.append({"HarmValue" : "N;" + str(i)+";U;"+ self.formatNumber(U)+";V;I;"+ self.formatNumber(I)+";A;P;"+ self.formatNumber(P)+";W;Q;"+ self.formatNumber(Q)+";var;S;"+ self.formatNumber(S)+";VA"})
+
+            result["#childs"] = eleList
             endResult.append(result)
 
         return endResult
