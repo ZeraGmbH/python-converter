@@ -125,6 +125,11 @@ class UserScript:
                 maxAbsVal = absValue
         return self.scaleSingleVal(maxAbsVal, scaleInfo)
 
+    def alignDecSeparator(self, strNum):
+        if "DE" in self.__local.upper():
+            strNum = strNum.replace(".",",")
+        return strNum
+
     def formatNumber(self,num):
         try:
             if type(num) == str:
@@ -140,9 +145,8 @@ class UserScript:
                 dec = digitsTotal - preDecimals
                 if dec < 0:
                     dec = 0
-            strNum =  str("{:."+str(dec)+"f}").format(num)
-            if "de" in local:
-                strNum=strNum.replace(".",",")
+            strNum = str("{:."+str(dec)+"f}").format(num)
+            strNum = self.alignDecSeparator(strNum)
         except:
             strNum=str(num)
         return strNum
@@ -236,6 +240,15 @@ class UserScript:
         eleList.append({"Date" : preadd+date})
         return eleList
 
+    def MtVisUnitAdjust(self, valUnitStr):
+        valUnitObj = zeracom.UnitNumberSeperator(valUnitStr)
+        unit = valUnitObj["unit"]
+        if unit.startswith("m"):
+            valUnitObj["unit"] = unit.replace("m", "")
+            valUnitObj["value"] = valUnitObj["value"] / 1000
+        strValue = f"{valUnitObj["value"]:g}"
+        return  strValue + valUnitObj["unit"]
+
     def RangeCommon(self, compList, metadata, mtvisRange = False):
         #pylint: disable=unused-argument
         vals=zeracom.entityComponentSort(compList["values"])
@@ -265,6 +278,9 @@ class UserScript:
             uRangeExported = zeracom.readSafe(vals,["RangeModule1","PAR_Channel7Range"])
             iRangeExported = zeracom.readSafe(vals,["RangeModule1","PAR_Channel8Range"])
 
+        if mtvisRange:
+            uRangeExported = self.alignDecSeparator(self.MtVisUnitAdjust(uRangeExported))
+            iRangeExported = self.alignDecSeparator(self.MtVisUnitAdjust(iRangeExported))
         eleList.append({"U-Range" : uRangeExported + ";"})
         eleList.append({"I-Range" : iRangeExported + ";"})
         return eleList
@@ -698,7 +714,7 @@ class UserScript:
             eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
 
-            eleList.append(self.RangeCommon(compList,metadata))
+            eleList.append(self.RangeCommon(compList, metadata, True))
 
             i=0
             for sample in zeracom.readSafe(vals,["OSCIModule1","ACT_OSCI"+ str(UIdx)]).split(";"):
