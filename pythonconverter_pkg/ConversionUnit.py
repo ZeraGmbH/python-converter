@@ -80,7 +80,8 @@ class ConversionUnit:
                 spec.loader.exec_module(self.__userScript)
             else:
                 self.__userScript = importlib.import_module(self.__userScriptPath)
-        except:
+        except Exception as error:
+            print("User script load failed with:\n", error)
             self.__errorRegister = self.__errorRegister | (1 << 0)
             retVal = False
         return retVal
