@@ -236,12 +236,14 @@ class UserScript:
         eleList.append({"Date" : preadd+date})
         return eleList
 
-    def RangeCommon(self,compList, metadata):
+    def RangeCommon(self, compList, metadata, mtvisRange = False):
         #pylint: disable=unused-argument
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
         URange=float(0)
         IRange=float(0)
+        uRangeExported = ""
+        iRangeExported = ""
         if not self.IsEmobDcSession(vals):
             uMaxRangeStr = ""
             iMaxRangeStr = ""
@@ -257,14 +259,14 @@ class UserScript:
                     IRange = iDictVal["value"]
                     iMaxRangeStr = iRawValue
 
-            eleList.append({"U-Range" : uMaxRangeStr + ";"})
-            eleList.append({"I-Range" : iMaxRangeStr + ";"})
+            uRangeExported = uMaxRangeStr
+            iRangeExported = iMaxRangeStr
         else:
-            uRawValue =  zeracom.readSafe(vals,["RangeModule1","PAR_Channel7Range"])
-            iRawValue =  zeracom.readSafe(vals,["RangeModule1","PAR_Channel8Range"])
-            eleList.append({"U-Range" : uRawValue + ";"})
-            eleList.append({"I-Range" : iRawValue + ";"})
+            uRangeExported = zeracom.readSafe(vals,["RangeModule1","PAR_Channel7Range"])
+            iRangeExported = zeracom.readSafe(vals,["RangeModule1","PAR_Channel8Range"])
 
+        eleList.append({"U-Range" : uRangeExported + ";"})
+        eleList.append({"I-Range" : iRangeExported + ";"})
         return eleList
 
     def ScaleCommon(self,compList, metadata):
