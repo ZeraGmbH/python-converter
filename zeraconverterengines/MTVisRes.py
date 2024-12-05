@@ -246,7 +246,7 @@ class UserScript:
         if unit.startswith("m"):
             valUnitObj["unit"] = unit.replace("m", "")
             valUnitObj["value"] = valUnitObj["value"] / 1000
-        strValue = f"{valUnitObj["value"]:g}"
+        strValue = "{:g}".format(valUnitObj["value"])
         return  strValue + valUnitObj["unit"]
 
     def RangeCommon(self, compList, metadata, mtvisRange = False):
