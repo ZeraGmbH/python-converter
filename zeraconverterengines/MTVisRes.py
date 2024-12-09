@@ -671,7 +671,7 @@ class UserScript:
                     imag = sample
                     val = np.array([float(real),float(imag)])
                     if i != 1:
-                        eleList.append({"Harm" :  str(i)+";"+ self.formatNumber(np.linalg.norm(val)/baseAbs*100)+";%;"+ self.formatNumber(np.angle(complex(val[0],val[1]), deg=True))+";deg"})
+                        eleList.append({"Harm" :  str(i)+";"+ self.formatNumber(np.linalg.norm(val)/baseAbs*100)+";%;"+ self.formatAngle(np.angle(complex(val[0],val[1]), deg=True))+";deg"})
                     else:
                         eleList.append({"Harm" :  str(i)+";"+self.formatNumber(baseAbs)+";"+unit+";"+self.formatNumber(baseAng)+";deg"})
 
