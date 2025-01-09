@@ -359,7 +359,7 @@ class UserScript:
         
         return eleList 
 
-    def UPNRmsValues(self, compList):
+    def UPNRmsValues(self, compList, withoutPrescaling):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
@@ -376,13 +376,19 @@ class UserScript:
                     0,
                     0]
 
-        self.computeScaling(rowValues, scaleInfo)
+        if withoutPrescaling:
+            # Here we remove prescaling factor from RMS value to get original unscaled RMS value back.
+            # Currently used for vector diagram
+            scaleInfo["unit"] = ""
+            scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
+        else:
+            self.computeScaling(rowValues, scaleInfo)
         eleList.append({"UPN1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
         eleList.append({"UPN2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
         eleList.append({"UPN3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
         return eleList
 
-    def IValues(self, compList):
+    def IValues(self, compList, withoutPrescaling):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
@@ -398,7 +404,14 @@ class UserScript:
             rowValues=[zeracom.readSafe(vals,["FFTModule1","ACT_DC8"]),
                     0,
                     0]
-        self.computeScaling(rowValues, scaleInfo)
+
+        if withoutPrescaling:
+            # Here we remove prescaling factor from RMS value to get original unscaled RMS value back.
+            # Currently used for vector diagram
+            scaleInfo["unit"] = ""
+            scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
+        else:
+            self.computeScaling(rowValues, scaleInfo)
         eleList.append({"IL1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
         eleList.append({"IL2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
         eleList.append({"IL3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
@@ -442,7 +455,7 @@ class UserScript:
 
         return eleList
 
-    def ActualValuesCommon(self,compList, metadata):
+    def ActualValuesCommon(self,compList, metadata, withoutPrescaling):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
@@ -455,7 +468,7 @@ class UserScript:
 
         eleList.append(self.RangeCommon(compList,metadata))
         
-        eleList.append(self.UPNRmsValues(compList))
+        eleList.append(self.UPNRmsValues(compList, withoutPrescaling))
 
         is_dc = self.IsEmobDcSession(vals)
         if not is_dc:
@@ -467,7 +480,7 @@ class UserScript:
             eleList.append({"UPP23" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
             eleList.append({"UPP31" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
 
-        eleList.append(self.IValues(compList))
+        eleList.append(self.IValues(compList, withoutPrescaling))
         
         eleList.append({"IDC1" : ""})
         eleList.append({"IDC2" : ""})
@@ -589,7 +602,7 @@ class UserScript:
         eleList.append({"Function" : "Value-Measurement"})
 
         eleList.append(self.TimeCommon("AV ",compList))
-        eleList.append(self.ActualValuesCommon(compList,metadata))
+        eleList.append(self.ActualValuesCommon(compList,metadata, withoutPrescaling = False))
         eleList.append(self.LambdaCommon(compList,metadata))
 
         result["#childs"]=eleList
@@ -603,7 +616,7 @@ class UserScript:
         eleList.append(self.TimeCommon("VV ",compList))
         eleList.append({"Datatype" : "Actual-Values"})
         eleList.append({"Function" : "Vector-Measurement"})
-        eleList.append(self.ActualValuesCommon(compList,metadata))
+        eleList.append(self.ActualValuesCommon(compList,metadata, withoutPrescaling = True))
         eleList.append(self.LambdaCommon(compList,metadata))
 
         result["#childs"]=eleList
@@ -792,7 +805,7 @@ class UserScript:
         result={}
         eleList=[]
 
-        eleList=self.ActualValuesCommon(compList, metadata)
+        eleList=self.ActualValuesCommon(compList, metadata, withoutPrescaling = False)
         eleList.append(self.LambdaCommon(compList,metadata))
         eleList.append(self.TimeCommon("MT ",compList))
 
@@ -962,8 +975,8 @@ class UserScript:
         eleList=self.SessionDeviceInfo(metadata, 'DEU')
         eleList.append(self.ScaleCommon(compList, metadata))
         eleList.append(self.RangeCommon(compList,metadata))
-        eleList.append(self.UPNRmsValues(compList))
-        eleList.append(self.IValues(compList))
+        eleList.append(self.UPNRmsValues(compList, withoutPrescaling = False))
+        eleList.append(self.IValues(compList, withoutPrescaling = False))
         eleList.append(self.UIPhaseAngleValues(compList))
         eleList.append(self.TimeCommon("VB ",compList))
         eleList.append({"M-Mode" : ""})
@@ -986,8 +999,8 @@ class UserScript:
         eleList=self.SessionDeviceInfo(metadata, 'DEU')
         eleList.append(self.ScaleCommon(compList, metadata))
         eleList.append(self.RangeCommon(compList,metadata))
-        eleList.append(self.UPNRmsValues(compList))
-        eleList.append(self.IValues(compList))
+        eleList.append(self.UPNRmsValues(compList, withoutPrescaling = False))
+        eleList.append(self.IValues(compList, withoutPrescaling = False))
         eleList.append(self.UIPhaseAngleValues(compList))
         eleList.append(self.TimeCommon("CB ",compList))
         eleList.append({"M-Mode" : ""})
