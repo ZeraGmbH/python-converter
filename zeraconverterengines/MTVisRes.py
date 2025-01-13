@@ -288,17 +288,15 @@ class UserScript:
     def ScaleCommon(self,compList, metadata):
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
-        uPrimSec="1/1;V;1.00"
-        iPrimSec="1/1;V;1.00"
 
+        uPrimSec=zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingGroup0"])+";V;1.00"
+        iPrimSec=zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingGroup1"])+";A;1.00"
         ActScaleEnabled="OFF"
         DutScaleEnabled="OFF"
         if(zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingEnabledGroup0"]) == 1):
             ActScaleEnabled="ON"
-            uPrimSec=zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingGroup0"])+";V;1.00"
         if(zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingEnabledGroup1"]) == 1):
             ActScaleEnabled="ON"
-            iPrimSec=zeracom.readSafe(vals,["RangeModule1","PAR_PreScalingGroup1"])+";A;1.00"
         if "SEC1Module1" in vals:
             testMode=zeracom.readSafe(vals,["SEC1Module1","PAR_DutTypeMeasurePoint"])
             if(testMode != "CpIpUp" and testMode != "CsIsUs" and testMode != ""):
