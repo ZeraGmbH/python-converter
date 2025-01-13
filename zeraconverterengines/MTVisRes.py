@@ -89,33 +89,44 @@ class UserScript:
             retVal=False
         return retVal
 
-    def setScale(self, limit, limitPrefix, scaleInfo):
-        scaleInfo["factor"] = 1/limit
-        scaleInfo["unitPrefix"] = limitPrefix
+    def setScale(self, factor, unitPrefix, scaleInfo):
+        scaleInfo["factor"] = factor
+        scaleInfo["unitPrefix"] = unitPrefix
 
-    def scaleSingleValForPrefix(self, absValue, limit, limitPrefix, scaleInfo):
+    def scaleSingleValForPrefix(self, absValue, factor, unitPrefix, scaleInfo):
         scaled = False
+        limit = 1 / factor
         if(absValue >= limit):
-            self.setScale(limit, limitPrefix, scaleInfo)
+            self.setScale(factor, unitPrefix, scaleInfo)
             scaled = True
         return scaled
 
+    scaleFactors = {
+        "P": 1e-15,
+        "T": 1e-12,
+        "G": 1e-9,
+        "M": 1e-6,
+        "k": 1e-3,
+        "": 1,
+        "m": 1e3
+    }
+
     def scaleSingleVal(self, value, scaleInfo):
         absValue = math.fabs(value)
-        if(self.scaleSingleValForPrefix(absValue, 1e15, "P", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unitPrefix"]
-        if(self.scaleSingleValForPrefix(absValue, 1e12, "T", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unitPrefix"]
-        if(self.scaleSingleValForPrefix(absValue, 1e9, "G", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unitPrefix"]
-        if(self.scaleSingleValForPrefix(absValue, 1e6, "M", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unitPrefix"]
-        if(self.scaleSingleValForPrefix(absValue, 1e3, "k", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unitPrefix"]
-        if(self.scaleSingleValForPrefix(absValue, 1, "", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unitPrefix"]
-        self.setScale(1e-3, "m", scaleInfo)
-        return scaleInfo["factor"], scaleInfo["unitPrefix"]
+        if(self.scaleSingleValForPrefix(absValue, UserScript.scaleFactors["P"], "P", scaleInfo)):
+            return
+        if(self.scaleSingleValForPrefix(absValue, UserScript.scaleFactors["T"], "T", scaleInfo)):
+            return
+        if(self.scaleSingleValForPrefix(absValue, UserScript.scaleFactors["G"], "G", scaleInfo)):
+            return
+        if(self.scaleSingleValForPrefix(absValue, UserScript.scaleFactors["M"], "M", scaleInfo)):
+            return
+        if(self.scaleSingleValForPrefix(absValue, UserScript.scaleFactors["k"], "k", scaleInfo)):
+            return
+        if(self.scaleSingleValForPrefix(absValue, UserScript.scaleFactors[""], "", scaleInfo)):
+            return
+        self.setScale(UserScript.scaleFactors["m"], "m", scaleInfo)
+        return
 
     def computeScaling(self, paramValues, scaleInfo):
         maxAbsVal = 0.0
