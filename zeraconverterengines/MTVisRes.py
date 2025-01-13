@@ -91,7 +91,7 @@ class UserScript:
 
     def setScale(self, limit, limitPrefix, scaleInfo):
         scaleInfo["factor"] = 1/limit
-        scaleInfo["unit"] = limitPrefix
+        scaleInfo["unitPrefix"] = limitPrefix
 
     def scaleSingleValForPrefix(self, absValue, limit, limitPrefix, scaleInfo):
         scaled = False
@@ -103,19 +103,19 @@ class UserScript:
     def scaleSingleVal(self, value, scaleInfo):
         absValue = math.fabs(value)
         if(self.scaleSingleValForPrefix(absValue, 1e15, "P", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unit"]
+            return scaleInfo["factor"], scaleInfo["unitPrefix"]
         if(self.scaleSingleValForPrefix(absValue, 1e12, "T", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unit"]
+            return scaleInfo["factor"], scaleInfo["unitPrefix"]
         if(self.scaleSingleValForPrefix(absValue, 1e9, "G", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unit"]
+            return scaleInfo["factor"], scaleInfo["unitPrefix"]
         if(self.scaleSingleValForPrefix(absValue, 1e6, "M", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unit"]
+            return scaleInfo["factor"], scaleInfo["unitPrefix"]
         if(self.scaleSingleValForPrefix(absValue, 1e3, "k", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unit"]
+            return scaleInfo["factor"], scaleInfo["unitPrefix"]
         if(self.scaleSingleValForPrefix(absValue, 1, "", scaleInfo)):
-            return scaleInfo["factor"], scaleInfo["unit"]
+            return scaleInfo["factor"], scaleInfo["unitPrefix"]
         self.setScale(1e-3, "m", scaleInfo)
-        return scaleInfo["factor"], scaleInfo["unit"]
+        return scaleInfo["factor"], scaleInfo["unitPrefix"]
 
     def computeScaling(self, paramValues, scaleInfo):
         maxAbsVal = 0.0
@@ -361,7 +361,7 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
-            "unit": ""
+            "unitPrefix": ""
         }
         eleList=[]
 
@@ -377,20 +377,20 @@ class UserScript:
         if withoutPrescaling:
             # Here we remove prescaling factor from RMS value to get original unscaled RMS value back.
             # Currently used for vector diagram
-            scaleInfo["unit"] = ""
+            scaleInfo["unitPrefix"] = ""
             scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
         else:
             self.computeScaling(rowValues, scaleInfo)
-        eleList.append({"UPN1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
-        eleList.append({"UPN2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
-        eleList.append({"UPN3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
+        eleList.append({"UPN1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
+        eleList.append({"UPN2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
+        eleList.append({"UPN3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
         return eleList
 
     def IValues(self, compList, withoutPrescaling):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
-            "unit": ""
+            "unitPrefix": ""
         }
         eleList=[]
 
@@ -406,13 +406,13 @@ class UserScript:
         if withoutPrescaling:
             # Here we remove prescaling factor from RMS value to get original unscaled RMS value back.
             # Currently used for vector diagram
-            scaleInfo["unit"] = ""
+            scaleInfo["unitPrefix"] = ""
             scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
         else:
             self.computeScaling(rowValues, scaleInfo)
-        eleList.append({"IL1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
-        eleList.append({"IL2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
-        eleList.append({"IL3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
+        eleList.append({"IL1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "A"})
+        eleList.append({"IL2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "A"})
+        eleList.append({"IL3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "A"})
 
         return eleList
 
@@ -457,7 +457,7 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
-            "unit": ""
+            "unitPrefix": ""
         }
 
         eleList=[]
@@ -474,9 +474,9 @@ class UserScript:
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP2"]),
                     zeracom.readSafe(vals,["RMSModule1","ACT_RMSPP3"])]
             self.computeScaling(rowValues, scaleInfo)
-            eleList.append({"UPP12" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
-            eleList.append({"UPP23" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
-            eleList.append({"UPP31" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
+            eleList.append({"UPP12" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
+            eleList.append({"UPP23" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
+            eleList.append({"UPP31" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
 
         eleList.append(self.IValues(compList, withoutPrescaling))
         
@@ -505,7 +505,7 @@ class UserScript:
                             zeracom.readSafe(vals,["POWER1Module1","ACT_PQS3"]),
                             SP]
             self.computeScaling(pPowerRowValues, scaleInfo)
-            pPowerUnit = scaleInfo["unit"] + "W"
+            pPowerUnit = scaleInfo["unitPrefix"] + "W"
             pPowerUnitWithMode = pPowerUnit + " ("+Pmode+")"
             eleList.append({"P1" :  self.formatNumber(pPowerRowValues[0]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
             eleList.append({"P2" :  self.formatNumber(pPowerRowValues[1]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
@@ -519,7 +519,7 @@ class UserScript:
                             zeracom.readSafe(vals,["POWER1Module2","ACT_PQS3"]),
                             SQ]
             self.computeScaling(qPowerRowValues, scaleInfo)
-            qPowerUnit = scaleInfo["unit"] + "VAR"
+            qPowerUnit = scaleInfo["unitPrefix"] + "VAR"
             qPowerUnitWithMode = qPowerUnit + " ("+Qmode+")"
             eleList.append({"Q1" :  self.formatNumber(qPowerRowValues[0]*scaleInfo["factor"])+";" + qPowerUnitWithMode})
             eleList.append({"Q2" :  self.formatNumber(qPowerRowValues[1]*scaleInfo["factor"])+";" + qPowerUnitWithMode})
@@ -533,7 +533,7 @@ class UserScript:
                             zeracom.readSafe(vals,["POWER1Module3","ACT_PQS3"]),
                             SS]
             self.computeScaling(sPowerRowValues, scaleInfo)
-            sPowerUnit = scaleInfo["unit"] + "VA"
+            sPowerUnit = scaleInfo["unitPrefix"] + "VA"
             sPowerUnitWithMode = sPowerUnit + " ("+Smode+")"
             eleList.append({"S1" :  self.formatNumber(sPowerRowValues[0]*scaleInfo["factor"])+";" + sPowerUnitWithMode})
             eleList.append({"S2" :  self.formatNumber(sPowerRowValues[1]*scaleInfo["factor"])+";" + sPowerUnitWithMode})
@@ -549,7 +549,7 @@ class UserScript:
                             zeracom.readSafe(vals,["POWER1Module4","ACT_PQS3"]),
                             SP]
             self.computeScaling(pPowerRowValues, scaleInfo)
-            pPowerUnitWithMode = scaleInfo["unit"] + "W ("+Pmode+")"
+            pPowerUnitWithMode = scaleInfo["unitPrefix"] + "W ("+Pmode+")"
             eleList.append({"P1" :  self.formatNumber(pPowerRowValues[0]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
             eleList.append({"P2" :  self.formatNumber(pPowerRowValues[1]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
             eleList.append({"P3" :  self.formatNumber(pPowerRowValues[2]*scaleInfo["factor"])+";" + pPowerUnitWithMode})
