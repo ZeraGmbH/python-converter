@@ -361,7 +361,7 @@ class UserScript:
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
-            "unit": ""
+            "unitPrefix": ""
         }
         eleList=[]
 
@@ -377,20 +377,20 @@ class UserScript:
         if withoutPrescaling:
             # Here we remove prescaling factor from RMS value to get original unscaled RMS value back.
             # Currently used for vector diagram
-            scaleInfo["unit"] = ""
+            scaleInfo["unitPrefix"] = ""
             scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
         else:
             self.computeScaling(rowValues, scaleInfo)
-        eleList.append({"UPN1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
-        eleList.append({"UPN2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
-        eleList.append({"UPN3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "V"})
+        eleList.append({"UPN1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
+        eleList.append({"UPN2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
+        eleList.append({"UPN3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
         return eleList
 
     def IValues(self, compList, withoutPrescaling):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
-            "unit": ""
+            "unitPrefix": ""
         }
         eleList=[]
 
@@ -406,13 +406,13 @@ class UserScript:
         if withoutPrescaling:
             # Here we remove prescaling factor from RMS value to get original unscaled RMS value back.
             # Currently used for vector diagram
-            scaleInfo["unit"] = ""
+            scaleInfo["unitPrefix"] = ""
             scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
         else:
             self.computeScaling(rowValues, scaleInfo)
-        eleList.append({"IL1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
-        eleList.append({"IL2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
-        eleList.append({"IL3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unit"] + "A"})
+        eleList.append({"IL1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "A"})
+        eleList.append({"IL2" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "A"})
+        eleList.append({"IL3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "A"})
 
         return eleList
 
