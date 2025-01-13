@@ -390,6 +390,10 @@ class UserScript:
             # Currently used for vector diagram
             scaleInfo["unitPrefix"] = ""
             scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
+            voltageRange = self.RangeCommon(compList)[0]["U-Range"].replace(";", "")
+            voltageRangeUnitPrefix = zeracom.UnitNumberSeperator(voltageRange)["unit"].replace("V", "")
+            scaleInfo["factor"] *= self.scaleFactors[voltageRangeUnitPrefix]
+            scaleInfo["unitPrefix"] = voltageRangeUnitPrefix
         else:
             self.computeScaling(rowValues, scaleInfo)
         eleList.append({"UPN1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
@@ -419,6 +423,10 @@ class UserScript:
             # Currently used for vector diagram
             scaleInfo["unitPrefix"] = ""
             scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
+            currentRange = self.RangeCommon(compList)[1]["I-Range"].replace(";", "")
+            currentRangeUnitPrefix = zeracom.UnitNumberSeperator(currentRange)["unit"].replace("A", "")
+            scaleInfo["factor"] *= self.scaleFactors[currentRangeUnitPrefix]
+            scaleInfo["unitPrefix"] = currentRangeUnitPrefix
         else:
             self.computeScaling(rowValues, scaleInfo)
         eleList.append({"IL1" :  self.formatNumber(rowValues[0]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "A"})
