@@ -368,7 +368,7 @@ class UserScript:
         
         return eleList 
 
-    def UPNRmsValues(self, compList, withoutPrescaling):
+    def UPNRmsValues(self, compList, vectorMeasurement):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
@@ -385,14 +385,13 @@ class UserScript:
                     0,
                     0]
 
-        if withoutPrescaling:
-            # Here we remove prescaling factor from RMS value to get original unscaled RMS value back.
-            # Currently used for vector diagram
-            scaleInfo["unitPrefix"] = ""
-            scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
-            voltageRange = self.RangeCommon(compList)[0]["U-Range"].replace(";", "")
-            voltageRangeUnitPrefix = zeracom.UnitNumberSeperator(voltageRange)["unit"].replace("V", "")
-            scaleInfo["factor"] *= self.scaleFactors[voltageRangeUnitPrefix]
+        if vectorMeasurement:
+            # Here we remove prescaling factor from RMS value to get original unscaled RMS value back and make unit of UPN1..3 same as unit of 'U-Range'.
+            # Currently used only for vector diagram
+            scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"]) #un-prescale RMS value
+            voltageRange = self.RangeCommon(compList)[0]["U-Range"].replace(";", "") #If 'U-Range' is '250V;' make it '250V'
+            voltageRangeUnitPrefix = zeracom.UnitNumberSeperator(voltageRange)["unit"].replace("V", "") #we are interested in just unit-prefix
+            scaleInfo["factor"] *= self.scaleFactors[voltageRangeUnitPrefix] #scale to fit to new unit
             scaleInfo["unitPrefix"] = voltageRangeUnitPrefix
         else:
             self.computeScaling(rowValues, scaleInfo)
@@ -401,7 +400,7 @@ class UserScript:
         eleList.append({"UPN3" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
         return eleList
 
-    def IValues(self, compList, withoutPrescaling):
+    def IValues(self, compList, vectorMeasurement):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
@@ -418,14 +417,13 @@ class UserScript:
                     0,
                     0]
 
-        if withoutPrescaling:
-            # Here we remove prescaling factor from RMS value to get original unscaled RMS value back.
-            # Currently used for vector diagram
-            scaleInfo["unitPrefix"] = ""
-            scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
-            currentRange = self.RangeCommon(compList)[1]["I-Range"].replace(";", "")
-            currentRangeUnitPrefix = zeracom.UnitNumberSeperator(currentRange)["unit"].replace("A", "")
-            scaleInfo["factor"] *= self.scaleFactors[currentRangeUnitPrefix]
+        if vectorMeasurement:
+            # Here we remove prescaling factor from RMS value to get original unscaled RMS value back and make unit of IL1..3 same as unit of 'I-Range'.
+            # Currently used only for vector diagram
+            scaleInfo["factor"] = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"]) #un-prescale RMS value
+            currentRange = self.RangeCommon(compList)[1]["I-Range"].replace(";", "") #If 'I-Range' is '100mA;' make it '100mA'
+            currentRangeUnitPrefix = zeracom.UnitNumberSeperator(currentRange)["unit"].replace("A", "") #we are interested in just unit-prefix
+            scaleInfo["factor"] *= self.scaleFactors[currentRangeUnitPrefix] #scale to fit to new unit
             scaleInfo["unitPrefix"] = currentRangeUnitPrefix
         else:
             self.computeScaling(rowValues, scaleInfo)
@@ -472,7 +470,7 @@ class UserScript:
 
         return eleList
 
-    def ActualValuesCommon(self,compList, metadata, withoutPrescaling):
+    def ActualValuesCommon(self,compList, metadata, vectorMeasurement):
         vals=zeracom.entityComponentSort(compList["values"])
         scaleInfo = {
             "factor": 0.0,
@@ -485,7 +483,7 @@ class UserScript:
 
         eleList.append(self.RangeCommon(compList))
         
-        eleList.append(self.UPNRmsValues(compList, withoutPrescaling))
+        eleList.append(self.UPNRmsValues(compList, vectorMeasurement))
 
         is_dc = self.IsEmobDcSession(vals)
         if not is_dc:
@@ -497,7 +495,7 @@ class UserScript:
             eleList.append({"UPP23" :  self.formatNumber(rowValues[1]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
             eleList.append({"UPP31" :  self.formatNumber(rowValues[2]*scaleInfo["factor"])+";" + scaleInfo["unitPrefix"] + "V"})
 
-        eleList.append(self.IValues(compList, withoutPrescaling))
+        eleList.append(self.IValues(compList, vectorMeasurement))
         
         eleList.append({"IDC1" : ""})
         eleList.append({"IDC2" : ""})
@@ -619,7 +617,7 @@ class UserScript:
         eleList.append({"Function" : "Value-Measurement"})
 
         eleList.append(self.TimeCommon("AV ",compList))
-        eleList.append(self.ActualValuesCommon(compList,metadata, withoutPrescaling = False))
+        eleList.append(self.ActualValuesCommon(compList,metadata, vectorMeasurement = False))
         eleList.append(self.LambdaCommon(compList,metadata))
 
         result["#childs"]=eleList
@@ -633,7 +631,7 @@ class UserScript:
         eleList.append(self.TimeCommon("VV ",compList))
         eleList.append({"Datatype" : "Actual-Values"})
         eleList.append({"Function" : "Vector-Measurement"})
-        eleList.append(self.ActualValuesCommon(compList,metadata, withoutPrescaling = True))
+        eleList.append(self.ActualValuesCommon(compList,metadata, vectorMeasurement = True))
         eleList.append(self.LambdaCommon(compList,metadata))
 
         result["#childs"]=eleList
@@ -822,7 +820,7 @@ class UserScript:
         result={}
         eleList=[]
 
-        eleList=self.ActualValuesCommon(compList, metadata, withoutPrescaling = False)
+        eleList=self.ActualValuesCommon(compList, metadata, vectorMeasurement = False)
         eleList.append(self.LambdaCommon(compList,metadata))
         eleList.append(self.TimeCommon("MT ",compList))
 
@@ -992,8 +990,8 @@ class UserScript:
         eleList=self.SessionDeviceInfo(metadata, 'DEU')
         eleList.append(self.ScaleCommon(compList, metadata))
         eleList.append(self.RangeCommon(compList))
-        eleList.append(self.UPNRmsValues(compList, withoutPrescaling = False))
-        eleList.append(self.IValues(compList, withoutPrescaling = False))
+        eleList.append(self.UPNRmsValues(compList, vectorMeasurement = False))
+        eleList.append(self.IValues(compList, vectorMeasurement = False))
         eleList.append(self.UIPhaseAngleValues(compList))
         eleList.append(self.TimeCommon("VB ",compList))
         eleList.append({"M-Mode" : ""})
@@ -1016,8 +1014,8 @@ class UserScript:
         eleList=self.SessionDeviceInfo(metadata, 'DEU')
         eleList.append(self.ScaleCommon(compList, metadata))
         eleList.append(self.RangeCommon(compList))
-        eleList.append(self.UPNRmsValues(compList, withoutPrescaling = False))
-        eleList.append(self.IValues(compList, withoutPrescaling = False))
+        eleList.append(self.UPNRmsValues(compList, vectorMeasurement = False))
+        eleList.append(self.IValues(compList, vectorMeasurement = False))
         eleList.append(self.UIPhaseAngleValues(compList))
         eleList.append(self.TimeCommon("CB ",compList))
         eleList.append({"M-Mode" : ""})
