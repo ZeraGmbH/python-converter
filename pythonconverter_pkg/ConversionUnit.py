@@ -138,7 +138,7 @@ class ConversionUnit:
             self.__iMap[self.__session]["static"] = {}
             for con in transList:
                 # only write to dict, if transaction fits filter or no filter is set.
-                if con["transaction_name"].find(self.__filter) != -1 or not self.__filter:
+                if con["transaction_name"].find(self.__filter) != -1 and con["transaction_name"].find("_DELETED_") == -1 or not self.__filter:
                     tmpDict = {}
                     tmpDict["contentset_names"] = con["contentset_names"]
                     tmpDict["timestemp"] = con["start_time"]
