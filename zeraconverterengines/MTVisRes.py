@@ -260,7 +260,7 @@ class UserScript:
         strValue = "{:g}".format(valUnitObj["value"])
         return  strValue + valUnitObj["unit"]
 
-    def RangeCommon(self, compList, mtvisRange = False):
+    def RangeCommon(self, compList, mtvisRange = False, includeRatio = False):
         #pylint: disable=unused-argument
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
@@ -295,45 +295,50 @@ class UserScript:
             eleList.append({"U-Range" : uRangeExported + ";"})
             eleList.append({"I-Range" : iRangeExported + ";"})
         else:
-            scaleInfo = {
-                  "factor": 0.0,
-                  "unitPrefix" : ""
-                  }
-            uRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
-            if uRatio >= 1:
-                eleList.append({"U-Range" : uRangeExported + ";"})
-            else:
-                uRatioRange = ""
-                uRatio = URange / uRatio
-                # get the Unit-prefix from values
-                rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]),
-                           zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]),
-                           zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"])]
-                self.computeScaling(rowValues, scaleInfo)
-                if scaleInfo["unitPrefix"].upper() == "K":
-                    uRatio /= 1000
-                elif scaleInfo["unitPrefix"].upper() == "M":
-                    uRatio /= 1000000
-                uRatioRange = str(round(uRatio,3))
-                eleList.append({"U-Range" : uRatioRange + scaleInfo["unitPrefix"] + "V" + ";" + uRangeExported + ";"})
+            if includeRatio:
+                scaleInfo = {
+                      "factor": 0.0,
+                      "unitPrefix" : ""
+                      }
+                uRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
+                if uRatio >= 1:
+                    eleList.append({"U-Range" : uRangeExported + ";"})
+                else:
+                    uRatioRange = ""
+                    URangeScaled = URange / uRatio
+                    # get the Unit-prefix from values
+                    rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]),
+                               zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]),
+                               zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"])]
+                    self.computeScaling(rowValues, scaleInfo)
+                    if scaleInfo["unitPrefix"] == "k":
+                        URangeScaled /= 1000
+                    elif scaleInfo["unitPrefix"] == "M":
+                        URangeScaled /= 1000000
+                    uRatioRange = self.formatNumber(URangeScaled)
+                    eleList.append({"U-Range" : uRatioRange + scaleInfo["unitPrefix"] + "V" + ";" + uRangeExported + ";"})
 
-            iRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
-            if iRatio >= 1:
-                eleList.append({"I-Range" : iRangeExported + ";"})
+                iRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
+                if iRatio >= 1:
+                    eleList.append({"I-Range" : iRangeExported + ";"})
+                else:
+                    iRatioRange = ""
+                    IRangeScaled = IRange / iRatio
+                    # get the Unit-prefix from values
+                    rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]),
+                               zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]),
+                               zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"])]
+                    self.computeScaling(rowValues, scaleInfo)
+                    if scaleInfo["unitPrefix"] == "k":
+                        IRangeScaled /= 1000
+                    elif scaleInfo["unitPrefix"] == "M":
+                        IRangeScaled /= 1000000
+                    iRatioRange = self.formatNumber(IRangeScaled)
+                    eleList.append({"I-Range" : iRatioRange + scaleInfo["unitPrefix"] + "A" + ";" + iRangeExported + ";"})
             else:
-                iRatioRange = ""
-                iRatio = IRange / iRatio
-                # get the Unit-prefix from values
-                rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]),
-                           zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]),
-                           zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"])]
-                self.computeScaling(rowValues, scaleInfo)
-                if scaleInfo["unitPrefix"].upper() == "K":
-                    iRatio /= 1000
-                elif scaleInfo["unitPrefix"].upper() == "M":
-                    iRatio /= 1000000
-                iRatioRange = str(round(iRatio,3))
-                eleList.append({"I-Range" : iRatioRange + scaleInfo["unitPrefix"] + "A" + ";" + iRangeExported + ";"})
+                eleList.append({"U-Range" : uRangeExported + ";"})
+                eleList.append({"I-Range" : iRangeExported + ";"})
+                    
         return eleList
 
     def ScaleCommon(self,compList, metadata):
