@@ -292,7 +292,9 @@ class UserScript:
         if mtvisRange:
             uRangeExported = self.alignDecSeparator(self.MtVisUnitAdjust(uRangeExported))
             iRangeExported = self.alignDecSeparator(self.MtVisUnitAdjust(iRangeExported))
-        else:           # richtig ???
+            eleList.append({"U-Range" : uRangeExported + ";"})
+            eleList.append({"I-Range" : iRangeExported + ";"})
+        else:
             scaleInfo = {
                   "factor": 0.0,
                   "unitPrefix" : ""
