@@ -260,7 +260,7 @@ class UserScript:
         strValue = "{:g}".format(valUnitObj["value"])
         return  strValue + valUnitObj["unit"]
 
-    def RangeCommon(self, compList, mtvisRange = False, includeRatio = False):
+    def RangeCommon(self, compList, mtvisRange = False, addRatioRange = False):
         #pylint: disable=unused-argument
         vals=zeracom.entityComponentSort(compList["values"])
         eleList=[]
@@ -295,11 +295,14 @@ class UserScript:
             eleList.append({"U-Range" : uRangeExported + ";"})
             eleList.append({"I-Range" : iRangeExported + ";"})
         else:
-            if includeRatio:
+            if not addRatioRange:
+                eleList.append({"U-Range" : uRangeExported + ";"})
+                eleList.append({"I-Range" : iRangeExported + ";"})
+            else:
                 scaleInfo = {
                       "factor": 0.0,
                       "unitPrefix" : ""
-                      }
+                    }
                 uRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
                 if uRatio >= 1:
                     eleList.append({"U-Range" : uRangeExported + ";"})
@@ -335,10 +338,6 @@ class UserScript:
                         IRangeScaled /= 1000000
                     iRatioRange = self.formatNumber(IRangeScaled)
                     eleList.append({"I-Range" : iRatioRange + scaleInfo["unitPrefix"] + "A" + ";" + iRangeExported + ";"})
-            else:
-                eleList.append({"U-Range" : uRangeExported + ";"})
-                eleList.append({"I-Range" : iRangeExported + ";"})
-                    
         return eleList
 
     def ScaleCommon(self,compList, metadata):
@@ -526,7 +525,7 @@ class UserScript:
         eleList.append(self.SessionDeviceInfo(metadata, 'DEU'))
         eleList.append(self.ScaleCommon(compList, metadata))
 
-        eleList.append(self.RangeCommon(compList))
+        eleList.append(self.RangeCommon(compList, False, True))
         
         eleList.append(self.UPNRmsValues(compList, vectorMeasurement))
 
@@ -788,7 +787,7 @@ class UserScript:
             eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
 
-            eleList.append(self.RangeCommon(compList, True))
+            eleList.append(self.RangeCommon(compList, True, False))
 
             i=0
             for sample in zeracom.readSafe(vals,["OSCIModule1","ACT_OSCI"+ str(UIdx)]).split(";"):
@@ -944,7 +943,7 @@ class UserScript:
 
         eleList.append(self.TimeCommon("ER ",compList))
 
-        eleList.append(self.RangeCommon(compList))
+        eleList.append(self.RangeCommon(compList, False, True))
 
         mode=""
         if  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_RefInput"])) == "P":
@@ -990,7 +989,7 @@ class UserScript:
 
         eleList.append(self.TimeCommon("PR ",compList))
 
-        eleList.append(self.RangeCommon(compList))
+        eleList.append(self.RangeCommon(compList, False, True))
 
         mode = ""
         if  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_RefInput"])) == "P":
@@ -1035,7 +1034,7 @@ class UserScript:
 
         eleList=self.SessionDeviceInfo(metadata, 'DEU')
         eleList.append(self.ScaleCommon(compList, metadata))
-        eleList.append(self.RangeCommon(compList))
+        eleList.append(self.RangeCommon(compList, False, True))
         eleList.append(self.UPNRmsValues(compList, vectorMeasurement = False))
         eleList.append(self.IValues(compList, vectorMeasurement = False))
         eleList.append(self.UIPhaseAngleValues(compList))
@@ -1059,7 +1058,7 @@ class UserScript:
 
         eleList=self.SessionDeviceInfo(metadata, 'DEU')
         eleList.append(self.ScaleCommon(compList, metadata))
-        eleList.append(self.RangeCommon(compList))
+        eleList.append(self.RangeCommon(compList, False, True))
         eleList.append(self.UPNRmsValues(compList, vectorMeasurement = False))
         eleList.append(self.IValues(compList, vectorMeasurement = False))
         eleList.append(self.UIPhaseAngleValues(compList))
@@ -1085,7 +1084,7 @@ class UserScript:
 
         eleList.append(self.TimeCommon("IT ",compList))
 
-        eleList.append(self.RangeCommon(compList))
+        eleList.append(self.RangeCommon(compList, False, True))
 
         eleList.append({"M-Mode" : ""})
         eleList.append(self.ScaleCommon(compList, metadata))
