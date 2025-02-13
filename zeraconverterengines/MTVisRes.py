@@ -268,9 +268,9 @@ class UserScript:
         IRange=float(0)
         uRangeExported = ""
         iRangeExported = ""
+        uMaxRangeStr = ""
+        iMaxRangeStr = ""
         if not self.IsEmobDcSession(vals):
-            uMaxRangeStr = ""
-            iMaxRangeStr = ""
             for c in range(1, 3+1): # confusing but checkout https://www.w3schools.com/python/python_for_loops.asp
                 uRawValue = zeracom.readSafe(vals,["RangeModule1", "PAR_Channel"+ str(c)+"Range"])
                 uDictVal = zeracom.UnitNumberSeperator(uRawValue)
@@ -282,7 +282,6 @@ class UserScript:
                 if IRange < iDictVal["value"]:
                     IRange = iDictVal["value"]
                     iMaxRangeStr = iRawValue
-
             uRangeExported = uMaxRangeStr
             iRangeExported = iMaxRangeStr
         else:
@@ -304,40 +303,46 @@ class UserScript:
                       "unitPrefix" : ""
                     }
                 uRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
-                if uRatio >= 1:
-                    eleList.append({"U-Range" : uRangeExported + ";"})
+                uRatioRange = ""
+                URangeScaled = URange / uRatio
+                # get the Unit-prefix from values
+                rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]),
+                            zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]),
+                            zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"])]
+                self.computeScaling(rowValues, scaleInfo)
+                if "m" in uMaxRangeStr:
+                    if scaleInfo["unitPrefix"] == "":
+                        URangeScaled /= 1000
                 else:
-                    uRatioRange = ""
-                    URangeScaled = URange / uRatio
-                    # get the Unit-prefix from values
-                    rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]),
-                               zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]),
-                               zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"])]
-                    self.computeScaling(rowValues, scaleInfo)
+                    if scaleInfo["unitPrefix"] == "m":
+                        URangeScaled *= 1000
                     if scaleInfo["unitPrefix"] == "k":
                         URangeScaled /= 1000
                     elif scaleInfo["unitPrefix"] == "M":
                         URangeScaled /= 1000000
-                    uRatioRange = self.formatNumber(URangeScaled)
-                    eleList.append({"U-Range" : uRatioRange + scaleInfo["unitPrefix"] + "V" + ";" + uRangeExported + ";"})
+                uRatioRange = str(round(URangeScaled, 2))
+                eleList.append({"U-Range" : uRatioRange + scaleInfo["unitPrefix"] + "V" + ";" + uRangeExported + ";"})
 
                 iRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
-                if iRatio >= 1:
-                    eleList.append({"I-Range" : iRangeExported + ";"})
+                iRatioRange = ""
+                IRangeScaled = IRange / iRatio
+                # get the Unit-prefix from values
+                rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]),
+                            zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]),
+                            zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"])]
+                self.computeScaling(rowValues, scaleInfo)
+                if "m" in iMaxRangeStr: 
+                    if scaleInfo["unitPrefix"] == "":
+                        IRangeScaled /= 1000
                 else:
-                    iRatioRange = ""
-                    IRangeScaled = IRange / iRatio
-                    # get the Unit-prefix from values
-                    rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]),
-                               zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]),
-                               zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"])]
-                    self.computeScaling(rowValues, scaleInfo)
+                    if scaleInfo["unitPrefix"] == "m":
+                        IRangeScaled *= 1000
                     if scaleInfo["unitPrefix"] == "k":
                         IRangeScaled /= 1000
                     elif scaleInfo["unitPrefix"] == "M":
                         IRangeScaled /= 1000000
-                    iRatioRange = self.formatNumber(IRangeScaled)
-                    eleList.append({"I-Range" : iRatioRange + scaleInfo["unitPrefix"] + "A" + ";" + iRangeExported + ";"})
+                iRatioRange = str(round(IRangeScaled, 2))
+                eleList.append({"I-Range" : iRatioRange + scaleInfo["unitPrefix"] + "A" + ";" + iRangeExported + ";"})
         return eleList
 
     def ScaleCommon(self,compList, metadata):
