@@ -294,7 +294,7 @@ class UserScript:
             eleList.append({"U-Range" : uRangeExported + ";"})
             eleList.append({"I-Range" : iRangeExported + ";"})
         else:
-            if not addRatioRange:
+            if not addRatioRange or self.IsEmobDcSession(vals):
                 eleList.append({"U-Range" : uRangeExported + ";"})
                 eleList.append({"I-Range" : iRangeExported + ";"})
             else:
@@ -695,7 +695,7 @@ class UserScript:
             unit=channelMap[str(ch)][1]
             eleList.append(self.TimeCommon("HT "+NameAdd+" ",compList))
 
-            eleList.append(self.RangeCommon(compList))
+            eleList.append(self.RangeCommon(compList, addRatioRange = False))
 
             eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
@@ -760,7 +760,7 @@ class UserScript:
             eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
 
-            eleList.append(self.RangeCommon(compList, True, False))
+            eleList.append(self.RangeCommon(compList, True, addRatioRange = False))
 
             i=0
             for sample in zeracom.readSafe(vals,["OSCIModule1","ACT_OSCI"+ str(UIdx)]).split(";"):
@@ -804,7 +804,7 @@ class UserScript:
             eleList.append(self.ScaleCommon(compList, metadata))
             eleList.append({"M-Mode" : ""})
 
-            eleList.append(self.RangeCommon(compList))
+            eleList.append(self.RangeCommon(compList, addRatioRange = False))
 
             eleList.append({"ChannelU" : "U" + phaseStr})
             eleList.append({"ChannelI" : "I" + phaseStr})
@@ -916,7 +916,7 @@ class UserScript:
 
         eleList.append(self.TimeCommon("ER ",compList))
 
-        eleList.append(self.RangeCommon(compList, False, True))
+        eleList.append(self.RangeCommon(compList, False, addRatioRange = True))
 
         mode=""
         if  self.formatNumber(zeracom.readSafe(vals,["SEM1Module1","PAR_RefInput"])) == "P":
@@ -962,7 +962,7 @@ class UserScript:
 
         eleList.append(self.TimeCommon("PR ",compList))
 
-        eleList.append(self.RangeCommon(compList, False, True))
+        eleList.append(self.RangeCommon(compList, False, addRatioRange = True))
 
         mode = ""
         if  self.formatNumber(zeracom.readSafe(vals,["SPM1Module1","PAR_RefInput"])) == "P":
@@ -1007,7 +1007,7 @@ class UserScript:
 
         eleList=self.SessionDeviceInfo(metadata, 'DEU')
         eleList.append(self.ScaleCommon(compList, metadata))
-        eleList.append(self.RangeCommon(compList, False, True))
+        eleList.append(self.RangeCommon(compList, False, addRatioRange = False))
         eleList.append(self.UPNRmsValues(compList))
         eleList.append(self.IValues(compList))
         eleList.append(self.UIPhaseAngleValues(compList))
@@ -1031,7 +1031,7 @@ class UserScript:
 
         eleList=self.SessionDeviceInfo(metadata, 'DEU')
         eleList.append(self.ScaleCommon(compList, metadata))
-        eleList.append(self.RangeCommon(compList, False, True))
+        eleList.append(self.RangeCommon(compList, False, addRatioRange = False))
         eleList.append(self.UPNRmsValues(compList))
         eleList.append(self.IValues(compList))
         eleList.append(self.UIPhaseAngleValues(compList))
@@ -1057,7 +1057,7 @@ class UserScript:
 
         eleList.append(self.TimeCommon("IT ",compList))
 
-        eleList.append(self.RangeCommon(compList, False, True))
+        eleList.append(self.RangeCommon(compList, False, addRatioRange = False))
 
         eleList.append({"M-Mode" : ""})
         eleList.append(self.ScaleCommon(compList, metadata))
