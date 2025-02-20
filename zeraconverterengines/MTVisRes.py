@@ -302,6 +302,7 @@ class UserScript:
                       "factor": 0.0,
                       "unitPrefix" : ""
                     }
+                # voltage
                 uRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
                 uRatioRange = ""
                 URangeScaled = URange / uRatio
@@ -323,6 +324,7 @@ class UserScript:
                 uRatioRange = str(round(URangeScaled, 2))
                 eleList.append({"U-Range" : uRatioRange + scaleInfo["unitPrefix"] + "V" + ";" + uRangeExported + ";"})
 
+                # current
                 iRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
                 iRatioRange = ""
                 IRangeScaled = IRange / iRatio
