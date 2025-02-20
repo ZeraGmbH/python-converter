@@ -311,16 +311,10 @@ class UserScript:
                             zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN2"]),
                             zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN3"])]
                 self.computeScaling(rowValues, scaleInfo)
-                if "m" in uMaxRangeStr:
-                    if scaleInfo["unitPrefix"] == "":
-                        URangeScaled /= 1000
-                else:
-                    if scaleInfo["unitPrefix"] == "m":
-                        URangeScaled *= 1000
-                    if scaleInfo["unitPrefix"] == "k":
-                        URangeScaled /= 1000
-                    elif scaleInfo["unitPrefix"] == "M":
-                        URangeScaled /= 1000000
+                if "m" in uMaxRangeStr: # range scale part e.g 100mV
+                    URangeScaled /= 1000
+
+                URangeScaled *= scaleInfo["factor"] # computeScaling scale part
                 uRatioRange = str(round(URangeScaled, 2))
                 eleList.append({"U-Range" : uRatioRange + scaleInfo["unitPrefix"] + "V" + ";" + uRangeExported + ";"})
 
@@ -333,16 +327,10 @@ class UserScript:
                             zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN5"]),
                             zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN6"])]
                 self.computeScaling(rowValues, scaleInfo)
-                if "m" in iMaxRangeStr: 
-                    if scaleInfo["unitPrefix"] == "":
-                        IRangeScaled /= 1000
-                else:
-                    if scaleInfo["unitPrefix"] == "m":
-                        IRangeScaled *= 1000
-                    if scaleInfo["unitPrefix"] == "k":
-                        IRangeScaled /= 1000
-                    elif scaleInfo["unitPrefix"] == "M":
-                        IRangeScaled /= 1000000
+                if "m" in iMaxRangeStr: # range scale part e.g 100mA
+                    IRangeScaled /= 1000
+
+                IRangeScaled *= scaleInfo["factor"] # computeScaling scale part
                 iRatioRange = str(round(IRangeScaled, 2))
                 eleList.append({"I-Range" : iRatioRange + scaleInfo["unitPrefix"] + "A" + ";" + iRangeExported + ";"})
         return eleList
