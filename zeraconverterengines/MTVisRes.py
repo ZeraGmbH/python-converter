@@ -325,7 +325,7 @@ class UserScript:
 
                 URangeScaled *= scaleInfo["factor"] # computeScaling scale part
                 uRatioRange = self.formatRangeValue(URangeScaled)
-                eleList.append({"U-Range" : uRatioRange + scaleInfo["unitPrefix"] + "V" + ";" + uRangeExported + ";"})
+                eleList.append({"U-Range" : uRatioRange + scaleInfo["unitPrefix"] + "V" + ";/ " + uRangeExported + ";"})
 
                 # current
                 iRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
@@ -340,7 +340,7 @@ class UserScript:
 
                 IRangeScaled *= scaleInfo["factor"] # computeScaling scale part
                 iRatioRange = self.formatRangeValue(IRangeScaled)
-                eleList.append({"I-Range" : iRatioRange + scaleInfo["unitPrefix"] + "A" + ";" + iRangeExported + ";"})
+                eleList.append({"I-Range" : iRatioRange + scaleInfo["unitPrefix"] + "A" + ";/ " + iRangeExported + ";"})
         return eleList
 
     def ScaleCommon(self, compList, metadata):
