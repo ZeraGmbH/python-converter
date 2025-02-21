@@ -169,6 +169,16 @@ class UserScript:
             num = num + 360
         return self.formatNumber(num)
 
+    def formatRangeValue(self, num):
+        if type(num) == str:
+            return num
+        roundNum = round(num, 2)
+        if roundNum % 1 == 0:
+            strNum = str(int(roundNum))
+        else:
+            strNum = self.alignDecSeparator(str(roundNum))
+        return strNum
+
     def ms_to_hh_mm_ss(self, milliseconds):
         if(milliseconds == ""):
             seconds = 0
@@ -304,7 +314,6 @@ class UserScript:
                     }
                 # voltage
                 uRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup0"])
-                uRatioRange = ""
                 URangeScaled = URange / uRatio
                 # get the Unit-prefix from values
                 rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN1"]),
@@ -315,12 +324,11 @@ class UserScript:
                     URangeScaled /= 1000
 
                 URangeScaled *= scaleInfo["factor"] # computeScaling scale part
-                uRatioRange = str(round(URangeScaled, 2))
+                uRatioRange = self.formatRangeValue(URangeScaled)
                 eleList.append({"U-Range" : uRatioRange + scaleInfo["unitPrefix"] + "V" + ";" + uRangeExported + ";"})
 
                 # current
                 iRatio = zeracom.readSafe(vals,["RangeModule1","INF_PreScalingInfoGroup1"])
-                iRatioRange = ""
                 IRangeScaled = IRange / iRatio
                 # get the Unit-prefix from values
                 rowValues=[zeracom.readSafe(vals,["RMSModule1","ACT_RMSPN4"]),
@@ -331,7 +339,7 @@ class UserScript:
                     IRangeScaled /= 1000
 
                 IRangeScaled *= scaleInfo["factor"] # computeScaling scale part
-                iRatioRange = str(round(IRangeScaled, 2))
+                iRatioRange = self.formatRangeValue(IRangeScaled)
                 eleList.append({"I-Range" : iRatioRange + scaleInfo["unitPrefix"] + "A" + ";" + iRangeExported + ";"})
         return eleList
 
