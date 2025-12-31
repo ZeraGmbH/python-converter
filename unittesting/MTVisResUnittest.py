@@ -6,7 +6,7 @@ class MTVisResUnittest(unittest.TestCase):
     def setUp(self) :
         CppInterface.setInputPath("test/testburden.db")
         CppInterface.setOutputPath("test/resultburden.xml")
-        CppInterface.setSession("demo01")
+        CppInterface.setSession("demo 01")
         CppInterface.setEngine("zeraconverterengines.MTVisRes")
         CppInterface.setFilter("Snapshot")
         self.assertEqual(CppInterface.convert(),0)
@@ -20,7 +20,7 @@ class MTVisResUnittest(unittest.TestCase):
         
     def test_sessionDeviceInfo(self):
         for i in range(self.getTotalElements('ID')) : 
-            self.assertEqual(self.getValueOfFirstChild('ID', i), "demo01")
+            self.assertEqual(self.getValueOfFirstChild('ID', i), "demo 01")
 
         for i in range(self.getTotalElements('Language')) : 
             self.assertEqual(self.getValueOfFirstChild('Language', i), "DEU")
